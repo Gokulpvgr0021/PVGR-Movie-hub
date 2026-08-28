@@ -3,66 +3,184 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StreamNet - Movies & Downloads</title>
+    <title>StreamNet Ultimate - Movies & Downloads</title>
     <style>
-        body { margin: 0; font-family: Arial, sans-serif; background-color: #141414; color: white; }
-        header { padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent); position: absolute; width: 100%; box-sizing: border-box; }
-        .logo { font-size: 28px; font-weight: bold; color: #E50914; }
-        nav a { color: white; text-decoration: none; margin-left: 20px; font-weight: bold; }
-        nav a:hover { color: #b3b3b3; }
-        
-        /* Hero Section */
-        .hero { height: 80vh; background: linear-gradient(to right, rgba(0,0,0,0.8) 20%, transparent), url('https://via.placeholder.com/1600x900/333/555?text=Featured+Movie+Poster') center/cover; display: flex; align-items: center; padding: 0 50px; box-sizing: border-box; }
-        .hero-content { max-width: 600px; }
-        .hero h1 { font-size: 4rem; margin-bottom: 10px; }
-        .hero p { font-size: 1.2rem; line-height: 1.5; margin-bottom: 30px; }
-        
-        /* Buttons */
-        .btn { padding: 12px 30px; border: none; border-radius: 4px; font-size: 18px; cursor: pointer; font-weight: bold; margin-right: 15px; transition: 0.2s; }
-        .btn-play { background-color: white; color: black; }
-        .btn-play:hover { background-color: #c9c9c9; }
-        .btn-download { background-color: rgba(109, 109, 110, 0.7); color: white; }
-        .btn-download:hover { background-color: rgba(109, 109, 110, 0.9); }
-        
-        /* Movie Rows */
-        .movie-row { padding: 30px 50px; }
-        .movie-row h2 { margin-bottom: 20px; font-size: 1.5rem; }
-        .posters { display: flex; gap: 15px; overflow-x: auto; padding-bottom: 15px; scrollbar-width: none; }
+        /* Base Variables & Reset */
+        :root {
+            --primary: #E50914;
+            --bg-dark: #0f0f0f;
+            --text-light: #f5f5f5;
+            --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Helvetica Neue', Arial, sans-serif; }
+        body { background-color: var(--bg-dark); color: var(--text-light); overflow-x: hidden; }
+
+        /* Glassmorphism Navigation */
+        header { 
+            position: fixed; width: 100%; top: 0; z-index: 100;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 20px 50px;
+            background: rgba(15, 15, 15, 0.7);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            transition: var(--transition);
+        }
+        header.scrolled { background: rgba(15, 15, 15, 0.95); padding: 15px 50px; }
+        .logo { font-size: 32px; font-weight: 900; color: var(--primary); letter-spacing: -1px; text-shadow: 0 2px 10px rgba(229, 9, 20, 0.4); cursor: pointer; }
+        nav { display: flex; gap: 25px; align-items: center; }
+        nav a { color: var(--text-light); text-decoration: none; font-weight: 500; transition: var(--transition); font-size: 15px; }
+        nav a:hover { color: var(--primary); text-shadow: 0 0 10px rgba(229, 9, 20, 0.5); }
+        .search-bar { padding: 8px 15px; border-radius: 20px; border: none; background: rgba(255,255,255,0.1); color: white; outline: none; transition: var(--transition); }
+        .search-bar:focus { background: rgba(255,255,255,0.2); width: 200px; }
+
+        /* Cinematic Hero Section */
+        .hero { 
+            height: 90vh; 
+            background: linear-gradient(to right, rgba(15,15,15,0.95) 10%, rgba(15,15,15,0.4) 60%, transparent), 
+                        url('https://images.unsplash.com/photo-1616530940355-351fabd9524b?q=80&w=1920&auto=format&fit=crop') center/cover; 
+            display: flex; align-items: center; padding: 0 50px; position: relative;
+        }
+        .hero::after {
+            content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 150px;
+            background: linear-gradient(to top, var(--bg-dark), transparent);
+        }
+        .hero-content { max-width: 650px; z-index: 10; animation: fadeIn 1.5s ease; }
+        .hero h1 { font-size: 4.5rem; margin-bottom: 15px; line-height: 1.1; text-transform: uppercase; font-weight: 900; }
+        .hero p { font-size: 1.2rem; line-height: 1.6; margin-bottom: 35px; color: #ccc; }
+
+        /* Enhanced Buttons */
+        .btn { 
+            padding: 14px 35px; border: none; border-radius: 8px; font-size: 18px; 
+            cursor: pointer; font-weight: bold; margin-right: 15px; 
+            display: inline-flex; align-items: center; gap: 10px; transition: var(--transition); 
+        }
+        .btn-play { background-color: var(--text-light); color: black; }
+        .btn-play:hover { background-color: var(--primary); color: white; transform: scale(1.05); box-shadow: 0 10px 20px rgba(229, 9, 20, 0.4); }
+        .btn-download { background-color: rgba(109, 109, 110, 0.7); color: white; backdrop-filter: blur(5px); }
+        .btn-download:hover { background-color: rgba(255,255,255,0.2); transform: scale(1.05); }
+
+        /* Dynamic Movie Rows */
+        .movie-row { padding: 20px 50px; position: relative; z-index: 10; }
+        .movie-row h2 { margin-bottom: 15px; font-size: 1.6rem; display: flex; align-items: center; gap: 10px; }
+        .carousel-container { position: relative; display: flex; align-items: center; }
+        .scroll-btn {
+            position: absolute; z-index: 20; background: rgba(0,0,0,0.6); color: white; 
+            border: none; font-size: 2rem; height: 100%; width: 50px; cursor: pointer; 
+            opacity: 0; transition: var(--transition); backdrop-filter: blur(3px);
+        }
+        .carousel-container:hover .scroll-btn { opacity: 1; }
+        .scroll-left { left: 0; }
+        .scroll-right { right: 0; }
+        .scroll-btn:hover { background: rgba(229, 9, 20, 0.8); }
+
+        .posters { 
+            display: flex; gap: 20px; overflow-x: auto; padding: 20px 0; 
+            scroll-behavior: smooth; scrollbar-width: none; 
+        }
         .posters::-webkit-scrollbar { display: none; }
-        .posters img { width: 220px; height: 330px; object-fit: cover; border-radius: 5px; cursor: pointer; transition: transform 0.3s ease; }
-        .posters img:hover { transform: scale(1.08); }
+        
+        .poster-card { position: relative; transition: var(--transition); cursor: pointer; border-radius: 10px; }
+        .poster-card img { width: 240px; height: 360px; object-fit: cover; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+        .poster-card:hover { transform: translateY(-10px) scale(1.05); z-index: 100; box-shadow: 0 20px 30px rgba(0,0,0,0.8); border: 2px solid var(--primary); }
+        
+        /* Video Modal Overlay */
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95); z-index: 999; justify-content: center; align-items: center;
+            opacity: 0; transition: opacity 0.3s ease;
+        }
+        .modal.active { display: flex; opacity: 1; }
+        .modal-content { width: 80%; max-width: 1000px; position: relative; border-radius: 15px; overflow: hidden; box-shadow: 0 0 50px rgba(229,9,20,0.3); }
+        .close-btn { position: absolute; top: -40px; right: 0; color: white; font-size: 30px; cursor: pointer; background: none; border: none; }
+        video { width: 100%; display: block; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
-    <header>
-        <div class="logo">StreamNet</div>
+
+    <header id="navbar">
+        <div class="logo">STREAMNET</div>
         <nav>
             <a href="#">Home</a>
-            <a href="#">Movies</a>
-            <a href="#">TV Shows</a>
-            <a href="#">My Downloads</a>
+            <a href="#">Series</a>
+            <a href="#">Films</a>
+            <a href="#">New & Popular</a>
+            <a href="#">My List</a>
+            <input type="text" class="search-bar" placeholder="Search titles...">
         </nav>
     </header>
 
     <div class="hero">
         <div class="hero-content">
-            <h1>Epic Sci-Fi Adventure</h1>
-            <p>A group of explorers travel through a wormhole in space in an attempt to ensure humanity's survival. Stream in stunning 4K or download for offline viewing.</p>
-            <button class="btn btn-play">▶ Play Now</button>
+            <h1>Neon City</h1>
+            <p>In a dystopian future, a rogue hacker discovers a secret that could collapse the entire corporate network. Now, she is on the run from the very system she helped build. Stream in 4K HDR.</p>
+            <button class="btn btn-play" id="playBtn">▶ Play Trailer</button>
             <button class="btn btn-download">⬇ Download</button>
         </div>
     </div>
 
     <div class="movie-row">
-        <h2>Trending Now</h2>
-        <div class="posters">
-            <img src="https://via.placeholder.com/220x330/444/fff?text=Action+Movie" alt="Movie">
-            <img src="https://via.placeholder.com/220x330/444/fff?text=Comedy+Special" alt="Movie">
-            <img src="https://via.placeholder.com/220x330/444/fff?text=Drama+Series" alt="Movie">
-            <img src="https://via.placeholder.com/220x330/444/fff?text=Thriller" alt="Movie">
-            <img src="https://via.placeholder.com/220x330/444/fff?text=Documentary" alt="Movie">
-            <img src="https://via.placeholder.com/220x330/444/fff?text=Sci-Fi" alt="Movie">
+        <h2>🔥 Trending Now</h2>
+        <div class="carousel-container">
+            <button class="scroll-btn scroll-left">‹</button>
+            <div class="posters">
+                <div class="poster-card"><img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=600&auto=format&fit=crop" alt="Movie"></div>
+                <div class="poster-card"><img src="https://images.unsplash.com/photo-1574267432553-4b4628081524?q=80&w=600&auto=format&fit=crop" alt="Movie"></div>
+                <div class="poster-card"><img src="https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?q=80&w=600&auto=format&fit=crop" alt="Movie"></div>
+                <div class="poster-card"><img src="https://images.unsplash.com/photo-1440404653325-ab127d49abc1?q=80&w=600&auto=format&fit=crop" alt="Movie"></div>
+                <div class="poster-card"><img src="https://images.unsplash.com/photo-1518676590629-3dcbd9c5a5c9?q=80&w=600&auto=format&fit=crop" alt="Movie"></div>
+                <div class="poster-card"><img src="https://images.unsplash.com/photo-1478720568477-152d9b164e26?q=80&w=600&auto=format&fit=crop" alt="Movie"></div>
+            </div>
+            <button class="scroll-btn scroll-right">›</button>
         </div>
     </div>
+
+    <div class="modal" id="videoModal">
+        <div class="modal-content">
+            <button class="close-btn" id="closeBtn">✖</button>
+            <video id="moviePlayer" controls>
+                <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+                Your browser does not support HTML5 video.
+            </video>
+        </div>
+    </div>
+
+    <script>
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 50) { nav.classList.add('scrolled'); } 
+            else { nav.classList.remove('scrolled'); }
+        });
+
+        // Video Modal Logic
+        const modal = document.getElementById('videoModal');
+        const playBtn = document.getElementById('playBtn');
+        const closeBtn = document.getElementById('closeBtn');
+        const video = document.getElementById('moviePlayer');
+
+        playBtn.addEventListener('click', () => {
+            modal.classList.add('active');
+            video.play();
+        });
+
+        closeBtn.addEventListener('click', () => {
+            modal.classList.remove('active');
+            video.pause();
+            video.currentTime = 0; // Reset video
+        });
+
+        // Horizontal Carousel Scroll Logic
+        const carousels = document.querySelectorAll('.carousel-container');
+        carousels.forEach(carousel => {
+            const posters = carousel.querySelector('.posters');
+            const leftBtn = carousel.querySelector('.scroll-left');
+            const rightBtn = carousel.querySelector('.scroll-right');
+
+            leftBtn.addEventListener('click', () => { posters.scrollBy({ left: -600, behavior: 'smooth' }); });
+            rightBtn.addEventListener('click', () => { posters.scrollBy({ left: 600, behavior: 'smooth' }); });
+        });
+    </script>
 </body>
 </html>

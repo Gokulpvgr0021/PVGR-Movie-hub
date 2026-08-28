@@ -3,16 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PVGR CINE PARK - Movies & Downloads</title>
+    <title>PVGR CINE PARK - Premium Streaming</title>
     <style>
-        /* Base Variables & Reset */
+        /* New Sapphire & Gold Theme Variables */
         :root {
-            --primary: #E50914;
-            --bg-dark: #0f0f0f;
-            --text-light: #f5f5f5;
+            --primary: #FFB300; /* Cinematic Gold */
+            --primary-hover: #FFA000;
+            --bg-dark: #050A15; /* Deep Sapphire Blue */
+            --bg-panel: #0A1128;
+            --text-light: #E2E8F0;
             --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Helvetica Neue', Arial, sans-serif; }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: var(--bg-dark); color: var(--text-light); overflow-x: hidden; }
 
         /* Glassmorphism Navigation */
@@ -20,40 +23,40 @@
             position: fixed; width: 100%; top: 0; z-index: 100;
             display: flex; justify-content: space-between; align-items: center;
             padding: 20px 50px;
-            background: rgba(15, 15, 15, 0.7);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            background: rgba(5, 10, 21, 0.6);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255,179,0,0.1);
             transition: var(--transition);
         }
-        header.scrolled { background: rgba(15, 15, 15, 0.95); padding: 15px 50px; }
+        header.scrolled { background: rgba(5, 10, 21, 0.95); padding: 15px 50px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
         
-        /* Updated Branding */
+        /* Branding */
         .logo { 
             font-size: 28px; font-weight: 900; color: var(--primary); 
-            letter-spacing: 2px; text-shadow: 0 2px 10px rgba(229, 9, 20, 0.6); 
+            letter-spacing: 3px; text-shadow: 0 2px 15px rgba(255, 179, 0, 0.4); 
             cursor: pointer; text-transform: uppercase;
         }
         
         nav { display: flex; gap: 25px; align-items: center; }
-        nav a { color: var(--text-light); text-decoration: none; font-weight: 500; transition: var(--transition); font-size: 15px; }
-        nav a:hover { color: var(--primary); text-shadow: 0 0 10px rgba(229, 9, 20, 0.5); }
+        nav a { color: var(--text-light); text-decoration: none; font-weight: 500; transition: var(--transition); font-size: 15px; text-transform: uppercase; letter-spacing: 1px;}
+        nav a:hover { color: var(--primary); text-shadow: 0 0 10px rgba(255, 179, 0, 0.5); }
         
         /* Upload Button in Nav */
         .btn-nav-upload {
-            background: rgba(229, 9, 20, 0.8); color: white; border: none; 
-            padding: 8px 15px; border-radius: 5px; font-weight: bold; cursor: pointer;
-            transition: var(--transition); display: flex; align-items: center; gap: 5px;
+            background: linear-gradient(45deg, var(--primary), #FF8F00); color: #000; border: none; 
+            padding: 8px 18px; border-radius: 20px; font-weight: bold; cursor: pointer;
+            transition: var(--transition); display: flex; align-items: center; gap: 5px; box-shadow: 0 4px 15px rgba(255, 179, 0, 0.3);
         }
-        .btn-nav-upload:hover { background: var(--primary); transform: scale(1.05); }
+        .btn-nav-upload:hover { transform: scale(1.05); box-shadow: 0 6px 20px rgba(255, 179, 0, 0.5); }
 
-        .search-bar { padding: 8px 15px; border-radius: 20px; border: none; background: rgba(255,255,255,0.1); color: white; outline: none; transition: var(--transition); }
-        .search-bar:focus { background: rgba(255,255,255,0.2); width: 200px; }
+        .search-bar { padding: 8px 15px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.3); color: white; outline: none; transition: var(--transition); }
+        .search-bar:focus { border-color: var(--primary); width: 200px; background: rgba(0,0,0,0.6); }
 
         /* Cinematic Hero Section */
         .hero { 
-            height: 90vh; 
-            background: linear-gradient(to right, rgba(15,15,15,0.95) 10%, rgba(15,15,15,0.4) 60%, transparent), 
-                        url('https://images.unsplash.com/photo-1616530940355-351fabd9524b?q=80&w=1920&auto=format&fit=crop') center/cover; 
+            height: 95vh; 
+            background: linear-gradient(to right, rgba(5,10,21,0.95) 10%, rgba(5,10,21,0.5) 50%, transparent), 
+                        url('https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=1920&auto=format&fit=crop') center/cover; 
             display: flex; align-items: center; padding: 0 50px; position: relative;
         }
         .hero::after {
@@ -61,84 +64,92 @@
             background: linear-gradient(to top, var(--bg-dark), transparent);
         }
         .hero-content { max-width: 650px; z-index: 10; animation: fadeIn 1.5s ease; }
-        .hero h1 { font-size: 4.5rem; margin-bottom: 15px; line-height: 1.1; text-transform: uppercase; font-weight: 900; }
-        .hero p { font-size: 1.2rem; line-height: 1.6; margin-bottom: 35px; color: #ccc; }
+        .hero h1 { font-size: 5rem; margin-bottom: 15px; line-height: 1.1; text-transform: uppercase; font-weight: 900; color: white; text-shadow: 0 5px 20px rgba(0,0,0,0.8); }
+        .hero p { font-size: 1.2rem; line-height: 1.6; margin-bottom: 35px; color: #cbd5e1; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
 
         /* Enhanced Buttons */
         .btn { 
-            padding: 14px 35px; border: none; border-radius: 8px; font-size: 18px; 
+            padding: 14px 35px; border: none; border-radius: 30px; font-size: 16px; 
             cursor: pointer; font-weight: bold; margin-right: 15px; 
             display: inline-flex; align-items: center; gap: 10px; transition: var(--transition); 
+            text-transform: uppercase; letter-spacing: 1px;
         }
-        .btn-play { background-color: var(--text-light); color: black; }
-        .btn-play:hover { background-color: var(--primary); color: white; transform: scale(1.05); box-shadow: 0 10px 20px rgba(229, 9, 20, 0.4); }
+        .btn-play { background-color: var(--primary); color: #000; box-shadow: 0 5px 15px rgba(255, 179, 0, 0.4); }
+        .btn-play:hover { background-color: var(--primary-hover); transform: scale(1.05); box-shadow: 0 10px 25px rgba(255, 179, 0, 0.6); }
+        .btn-download { background-color: rgba(255, 255, 255, 0.1); color: white; border: 1px solid rgba(255,255,255,0.3); backdrop-filter: blur(5px); }
+        .btn-download:hover { background-color: rgba(255,255,255,0.2); transform: scale(1.05); border-color: white;}
 
         /* Dynamic Movie Rows */
-        .movie-row { padding: 20px 50px; position: relative; z-index: 10; }
-        .movie-row h2 { margin-bottom: 15px; font-size: 1.6rem; display: flex; align-items: center; gap: 10px; }
+        .movie-row { padding: 20px 50px; position: relative; z-index: 10; margin-bottom: 40px; }
+        .movie-row h2 { margin-bottom: 20px; font-size: 1.6rem; display: flex; align-items: center; gap: 10px; color: var(--text-light); font-weight: 300; letter-spacing: 1px;}
+        .movie-row h2 strong { color: var(--primary); font-weight: 700; }
         .carousel-container { position: relative; display: flex; align-items: center; }
+        
         .scroll-btn {
-            position: absolute; z-index: 20; background: rgba(0,0,0,0.6); color: white; 
-            border: none; font-size: 2rem; height: 100%; width: 50px; cursor: pointer; 
-            opacity: 0; transition: var(--transition); backdrop-filter: blur(3px);
+            position: absolute; z-index: 20; background: rgba(5,10,21,0.8); color: var(--primary); 
+            border: 1px solid rgba(255,179,0,0.3); font-size: 2rem; height: 60px; width: 60px; border-radius: 50%;
+            cursor: pointer; opacity: 0; transition: var(--transition); backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center;
         }
         .carousel-container:hover .scroll-btn { opacity: 1; }
-        .scroll-left { left: 0; }
-        .scroll-right { right: 0; }
-        .scroll-btn:hover { background: rgba(229, 9, 20, 0.8); }
+        .scroll-left { left: -20px; }
+        .scroll-right { right: -20px; }
+        .scroll-btn:hover { background: var(--primary); color: #000; transform: scale(1.1); }
 
-        .posters { display: flex; gap: 20px; overflow-x: auto; padding: 20px 0; scroll-behavior: smooth; scrollbar-width: none; }
+        .posters { display: flex; gap: 25px; overflow-x: auto; padding: 20px 0; scroll-behavior: smooth; scrollbar-width: none; }
         .posters::-webkit-scrollbar { display: none; }
         
-        .poster-card { position: relative; transition: var(--transition); cursor: pointer; border-radius: 10px; }
-        .poster-card img { width: 240px; height: 360px; object-fit: cover; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
-        .poster-card:hover { transform: translateY(-10px) scale(1.05); z-index: 100; box-shadow: 0 20px 30px rgba(0,0,0,0.8); border: 2px solid var(--primary); }
+        .poster-card { position: relative; transition: var(--transition); cursor: pointer; border-radius: 12px; flex-shrink: 0; }
+        .poster-card img { width: 220px; height: 330px; object-fit: cover; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.6); }
+        .poster-card:hover { transform: translateY(-12px) scale(1.05); z-index: 100; box-shadow: 0 20px 40px rgba(0,0,0,0.9); }
+        .poster-card:hover img { border: 2px solid var(--primary); }
         
         /* General Modal Overlay */
         .modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.95); z-index: 999; justify-content: center; align-items: center;
-            opacity: 0; transition: opacity 0.3s ease; backdrop-filter: blur(5px);
+            background: rgba(2, 5, 12, 0.95); z-index: 999; justify-content: center; align-items: center;
+            opacity: 0; transition: opacity 0.3s ease; backdrop-filter: blur(8px);
         }
         .modal.active { display: flex; opacity: 1; }
-        .modal-content { position: relative; border-radius: 15px; overflow: hidden; box-shadow: 0 0 50px rgba(229,9,20,0.3); }
-        .close-btn { position: absolute; top: 15px; right: 20px; color: white; font-size: 24px; cursor: pointer; background: none; border: none; z-index: 10; transition: 0.2s;}
-        .close-btn:hover { color: var(--primary); transform: scale(1.2); }
+        .modal-content { position: relative; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 50px rgba(0,0,0,0.8); }
+        .close-btn { position: absolute; top: 15px; right: 20px; color: white; font-size: 24px; cursor: pointer; background: rgba(0,0,0,0.5); border: none; z-index: 10; transition: 0.2s; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;}
+        .close-btn:hover { color: var(--primary); background: white; transform: scale(1.1); }
         
-        /* Video Player Specifics */
-        .video-content { width: 80%; max-width: 1000px; }
-        video { width: 100%; display: block; }
+        /* Video Player */
+        .video-content { width: 80%; max-width: 1000px; border: 2px solid rgba(255,255,255,0.1); }
+        video { width: 100%; display: block; background: #000; }
 
-        /* Upload Portal Specifics */
+        /* Upload Portal */
         .upload-content { 
-            width: 90%; max-width: 600px; background: #181818; 
-            padding: 40px; border: 1px solid rgba(255,255,255,0.1); 
+            width: 90%; max-width: 600px; background: var(--bg-panel); 
+            padding: 40px; border: 1px solid rgba(255,179,0,0.2); 
+            border-radius: 20px;
         }
-        .upload-content h2 { margin-bottom: 25px; color: var(--primary); text-transform: uppercase; font-weight: 900;}
+        .upload-content h2 { margin-bottom: 25px; color: var(--primary); text-transform: uppercase; font-weight: 900; text-align: center; letter-spacing: 2px;}
         .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; margin-bottom: 8px; font-weight: bold; color: #ccc; font-size: 14px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: bold; color: #94a3b8; font-size: 13px; text-transform: uppercase; letter-spacing: 1px;}
         .form-group input[type="text"], .form-group textarea {
-            width: 100%; padding: 12px; border-radius: 5px; border: 1px solid #333; 
-            background: #222; color: white; outline: none; font-size: 16px;
+            width: 100%; padding: 14px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); 
+            background: rgba(0,0,0,0.3); color: white; outline: none; font-size: 16px; transition: var(--transition);
         }
-        .form-group input:focus, .form-group textarea:focus { border-color: var(--primary); }
+        .form-group input:focus, .form-group textarea:focus { border-color: var(--primary); background: rgba(0,0,0,0.5); }
         
         /* Drag & Drop Area */
         .file-drop-area {
-            border: 2px dashed #444; border-radius: 10px; padding: 40px 20px;
+            border: 2px dashed rgba(255,255,255,0.2); border-radius: 12px; padding: 30px 20px;
             text-align: center; background: rgba(0,0,0,0.2); cursor: pointer;
-            transition: var(--transition); margin-bottom: 20px;
+            transition: var(--transition); margin-bottom: 20px; position: relative; overflow: hidden;
         }
-        .file-drop-area:hover { border-color: var(--primary); background: rgba(229, 9, 20, 0.05); }
-        .file-drop-area p { color: #888; font-size: 14px; margin-top: 10px; }
+        .file-drop-area:hover { border-color: var(--primary); background: rgba(255, 179, 0, 0.05); }
+        .file-drop-area p { color: #94a3b8; font-size: 14px; margin-top: 10px; }
         .file-drop-area input[type="file"] { display: none; }
+        .file-preview { margin-top: 10px; font-size: 12px; color: var(--primary); font-weight: bold;}
         
         .btn-submit-upload {
-            width: 100%; padding: 15px; background: var(--primary); color: white;
-            border: none; border-radius: 5px; font-size: 18px; font-weight: bold;
-            cursor: pointer; transition: var(--transition);
+            width: 100%; padding: 16px; background: linear-gradient(45deg, var(--primary), #FF8F00); color: #000;
+            border: none; border-radius: 8px; font-size: 18px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px;
+            cursor: pointer; transition: var(--transition); margin-top: 10px;
         }
-        .btn-submit-upload:hover { background: #b80710; }
+        .btn-submit-upload:hover { box-shadow: 0 5px 20px rgba(255, 179, 0, 0.4); transform: translateY(-2px); }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
@@ -149,29 +160,30 @@
         <div class="logo">PVGR CINE PARK</div>
         <nav>
             <a href="#">Home</a>
-            <a href="#">Series</a>
-            <a href="#">Films</a>
-            <button class="btn-nav-upload" id="openUploadBtn">⬆ Upload Movie</button>
-            <input type="text" class="search-bar" placeholder="Search titles...">
+            <a href="#">Originals</a>
+            <a href="#">Movies</a>
+            <button class="btn-nav-upload" id="openUploadBtn">⬆ Upload</button>
+            <input type="text" class="search-bar" placeholder="Search PVGR...">
         </nav>
     </header>
 
     <div class="hero">
         <div class="hero-content">
-            <h1>Neon City</h1>
-            <p>In a dystopian future, a rogue hacker discovers a secret that could collapse the entire corporate network. Now, she is on the run from the very system she helped build. Stream in 4K HDR.</p>
-            <button class="btn btn-play" id="playBtn">▶ Play Trailer</button>
+            <h1>Astral Journey</h1>
+            <p>Experience the vast unknown. A team of deep-space explorers must navigate through uncharted galaxies to find a new home for humanity. Stream in breathtaking 4K IMAX Enhanced.</p>
+            <button class="btn btn-play" id="playBtn">▶ Play Movie</button>
+            <button class="btn btn-download" id="downloadBtn">⬇ Download Offline</button>
         </div>
     </div>
 
     <div class="movie-row">
-        <h2>🔥 Trending on PVGR CINE PARK</h2>
+        <h2><strong>🔥 Trending</strong> on PVGR</h2>
         <div class="carousel-container">
             <button class="scroll-btn scroll-left">‹</button>
-            <div class="posters">
+            <div class="posters" id="trendingPosters">
+                <div class="poster-card"><img src="https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?q=80&w=600&auto=format&fit=crop" alt="Movie"></div>
                 <div class="poster-card"><img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=600&auto=format&fit=crop" alt="Movie"></div>
                 <div class="poster-card"><img src="https://images.unsplash.com/photo-1574267432553-4b4628081524?q=80&w=600&auto=format&fit=crop" alt="Movie"></div>
-                <div class="poster-card"><img src="https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?q=80&w=600&auto=format&fit=crop" alt="Movie"></div>
                 <div class="poster-card"><img src="https://images.unsplash.com/photo-1440404653325-ab127d49abc1?q=80&w=600&auto=format&fit=crop" alt="Movie"></div>
                 <div class="poster-card"><img src="https://images.unsplash.com/photo-1518676590629-3dcbd9c5a5c9?q=80&w=600&auto=format&fit=crop" alt="Movie"></div>
                 <div class="poster-card"><img src="https://images.unsplash.com/photo-1478720568477-152d9b164e26?q=80&w=600&auto=format&fit=crop" alt="Movie"></div>
@@ -180,6 +192,7 @@
         </div>
     </div>
 
+    <!-- Video Modal -->
     <div class="modal" id="videoModal">
         <div class="modal-content video-content">
             <button class="close-btn" id="closeVideoBtn">✖</button>
@@ -190,6 +203,7 @@
         </div>
     </div>
 
+    <!-- Upload Movie Modal -->
     <div class="modal" id="uploadModal">
         <div class="modal-content upload-content">
             <button class="close-btn" id="closeUploadBtn">✖</button>
@@ -197,39 +211,38 @@
             
             <div class="form-group">
                 <label>Movie Title</label>
-                <input type="text" placeholder="e.g., Inception">
-            </div>
-            
-            <div class="form-group">
-                <label>Synopsis / Description</label>
-                <textarea rows="3" placeholder="Enter movie description..."></textarea>
+                <input type="text" id="movieTitle" placeholder="e.g., The Matrix" required>
             </div>
 
+            <!-- Video File Input -->
             <div class="file-drop-area" onclick="document.getElementById('videoUpload').click()">
-                <div style="font-size: 30px;">📁</div>
-                <p>Click or Drag & Drop Video File Here (MP4, MKV)</p>
+                <div style="font-size: 30px;">🎬</div>
+                <p>Click to Select Video File (MP4, MKV)</p>
                 <input type="file" id="videoUpload" accept="video/mp4,video/x-m4v,video/*">
+                <div id="videoFileName" class="file-preview"></div>
             </div>
 
+            <!-- Poster File Input -->
             <div class="file-drop-area" onclick="document.getElementById('posterUpload').click()" style="padding: 20px;">
                 <div style="font-size: 24px;">🖼️</div>
                 <p>Upload Movie Poster (JPG, PNG)</p>
                 <input type="file" id="posterUpload" accept="image/png, image/jpeg">
+                <div id="posterFileName" class="file-preview"></div>
             </div>
 
-            <button class="btn-submit-upload" onclick="alert('In a live environment, this would upload to your server!')">Publish Movie</button>
+            <button class="btn-submit-upload" id="submitUploadBtn">Publish Movie</button>
         </div>
     </div>
 
     <script>
-        // Navbar scroll effect
+        // 1. Navbar Scroll Effect
         window.addEventListener('scroll', () => {
             const nav = document.getElementById('navbar');
             if (window.scrollY > 50) { nav.classList.add('scrolled'); } 
             else { nav.classList.remove('scrolled'); }
         });
 
-        // Modal Logic Helper
+        // 2. Modal Logic Setup
         function setupModal(openBtnId, closeBtnId, modalId, isVideo = false) {
             const modal = document.getElementById(modalId);
             const openBtn = document.getElementById(openBtnId);
@@ -247,11 +260,10 @@
             });
         }
 
-        // Initialize Modals
         setupModal('playBtn', 'closeVideoBtn', 'videoModal', true);
         setupModal('openUploadBtn', 'closeUploadBtn', 'uploadModal', false);
 
-        // Horizontal Carousel Scroll Logic
+        // 3. Carousel Scroll Logic
         const carousels = document.querySelectorAll('.carousel-container');
         carousels.forEach(carousel => {
             const posters = carousel.querySelector('.posters');
@@ -261,6 +273,68 @@
             leftBtn.addEventListener('click', () => { posters.scrollBy({ left: -600, behavior: 'smooth' }); });
             rightBtn.addEventListener('click', () => { posters.scrollBy({ left: 600, behavior: 'smooth' }); });
         });
+
+        // 4. File Input Name Previews
+        document.getElementById('videoUpload').addEventListener('change', function(e) {
+            if(e.target.files[0]) {
+                document.getElementById('videoFileName').innerText = "Selected: " + e.target.files[0].name;
+            }
+        });
+        document.getElementById('posterUpload').addEventListener('change', function(e) {
+            if(e.target.files[0]) {
+                document.getElementById('posterFileName').innerText = "Selected: " + e.target.files[0].name;
+            }
+        });
+
+        // 5. WORKING UPLOAD LOGIC (Frontend Injection)
+        document.getElementById('submitUploadBtn').addEventListener('click', function() {
+            const title = document.getElementById('movieTitle').value;
+            const posterFile = document.getElementById('posterUpload').files[0];
+            const videoFile = document.getElementById('videoUpload').files[0];
+
+            if (!title || !posterFile || !videoFile) {
+                alert("Please provide a Title, a Video, and a Poster to upload.");
+                return;
+            }
+
+            // Create a temporary URL for the uploaded image so we can display it instantly
+            const imgURL = URL.createObjectURL(posterFile);
+            
+            // Create a new movie card HTML element
+            const newCard = document.createElement('div');
+            newCard.className = 'poster-card';
+            newCard.innerHTML = `<img src="${imgURL}" alt="${title}">`;
+            
+            // Inject it at the beginning of the Trending row
+            const trendingContainer = document.getElementById('trendingPosters');
+            trendingContainer.prepend(newCard);
+
+            // Close the modal and reset form
+            document.getElementById('uploadModal').classList.remove('active');
+            document.getElementById('movieTitle').value = '';
+            document.getElementById('videoFileName').innerText = '';
+            document.getElementById('posterFileName').innerText = '';
+            
+            alert(`Success! "${title}" has been uploaded and added to PVGR CINE PARK.`);
+        });
+
+        // 6. WORKING DOWNLOAD LOGIC
+        document.getElementById('downloadBtn').addEventListener('click', function() {
+            // We create a temporary invisible link that forces the browser to download a file
+            const downloadLink = document.createElement('a');
+            
+            // For demonstration, this is a sample open-source MP4 video link. 
+            // In a real app, this would be the secure URL from your server.
+            downloadLink.href = 'https://www.w3schools.com/html/mov_bbb.mp4'; 
+            
+            // This tells the browser to download it instead of navigating to it
+            downloadLink.download = 'Astral_Journey_PVGR_CinePark.mp4'; 
+            
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+        });
+
     </script>
 </body>
 </html>

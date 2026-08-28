@@ -1,307 +1,318 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PVGR CINE PARK - Ultimate</title>
+    <title>CineStream Pro - Download & Watch</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        neon: '#06b6d4', // Cyan-500
+                        neonHover: '#0891b2', // Cyan-600
+                        darkBg: '#0f172a', // Slate-900
+                        cardBg: '#1e293b', // Slate-800
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
-        /* Theme Variables */
-        :root {
-            --primary: #FFB300; 
-            --primary-hover: #FFA000;
-            --bg-dark: #050A15; 
-            --bg-panel: #0A1128;
-            --text-light: #E2E8F0;
-            --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        /* Custom CSS for Glowing Effects and Animations not natively handled by Tailwind utility classes */
+        body {
+            background-color: #0f172a;
+            color: #f8fafc;
         }
         
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: var(--bg-dark); color: var(--text-light); overflow-x: hidden; }
-
-        /* Navigation */
-        header { 
-            position: fixed; width: 100%; top: 0; z-index: 100;
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 20px 50px; background: rgba(5, 10, 21, 0.7); backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(255,179,0,0.1); transition: var(--transition);
+        .glow-text {
+            text-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
         }
-        header.scrolled { background: rgba(5, 10, 21, 0.95); padding: 15px 50px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
-        .logo { font-size: 28px; font-weight: 900; color: var(--primary); letter-spacing: 3px; text-shadow: 0 2px 15px rgba(255, 179, 0, 0.4); text-transform: uppercase; }
-        nav { display: flex; gap: 25px; align-items: center; }
-        nav a { color: var(--text-light); text-decoration: none; font-weight: 500; font-size: 15px; text-transform: uppercase; letter-spacing: 1px; transition: var(--transition);}
-        nav a:hover { color: var(--primary); text-shadow: 0 0 10px rgba(255, 179, 0, 0.5); }
         
-        .btn-nav-upload {
-            background: linear-gradient(45deg, var(--primary), #FF8F00); color: #000; border: none; 
-            padding: 8px 18px; border-radius: 20px; font-weight: bold; cursor: pointer;
-            transition: var(--transition); box-shadow: 0 4px 15px rgba(255, 179, 0, 0.3);
+        .glow-button:hover {
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.6);
         }
-        .btn-nav-upload:hover { transform: scale(1.05); box-shadow: 0 6px 20px rgba(255, 179, 0, 0.5); }
 
-        /* Hero Section */
-        .hero { 
-            height: 90vh; background: linear-gradient(to right, rgba(5,10,21,0.95) 10%, rgba(5,10,21,0.5) 50%, transparent), 
-            url('https://images.unsplash.com/photo-1618336753974-aae8e04506aa?q=80&w=1920&auto=format&fit=crop') center/cover; 
-            display: flex; align-items: center; padding: 0 50px; position: relative;
+        .movie-card {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
         }
-        .hero::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 150px; background: linear-gradient(to top, var(--bg-dark), transparent); }
-        .hero-content { max-width: 700px; z-index: 10; animation: fadeIn 1s ease; }
-        .hero h1 { font-size: 4.5rem; margin-bottom: 15px; text-transform: uppercase; font-weight: 900; color: white; text-shadow: 0 5px 20px rgba(0,0,0,0.8); }
-        .hero p { font-size: 1.2rem; line-height: 1.6; margin-bottom: 35px; color: #cbd5e1; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
 
-        /* Buttons */
-        .btn { 
-            padding: 14px 35px; border: none; border-radius: 30px; font-size: 16px; 
-            cursor: pointer; font-weight: bold; margin-right: 15px; 
-            display: inline-flex; align-items: center; gap: 10px; transition: var(--transition); 
-            text-transform: uppercase; letter-spacing: 1px; text-decoration: none;
+        .movie-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
         }
-        .btn-play { background-color: var(--primary); color: #000; box-shadow: 0 5px 15px rgba(255, 179, 0, 0.4); }
-        .btn-play:hover { background-color: var(--primary-hover); transform: scale(1.05); box-shadow: 0 10px 25px rgba(255, 179, 0, 0.6); }
-        .btn-download-hero { background-color: rgba(255, 255, 255, 0.1); color: white; border: 1px solid rgba(255,255,255,0.3); backdrop-filter: blur(5px); }
-        .btn-download-hero:hover { background-color: rgba(255,255,255,0.2); transform: scale(1.05); border-color: white; color: white; }
 
-        /* Movie Rows */
-        .movie-row { padding: 20px 50px; position: relative; z-index: 10; margin-bottom: 40px; min-height: 200px; }
-        .movie-row h2 { margin-bottom: 20px; font-size: 1.5rem; color: var(--text-light); font-weight: 300; letter-spacing: 1px;}
-        .movie-row h2 strong { color: var(--primary); font-weight: 700; }
-        .posters { display: flex; gap: 20px; overflow-x: auto; padding: 20px 0; scrollbar-width: none; }
-        .posters::-webkit-scrollbar { display: none; }
-        
-        .poster-card { position: relative; transition: var(--transition); cursor: pointer; border-radius: 12px; flex-shrink: 0; }
-        .poster-card img { width: 220px; height: 330px; object-fit: cover; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.6); }
-        .poster-card:hover { transform: translateY(-10px) scale(1.05); z-index: 100; box-shadow: 0 20px 40px rgba(0,0,0,0.9); }
-        .poster-card:hover img { border: 2px solid var(--primary); }
-        .play-overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 3rem; color: white; opacity: 0; transition: var(--transition); text-shadow: 0 0 15px rgba(0,0,0,0.8);}
-        .poster-card:hover .play-overlay { opacity: 1; }
-        .movie-title-label { text-align: center; margin-top: 10px; font-weight: bold; font-size: 14px; color: #cbd5e1;}
-
-        /* Modals */
-        .modal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(2, 5, 12, 0.98); z-index: 999; justify-content: center; align-items: center;
-            opacity: 0; transition: opacity 0.3s ease; backdrop-filter: blur(10px);
+        /* Toast Notification Animation */
+        @keyframes slideInUp {
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
-        .modal.active { display: flex; opacity: 1; }
-        .modal-content { position: relative; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 50px rgba(0,0,0,0.8); }
-        .close-btn { position: absolute; top: 15px; right: 20px; color: white; font-size: 24px; cursor: pointer; background: rgba(0,0,0,0.5); border: none; z-index: 10; width: 40px; height: 40px; border-radius: 50%; transition: var(--transition);}
-        .close-btn:hover { color: var(--primary); background: white; transform: scale(1.1); }
-        
-        /* Dynamic Video Player */
-        .video-content { width: 90%; max-width: 1200px; background: #000; border: 1px solid rgba(255,179,0,0.2); }
-        .video-header { padding: 15px 20px; background: var(--bg-panel); display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1);}
-        .video-header h3 { color: var(--primary); font-size: 1.2rem; text-transform: uppercase; margin: 0; }
-        video { width: 100%; max-height: 75vh; display: block; outline: none; }
-        .btn-download-dynamic { background: transparent; color: white; border: 1px solid white; padding: 6px 15px; border-radius: 20px; cursor: pointer; font-weight: bold; transition: 0.2s; text-decoration: none; display: inline-block;}
-        .btn-download-dynamic:hover { background: white; color: black; }
-
-        /* Upload Portal */
-        .upload-content { width: 90%; max-width: 550px; background: var(--bg-panel); padding: 40px; border: 1px solid rgba(255,179,0,0.2); border-radius: 20px; }
-        .upload-content h2 { margin-bottom: 25px; color: var(--primary); text-transform: uppercase; font-weight: 900; text-align: center; }
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; margin-bottom: 8px; font-weight: bold; color: #94a3b8; font-size: 12px; text-transform: uppercase; }
-        .form-group input[type="text"] { width: 100%; padding: 14px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.3); color: white; outline: none; font-size: 16px; transition: var(--transition); }
-        .form-group input:focus { border-color: var(--primary); background: rgba(0,0,0,0.5); }
-        
-        .file-drop-area { border: 2px dashed rgba(255,255,255,0.2); border-radius: 12px; padding: 20px; text-align: center; background: rgba(0,0,0,0.2); cursor: pointer; transition: var(--transition); margin-bottom: 20px; }
-        .file-drop-area:hover { border-color: var(--primary); background: rgba(255, 179, 0, 0.05); }
-        .file-drop-area input[type="file"] { display: none; }
-        .file-preview { margin-top: 10px; font-size: 13px; color: var(--primary); font-weight: bold;}
-        
-        .btn-submit-upload { width: 100%; padding: 16px; background: linear-gradient(45deg, var(--primary), #FF8F00); color: #000; border: none; border-radius: 8px; font-size: 16px; font-weight: 900; text-transform: uppercase; cursor: pointer; transition: var(--transition); }
-        .btn-submit-upload:hover { box-shadow: 0 5px 20px rgba(255, 179, 0, 0.4); transform: translateY(-2px); }
-
-        /* Toast Notifications */
-        #toast-container { position: fixed; bottom: 30px; right: 30px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
-        .toast { background: var(--bg-panel); border-left: 4px solid var(--primary); color: white; padding: 15px 25px; border-radius: 4px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); font-weight: 500; opacity: 0; transform: translateX(50px); animation: slideIn 0.4s forwards; }
-        @keyframes slideIn { to { opacity: 1; transform: translateX(0); } }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+        .toast-enter { animation: slideInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .toast-exit { animation: fadeOut 0.4s ease forwards; }
     </style>
 </head>
-<body>
+<body class="antialiased font-sans flex flex-col min-h-screen">
 
-    <header id="navbar">
-        <div class="logo">PVGR CINE PARK</div>
-        <nav>
-            <a href="#">Home</a>
-            <a href="#">Movies</a>
-            <button class="btn-nav-upload" id="openUploadBtn">⬆ Upload Movie</button>
-        </nav>
-    </header>
+    <header class="sticky top-0 z-50 bg-darkBg/80 backdrop-blur-md border-b border-gray-800">
+        <div class="container mx-auto px-4 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <a href="#" class="text-2xl font-black text-neon tracking-tighter glow-text flex items-center gap-2">
+                    <i class="fa-solid fa-film"></i> CINESTREAM
+                </a>
 
-    <div class="hero">
-        <div class="hero-content">
-            <h1>Avengers: Endgame</h1>
-            <p>After the devastating events of Infinity War, the universe is in ruins. The remaining Avengers assemble once more in order to reverse Thanos' actions and restore balance to the universe.</p>
-            
-            <button class="btn btn-play" id="playEndgameBtn">▶ Play Movie</button>
-            
-            <a href="./avengersendgame.mkv" download="avengersendgame.mkv" class="btn btn-download-hero">
-                ⬇ Download MKV
-            </a>
-        </div>
-    </div>
+                <nav class="hidden md:flex items-center gap-8 font-semibold text-gray-300">
+                    <a href="#" class="hover:text-neon transition-colors">Home</a>
+                    <a href="#" class="hover:text-neon transition-colors">Action</a>
+                    <a href="#" class="hover:text-neon transition-colors">Comedy</a>
+                    <a href="#" class="hover:text-neon transition-colors">Drama</a>
+                    <a href="#" class="hover:text-neon transition-colors">Sci-Fi</a>
+                </nav>
 
-    <div class="movie-row">
-        <h2><strong>🎬 Your Movies</strong> (Click to Play)</h2>
-        <div class="posters" id="myMoviesGrid">
-            </div>
-    </div>
-
-    <div class="modal" id="videoModal">
-        <div class="modal-content video-content">
-            <div class="video-header">
-                <h3 id="playerTitle">Movie Title</h3>
-                <div style="display: flex; gap: 15px; align-items: center;">
-                    <a href="#" id="dynamicDownloadBtn" class="btn-download-dynamic" download>⬇ Download</a>
-                    <button class="close-btn" id="closeVideoBtn" style="position: relative; top: 0; right: 0;">✖</button>
+                <div class="relative hidden sm:block w-64">
+                    <input type="text" id="searchInput" placeholder="Search movies..." 
+                        class="w-full bg-slate-800 text-white border border-slate-700 rounded-full py-2 pl-10 pr-4 focus:outline-none focus:border-neon focus:ring-1 focus:ring-neon transition-all placeholder-gray-400">
+                    <i class="fa-solid fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
                 </div>
             </div>
-            <video id="moviePlayer" controls>
-                <source id="videoSource" src="" type="video/mp4">
-                Your browser does not support HTML5 video.
-            </video>
         </div>
-    </div>
+    </header>
 
-    <div class="modal" id="uploadModal">
-        <div class="modal-content upload-content">
-            <button class="close-btn" id="closeUploadBtn">✖</button>
-            <h2>Publish to PVGR</h2>
+    <section class="relative h-[70vh] flex items-center justify-center overflow-hidden">
+        <div class="absolute inset-0">
+            <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=1920&auto=format&fit=crop" alt="Hero Backdrop" class="w-full h-full object-cover object-center opacity-40">
+            <div class="absolute inset-0 bg-gradient-to-r from-darkBg via-darkBg/80 to-transparent"></div>
+            <div class="absolute inset-0 bg-gradient-to-t from-darkBg via-transparent to-transparent"></div>
+        </div>
+
+        <div class="container mx-auto px-4 lg:px-8 relative z-10">
+            <div class="max-w-2xl">
+                <span class="inline-block py-1 px-3 rounded-full bg-neon/20 text-neon text-xs font-bold tracking-widest uppercase mb-4 border border-neon/30">Featured Premiere</span>
+                <h1 class="text-5xl md:text-7xl font-black mb-4 leading-tight">NEBULA <br><span class="text-neon glow-text">RISING</span></h1>
+                <p class="text-lg text-gray-300 mb-8 line-clamp-3">
+                    When a rogue AI takes control of the galaxy's largest stardrive network, a crew of outlaws must navigate treacherous asteroid fields and corporate mercenaries to shut it down before humanity is locked out of the stars forever.
+                </p>
+                <div class="flex flex-wrap gap-4">
+                    <button class="bg-neon hover:bg-neonHover text-slate-900 font-bold py-3 px-8 rounded-full transition-all glow-button flex items-center gap-2">
+                        <i class="fa-solid fa-play"></i> Watch Trailer
+                    </button>
+                    <button onclick="triggerDownload('Nebula Rising')" class="bg-slate-800 hover:bg-slate-700 text-white border border-slate-600 font-bold py-3 px-8 rounded-full transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-download"></i> Download 4K
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <main class="flex-grow container mx-auto px-4 lg:px-8 py-12">
+        <div class="flex justify-between items-end mb-8">
+            <h2 class="text-3xl font-bold flex items-center gap-3">
+                <i class="fa-solid fa-fire text-neon"></i> Trending Now
+            </h2>
+        </div>
+
+        <div id="movieGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
             
-            <div class="form-group">
-                <label>Movie Title</label>
-                <input type="text" id="movieTitle" placeholder="e.g., The Matrix" required>
-            </div>
+            <article class="movie-card bg-cardBg rounded-xl overflow-hidden border border-slate-700 group relative">
+                <div class="relative aspect-[2/3] overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?q=80&w=600&auto=format&fit=crop" alt="Cyber City" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                    <div class="absolute top-2 right-2 bg-black/80 backdrop-blur-sm text-neon text-xs font-bold px-2 py-1 rounded border border-neon/30">
+                        <i class="fa-solid fa-star"></i> 8.9
+                    </div>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-bold text-lg mb-1 truncate movie-title">Cyber City</h3>
+                    <div class="flex justify-between items-center text-xs text-gray-400 mb-4">
+                        <span>2025</span>
+                        <span class="bg-slate-700 px-2 py-1 rounded">Sci-Fi</span>
+                    </div>
+                    <button onclick="triggerDownload('Cyber City')" class="w-full bg-slate-700 hover:bg-neon hover:text-slate-900 text-white py-2 rounded font-semibold transition-colors flex justify-center items-center gap-2 glow-button">
+                        <i class="fa-solid fa-download"></i> Download
+                    </button>
+                </div>
+            </article>
 
-            <div class="file-drop-area" onclick="document.getElementById('videoUpload').click()">
-                <div style="font-size: 24px;">🎬 Select Video (MP4, MKV)</div>
-                <input type="file" id="videoUpload" accept="video/mp4,video/x-m4v,video/x-matroska,video/*">
-                <div id="videoFileName" class="file-preview"></div>
-            </div>
+            <article class="movie-card bg-cardBg rounded-xl overflow-hidden border border-slate-700 group relative">
+                <div class="relative aspect-[2/3] overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=600&auto=format&fit=crop" alt="The Last Stand" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                    <div class="absolute top-2 right-2 bg-black/80 text-neon text-xs font-bold px-2 py-1 rounded border border-neon/30">
+                        <i class="fa-solid fa-star"></i> 7.4
+                    </div>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-bold text-lg mb-1 truncate movie-title">The Last Stand</h3>
+                    <div class="flex justify-between items-center text-xs text-gray-400 mb-4">
+                        <span>2024</span>
+                        <span class="bg-slate-700 px-2 py-1 rounded">Action</span>
+                    </div>
+                    <button onclick="triggerDownload('The Last Stand')" class="w-full bg-slate-700 hover:bg-neon hover:text-slate-900 text-white py-2 rounded font-semibold transition-colors flex justify-center items-center gap-2 glow-button">
+                        <i class="fa-solid fa-download"></i> Download
+                    </button>
+                </div>
+            </article>
 
-            <div class="file-drop-area" onclick="document.getElementById('posterUpload').click()">
-                <div style="font-size: 24px;">🖼️ Select Poster (JPG, PNG)</div>
-                <input type="file" id="posterUpload" accept="image/png, image/jpeg">
-                <div id="posterFileName" class="file-preview"></div>
-            </div>
+            <article class="movie-card bg-cardBg rounded-xl overflow-hidden border border-slate-700 group relative">
+                <div class="relative aspect-[2/3] overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1574267432553-4b4628081524?q=80&w=600&auto=format&fit=crop" alt="Laugh Track" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                    <div class="absolute top-2 right-2 bg-black/80 text-neon text-xs font-bold px-2 py-1 rounded border border-neon/30">
+                        <i class="fa-solid fa-star"></i> 6.8
+                    </div>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-bold text-lg mb-1 truncate movie-title">Laugh Track</h3>
+                    <div class="flex justify-between items-center text-xs text-gray-400 mb-4">
+                        <span>2026</span>
+                        <span class="bg-slate-700 px-2 py-1 rounded">Comedy</span>
+                    </div>
+                    <button onclick="triggerDownload('Laugh Track')" class="w-full bg-slate-700 hover:bg-neon hover:text-slate-900 text-white py-2 rounded font-semibold transition-colors flex justify-center items-center gap-2 glow-button">
+                        <i class="fa-solid fa-download"></i> Download
+                    </button>
+                </div>
+            </article>
 
-            <button class="btn-submit-upload" id="submitUploadBtn">Upload & Process</button>
+            <article class="movie-card bg-cardBg rounded-xl overflow-hidden border border-slate-700 group relative">
+                <div class="relative aspect-[2/3] overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1440404653325-ab127d49abc1?q=80&w=600&auto=format&fit=crop" alt="Midnight Shadows" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                    <div class="absolute top-2 right-2 bg-black/80 text-neon text-xs font-bold px-2 py-1 rounded border border-neon/30">
+                        <i class="fa-solid fa-star"></i> 9.1
+                    </div>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-bold text-lg mb-1 truncate movie-title">Midnight Shadows</h3>
+                    <div class="flex justify-between items-center text-xs text-gray-400 mb-4">
+                        <span>2023</span>
+                        <span class="bg-slate-700 px-2 py-1 rounded">Drama</span>
+                    </div>
+                    <button onclick="triggerDownload('Midnight Shadows')" class="w-full bg-slate-700 hover:bg-neon hover:text-slate-900 text-white py-2 rounded font-semibold transition-colors flex justify-center items-center gap-2 glow-button">
+                        <i class="fa-solid fa-download"></i> Download
+                    </button>
+                </div>
+            </article>
+
+            <article class="movie-card bg-cardBg rounded-xl overflow-hidden border border-slate-700 group relative">
+                <div class="relative aspect-[2/3] overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1518676590629-3dcbd9c5a5c9?q=80&w=600&auto=format&fit=crop" alt="Cosmic Voyage" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                    <div class="absolute top-2 right-2 bg-black/80 text-neon text-xs font-bold px-2 py-1 rounded border border-neon/30">
+                        <i class="fa-solid fa-star"></i> 8.5
+                    </div>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-bold text-lg mb-1 truncate movie-title">Cosmic Voyage</h3>
+                    <div class="flex justify-between items-center text-xs text-gray-400 mb-4">
+                        <span>2025</span>
+                        <span class="bg-slate-700 px-2 py-1 rounded">Sci-Fi</span>
+                    </div>
+                    <button onclick="triggerDownload('Cosmic Voyage')" class="w-full bg-slate-700 hover:bg-neon hover:text-slate-900 text-white py-2 rounded font-semibold transition-colors flex justify-center items-center gap-2 glow-button">
+                        <i class="fa-solid fa-download"></i> Download
+                    </button>
+                </div>
+            </article>
+
         </div>
-    </div>
+        
+        <div id="noResults" class="hidden text-center py-20">
+            <i class="fa-regular fa-face-frown text-6xl text-gray-600 mb-4"></i>
+            <h3 class="text-2xl font-bold text-gray-400">No movies found</h3>
+            <p class="text-gray-500 mt-2">Try adjusting your search criteria.</p>
+        </div>
+    </main>
 
-    <div id="toast-container"></div>
+    <footer class="bg-darkBg border-t border-gray-800 py-10 mt-auto">
+        <div class="container mx-auto px-4 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="text-xl font-black text-white flex items-center gap-2">
+                <i class="fa-solid fa-film text-neon"></i> CINESTREAM
+            </div>
+            <div class="flex flex-wrap justify-center gap-6 text-sm text-gray-400 font-medium">
+                <a href="#" class="hover:text-neon transition-colors">Privacy Policy</a>
+                <a href="#" class="hover:text-neon transition-colors">Terms of Service</a>
+                <a href="#" class="hover:text-neon transition-colors">DMCA Disclaimer</a>
+                <a href="#" class="hover:text-neon transition-colors">Contact Us</a>
+            </div>
+            <p class="text-sm text-gray-500">
+                &copy; 2026 CineStream Pro. All rights reserved.
+            </p>
+        </div>
+    </footer>
+
+    <div id="toastContainer" class="fixed bottom-6 right-6 z-[100] flex flex-col gap-3 pointer-events-none"></div>
 
     <script>
-        // --- 1. UI Interactions ---
-        window.addEventListener('scroll', () => {
-            const nav = document.getElementById('navbar');
-            if (window.scrollY > 50) nav.classList.add('scrolled');
-            else nav.classList.remove('scrolled');
-        });
+        // Search Filter Functionality
+        const searchInput = document.getElementById('searchInput');
+        const movieCards = document.querySelectorAll('.movie-card');
+        const noResults = document.getElementById('noResults');
 
-        // Toast Notification System
-        function showToast(message) {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            toast.className = 'toast';
-            toast.innerText = message;
-            container.appendChild(toast);
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                setTimeout(() => toast.remove(), 300);
-            }, 3000);
-        }
+        searchInput.addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase().trim();
+            let visibleCount = 0;
 
-        // --- 2. Modals Setup ---
-        const uploadModal = document.getElementById('uploadModal');
-        document.getElementById('openUploadBtn').addEventListener('click', () => uploadModal.classList.add('active'));
-        document.getElementById('closeUploadBtn').addEventListener('click', () => uploadModal.classList.remove('active'));
-
-        const videoModal = document.getElementById('videoModal');
-        const videoPlayer = document.getElementById('moviePlayer');
-        document.getElementById('closeVideoBtn').addEventListener('click', () => {
-            videoModal.classList.remove('active');
-            videoPlayer.pause();
-            videoPlayer.src = ""; // Clear memory when closed
-        });
-
-        // --- 3. Hardcoded Avengers logic ---
-        document.getElementById('playEndgameBtn').addEventListener('click', () => {
-            document.getElementById('playerTitle').innerText = "Avengers: Endgame";
-            
-            // Connects to the local file
-            videoPlayer.src = "./avengersendgame.mkv"; 
-            
-            const downloadBtn = document.getElementById('dynamicDownloadBtn');
-            downloadBtn.href = "./avengersendgame.mkv";
-            downloadBtn.download = "avengersendgame.mkv";
-            
-            videoModal.classList.add('active');
-            videoPlayer.play();
-        });
-
-        // --- 4. File Previews for Upload ---
-        document.getElementById('videoUpload').addEventListener('change', e => {
-            if(e.target.files[0]) document.getElementById('videoFileName').innerText = e.target.files[0].name;
-        });
-        document.getElementById('posterUpload').addEventListener('change', e => {
-            if(e.target.files[0]) document.getElementById('posterFileName').innerText = e.target.files[0].name;
-        });
-
-        // --- 5. THE ENGINE: Upload, Play, and Download Logic ---
-        document.getElementById('submitUploadBtn').addEventListener('click', function() {
-            const title = document.getElementById('movieTitle').value.trim();
-            const videoFile = document.getElementById('videoUpload').files[0];
-            const posterFile = document.getElementById('posterUpload').files[0];
-
-            if (!title || !videoFile || !posterFile) {
-                showToast("⚠️ Please provide a Title, Video, and Poster.");
-                return;
-            }
-
-            showToast("⏳ Processing video. Please wait...");
-
-            // Generate Object URLs (Temporary Browser Hosting)
-            const videoURL = URL.createObjectURL(videoFile);
-            const posterURL = URL.createObjectURL(posterFile);
-
-            // Create the Movie Card
-            const card = document.createElement('div');
-            card.className = 'poster-card';
-            card.innerHTML = `
-                <img src="${posterURL}" alt="${title}">
-                <div class="play-overlay">▶</div>
-                <div class="movie-title-label">${title}</div>
-            `;
-
-            // Attach PLAY and DOWNLOAD Logic to this specific card
-            card.addEventListener('click', () => {
-                document.getElementById('playerTitle').innerText = title;
-                videoPlayer.src = videoURL;
+            movieCards.forEach(card => {
+                // Find the h3 tag inside the card that holds the title
+                const title = card.querySelector('.movie-title').textContent.toLowerCase();
                 
-                const downloadBtn = document.getElementById('dynamicDownloadBtn');
-                downloadBtn.href = videoURL;
-                // Give the downloaded file a clean name based on what they typed
-                downloadBtn.download = `${title.replace(/\s+/g, '_')}_PVGR.mp4`; 
-
-                videoModal.classList.add('active');
-                videoPlayer.play();
+                if (title.includes(searchTerm)) {
+                    card.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
             });
 
-            // Inject into the DOM
-            document.getElementById('myMoviesGrid').prepend(card);
-
-            // Cleanup Form
-            uploadModal.classList.remove('active');
-            document.getElementById('movieTitle').value = '';
-            document.getElementById('videoUpload').value = '';
-            document.getElementById('posterUpload').value = '';
-            document.getElementById('videoFileName').innerText = '';
-            document.getElementById('posterFileName').innerText = '';
-            
-            setTimeout(() => showToast(`✅ "${title}" is ready to stream and download!`), 500);
+            // Toggle "No Results" message
+            if (visibleCount === 0) {
+                noResults.classList.remove('hidden');
+            } else {
+                noResults.classList.add('hidden');
+            }
         });
+
+        // Download Notification (Toast) System
+        function triggerDownload(movieName) {
+            const container = document.getElementById('toastContainer');
+            
+            // Create toast element
+            const toast = document.createElement('div');
+            toast.className = 'toast-enter bg-slate-800 border-l-4 border-neon text-white px-6 py-4 rounded shadow-2xl flex items-center gap-4 pointer-events-auto min-w-[300px]';
+            
+            // Inner HTML of toast
+            toast.innerHTML = `
+                <div class="bg-neon/20 p-2 rounded-full text-neon">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
+                <div>
+                    <h4 class="font-bold text-sm">Download Started</h4>
+                    <p class="text-xs text-gray-300 mt-1">Preparing secure link for <span class="text-neon font-semibold">${movieName}</span>...</p>
+                </div>
+            `;
+            
+            // Add to container
+            container.appendChild(toast);
+            
+            // Remove toast after 4 seconds
+            setTimeout(() => {
+                toast.classList.remove('toast-enter');
+                toast.classList.add('toast-exit');
+                
+                // Wait for exit animation to finish before removing from DOM
+                setTimeout(() => {
+                    toast.remove();
+                }, 400);
+            }, 4000);
+        }
     </script>
 </body>
 </html>

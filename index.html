@@ -131,7 +131,7 @@
     .view-panel { display: none; }
     .view-panel.active { display: block; }
 
-    /* Long Inputs for Mobile */
+    /* Form Styles */
     .form-card {
       background: var(--card);
       border: 1px solid var(--border);
@@ -183,6 +183,25 @@
     input:focus, select:focus, textarea:focus {
       border-color: #000000;
       box-shadow: 0 0 0 2px rgba(0,0,0,0.05);
+    }
+
+    /* Photo Upload Box */
+    .upload-box {
+      border: 2px dashed #cbd5e1;
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+      background: #f8fafc;
+      cursor: pointer;
+    }
+    .preview-thumb {
+      width: 100%;
+      max-height: 140px;
+      object-fit: cover;
+      border-radius: 6px;
+      margin-top: 8px;
+      display: none;
+      border: 1px solid #cbd5e1;
     }
 
     .submit-btn {
@@ -246,6 +265,15 @@
       color: #0f172a;
     }
 
+    .card-photo-banner {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+      cursor: pointer;
+    }
+
     .item-desc {
       font-size: 13px;
       color: #334155;
@@ -298,9 +326,7 @@
       white-space: nowrap;
     }
 
-    .po-save-btn:active {
-      background: #333333;
-    }
+    .po-save-btn:active { background: #333333; }
 
     .meta-pills {
       display: flex;
@@ -391,6 +417,23 @@
       border-radius: 10px;
       margin-left: 4px;
     }
+
+    /* Fullscreen Image Lightbox Modal */
+    .lightbox {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.9);
+      z-index: 999;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    .lightbox img {
+      max-width: 100%;
+      max-height: 90%;
+      border-radius: 8px;
+    }
   </style>
 </head>
 <body>
@@ -449,8 +492,8 @@
 
           <div class="field-row">
             <div class="field">
-              <label>DC / Invoice #</label>
-              <input type="text" id="dcNo" placeholder="DC-8891" autocapitalize="characters" required>
+              <label>Style Number</label>
+              <input type="text" id="styleNo" placeholder="E.G. MG-DENIM-09" autocapitalize="characters" required>
             </div>
             <div class="field">
               <label>PO Number (Editable Later)</label>
@@ -458,9 +501,30 @@
             </div>
           </div>
 
+          <div class="field-row">
+            <div class="field">
+              <label>DC / Invoice #</label>
+              <input type="text" id="dcNo" placeholder="DC-8891" autocapitalize="characters" required>
+            </div>
+            <div class="field">
+              <label>Fabric / Clothes Colour</label>
+              <input type="text" id="color" placeholder="E.G. NAVY BLUE / OLIVE" autocapitalize="characters" required>
+            </div>
+          </div>
+
           <div class="field">
-            <label>Fabric Style & Construction</label>
-            <input type="text" id="itemName" placeholder="E.G. 100% COTTON 30S SINGLE JERSEY" autocapitalize="characters" required>
+            <label>Fabric Construction & Style Details</label>
+            <input type="text" id="itemName" placeholder="E.G. 100% COTTON 30S SINGLE JERSEY 160 GSM" autocapitalize="characters" required>
+          </div>
+
+          <!-- Photo Upload / Camera Snap -->
+          <div class="field">
+            <label>Snap / Upload Fabric & Style Photo</label>
+            <div class="upload-box" onclick="document.getElementById('photoInput').click()">
+              <span id="uploadPrompt" style="font-size: 13px; font-weight:700; color: #475569;">📷 TAP TO SNAP OR PICK SWATCH PHOTO</span>
+              <input type="file" id="photoInput" accept="image/*" capture="environment" style="display: none;" onchange="handleImage(this)">
+              <img id="formImgPreview" class="preview-thumb">
+            </div>
           </div>
 
           <div class="field-row">
@@ -505,10 +569,10 @@
       </div>
     </div>
 
-    <!-- View 2: Notebook Register View with Editable PO -->
+    <!-- View 2: Notebook Register View with Editable PO & Photos -->
     <div class="view-panel" id="registerView">
       <div class="search-bar">
-        <input type="text" id="searchBox" placeholder="🔎 SEARCH MILL, DC, PO..." autocapitalize="characters" onkeyup="renderCards()">
+        <input type="text" id="searchBox" placeholder="🔎 SEARCH STYLE #, COLOR, MILL, PO..." autocapitalize="characters" onkeyup="renderCards()">
       </div>
       <div id="cardsList"></div>
     </div>
@@ -525,7 +589,61 @@
   </nav>
 </div>
 
+<!-- Modal Lightbox for Fullscreen Image View -->
+<div class="lightbox" id="imgModal" onclick="this.style.display='none'">
+  <img id="modalImg" src="">
+</div>
+
 <script>
+  let currentCompressedImage = "";
+
+  // Handle Image Upload & Client-side Compression
+  function handleImage(input) {
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+      const reader = new FileReader();
+      
+      reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          
+          // Max dimension 800px to ensure tiny storage footprint
+          const maxDim = 800;
+          let width = img.width;
+          let height = img.height;
+          
+          if (width > height && width > maxDim) {
+            height *= maxDim / width;
+            width = maxDim;
+          } else if (height > maxDim) {
+            width *= maxDim / height;
+            height = maxDim;
+          }
+          
+          canvas.width = width;
+          canvas.height = height;
+          ctx.drawImage(img, 0, 0, width, height);
+          
+          // Compress to JPEG format (0.7 quality)
+          currentCompressedImage = canvas.toDataURL('image/jpeg', 0.7);
+          const preview = document.getElementById('formImgPreview');
+          preview.src = currentCompressedImage;
+          preview.style.display = 'block';
+          document.getElementById('uploadPrompt').innerText = "✓ PHOTO LOADED (TAP TO REPLACE)";
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  function openLightbox(src) {
+    document.getElementById('modalImg').src = src;
+    document.getElementById('imgModal').style.display = 'flex';
+  }
+
   // Enforce Caps Lock globally on all text inputs
   document.addEventListener('input', function(e) {
     if (e.target && (e.target.tagName === 'INPUT' && e.target.type === 'text' || e.target.tagName === 'TEXTAREA')) {
@@ -621,21 +739,24 @@
     }
   }
 
-  const STORAGE_KEY = 'MAGNUM_SKL_MOBILE_GRN';
+  const STORAGE_KEY = 'MAGNUM_SKL_MOBILE_GRN_V2';
   let logs = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [
     {
       grn: "MC-SKL-001",
       time: "2026-09-09 11:30",
       vendor: "VARDHMAN TEXTILES LTD",
+      styleNo: "MG-DENIM-01",
+      color: "NAVY BLUE",
       dcNo: "DC-7721",
       poNo: "PO-SKL-99",
-      item: "100% COTTON 30S SINGLE JERSEY NAVY MELANGE 160 GSM",
+      item: "100% COTTON 30S SINGLE JERSEY 160 GSM",
       packages: 32,
       challanQty: 1200,
       receivedQty: 1200,
       uom: "KGS",
       receiver: "MURUGAN",
-      remarks: "SHADE INSPECTION VERIFIED AND PASSED"
+      remarks: "SHADE INSPECTION VERIFIED",
+      photo: ""
     }
   ];
 
@@ -673,7 +794,7 @@
     container.innerHTML = '';
 
     logs.forEach((item, index) => {
-      const match = `${item.grn} ${item.vendor} ${item.dcNo} ${item.poNo} ${item.item}`.toUpperCase();
+      const match = `${item.grn} ${item.vendor} ${item.styleNo} ${item.color} ${item.dcNo} ${item.poNo} ${item.item}`.toUpperCase();
       if (!match.includes(filter)) return;
 
       const variance = Number(item.receivedQty) - Number(item.challanQty);
@@ -688,6 +809,16 @@
         </div>
 
         <div class="vendor-name">${item.vendor}</div>
+
+        ${item.photo ? `<img src="${item.photo}" class="card-photo-banner" onclick="openLightbox('${item.photo}')">` : ''}
+
+        <div class="meta-pills">
+          <span class="meta-pill" style="background:#000; color:#fff;">STYLE: ${item.styleNo}</span>
+          <span class="meta-pill" style="background:#e0f2fe; color:#0369a1;">COLOR: ${item.color}</span>
+          <span class="meta-pill">DC: ${item.dcNo}</span>
+          <span class="meta-pill">📦 ${item.packages} ROLLS</span>
+        </div>
+
         <div class="item-desc">${item.item}</div>
 
         <!-- Editable PO Bar -->
@@ -695,11 +826,6 @@
           <span class="po-label">PO #:</span>
           <input type="text" id="po-input-${index}" class="po-input-inline" value="${item.poNo || ''}" placeholder="ENTER / EDIT PO" autocapitalize="characters">
           <button type="button" id="po-btn-${index}" class="po-save-btn" onclick="updatePO(${index})">💾 SAVE PO</button>
-        </div>
-
-        <div class="meta-pills">
-          <span class="meta-pill">DC: ${item.dcNo}</span>
-          <span class="meta-pill">📦 ${item.packages} ROLLS</span>
         </div>
 
         <div class="qty-comparison">
@@ -739,6 +865,8 @@
       grn: grnId,
       time: document.getElementById('inTime').value.replace('T', ' '),
       vendor: document.getElementById('vendor').value.trim().toUpperCase(),
+      styleNo: document.getElementById('styleNo').value.trim().toUpperCase(),
+      color: document.getElementById('color').value.trim().toUpperCase(),
       dcNo: document.getElementById('dcNo').value.trim().toUpperCase(),
       poNo: document.getElementById('poNo').value.trim().toUpperCase() || 'PENDING',
       item: document.getElementById('itemName').value.trim().toUpperCase(),
@@ -747,12 +875,18 @@
       receivedQty: document.getElementById('receivedQty').value,
       uom: document.getElementById('uom').value,
       receiver: document.getElementById('receiver').value.trim().toUpperCase(),
-      remarks: document.getElementById('remarks').value.trim().toUpperCase()
+      remarks: document.getElementById('remarks').value.trim().toUpperCase(),
+      photo: currentCompressedImage
     };
 
     logs.unshift(entry);
     persist();
+    
+    // Reset Form
     this.reset();
+    currentCompressedImage = "";
+    document.getElementById('formImgPreview').style.display = 'none';
+    document.getElementById('uploadPrompt').innerText = "📷 TAP TO SNAP OR PICK SWATCH PHOTO";
     resetDate();
     switchTab('register');
   });
@@ -766,9 +900,9 @@
   }
 
   function exportToCSV() {
-    let csv = "GRN Ref,Date & Time,Vendor,DC No,PO No,Item,Packages,Challan Qty,Received Qty,UOM,Receiver,Remarks\n";
+    let csv = "GRN Ref,Date & Time,Vendor,Style No,Color,DC No,PO No,Item,Packages,Challan Qty,Received Qty,UOM,Receiver,Remarks\n";
     logs.forEach(e => {
-      csv += `"${e.grn}","${e.time}","${e.vendor}","${e.dcNo}","${e.poNo}","${e.item}",${e.packages},${e.challanQty},${e.receivedQty},"${e.uom}","${e.receiver}","${e.remarks || ''}"\n`;
+      csv += `"${e.grn}","${e.time}","${e.vendor}","${e.styleNo}","${e.color}","${e.dcNo}","${e.poNo}","${e.item}",${e.packages},${e.challanQty},${e.receivedQty},"${e.uom}","${e.receiver}","${e.remarks || ''}"\n`;
     });
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement("a");

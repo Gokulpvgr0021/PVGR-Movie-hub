@@ -1,378 +1,347 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CineVault - Movie Downloader</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Magnum Clothing - Inward Entry Register</title>
+  <style>
+    :root {
+      --primary: #1e3a8a;
+      --primary-hover: #172554;
+      --success: #166534;
+      --bg: #f1f5f9;
+      --card-bg: #ffffff;
+      --border: #cbd5e1;
+      --text: #0f172a;
+    }
 
-    <style>
-        /* CSS Reset & Variables */
-        :root {
-            --primary-color: #e50914;
-            --primary-hover: #b20710;
-            --bg-dark: #141414;
-            --bg-card: #1f1f1f;
-            --text-light: #ffffff;
-            --text-muted: #b3b3b3;
-            --transition: all 0.3s ease;
-        }
+    * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background: var(--bg); margin: 0; padding: 20px; color: var(--text); }
+    .wrapper { max-width: 1250px; margin: 0 auto; }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
+    /* Top Navigation Header */
+    .top-header {
+      background: var(--primary);
+      color: white;
+      padding: 16px 24px;
+      border-radius: 8px 8px 0 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .top-header h1 { margin: 0; font-size: 20px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .top-header span { font-size: 13px; opacity: 0.85; }
 
-        body {
-            background-color: var(--bg-dark);
-            color: var(--text-light);
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
+    .main-content {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-top: none;
+      padding: 24px;
+      border-radius: 0 0 8px 8px;
+    }
 
-        /* Header Section Styling */
-        header {
-            background: rgba(20, 20, 20, 0.95);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            border-bottom: 1px solid #282828;
-            padding: 15px 5%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+    /* Form Container */
+    .notebook-form {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 16px;
+      margin-bottom: 24px;
+    }
+    .form-title { font-weight: 700; color: var(--primary); margin-bottom: 12px; font-size: 14px; text-transform: uppercase; }
+    .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    .field { display: flex; flex-direction: column; }
+    label { font-size: 11px; font-weight: 700; color: #475569; margin-bottom: 4px; text-transform: uppercase; }
+    input, select {
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-size: 13px;
+    }
+    input:focus, select:focus { outline: none; border-color: var(--primary); }
 
-        .site-title {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--primary-color);
-            letter-spacing: 1px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+    .btn-bar { display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px; }
+    .btn {
+      padding: 9px 16px;
+      border: none;
+      border-radius: 4px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-primary { background: var(--primary); color: white; }
+    .btn-primary:hover { background: var(--primary-hover); }
+    .btn-secondary { background: #e2e8f0; color: #334155; }
+    .btn-success { background: var(--success); color: white; }
 
-        /* Navigation Bar Styling */
-        nav ul {
-            display: flex;
-            list-style: none;
-            gap: 25px;
-        }
+    /* Notebook Register Table */
+    .register-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .search-input { width: 280px; }
 
-        nav ul li a {
-            color: var(--text-muted);
-            text-decoration: none;
-            font-weight: 500;
-            transition: var(--transition);
-        }
+    .table-container { overflow-x: auto; border: 1px solid var(--border); border-radius: 4px; }
+    table { width: 100%; border-collapse: collapse; font-size: 12px; text-align: left; }
+    th { background: #f1f5f9; padding: 10px 8px; border-bottom: 2px solid var(--border); color: #334155; white-space: nowrap; }
+    td { padding: 8px; border-bottom: 1px solid #e2e8f0; vertical-align: middle; white-space: nowrap; }
+    tr:hover { background: #f8fafc; }
 
-        nav ul li a:hover, nav ul li a.active {
-            color: var(--text-light);
-        }
+    .status-badge {
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-weight: bold;
+      font-size: 10px;
+      text-transform: uppercase;
+    }
+    .status-ok { background: #dcfce7; color: #15803d; }
+    .status-short { background: #fee2e2; color: #b91c1c; }
 
-        /* Main Content Area */
-        main {
-            flex: 1;
-            padding: 40px 5%;
-        }
-
-        .section-heading {
-            font-size: 1.5rem;
-            margin-bottom: 25px;
-            font-weight: 600;
-            border-left: 4px solid var(--primary-color);
-            padding-left: 12px;
-        }
-
-        /* Movie Grid Layout */
-        .movie-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 30px;
-        }
-
-        /* Movie Card Styling */
-        .movie-card {
-            background-color: var(--bg-card);
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-            transition: var(--transition);
-            display: flex;
-            flex-direction: column;
-        }
-
-        .movie-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 10px 25px rgba(229, 9, 20, 0.2);
-        }
-
-        .thumbnail-container {
-            position: relative;
-            width: 100%;
-            height: 380px;
-            overflow: hidden;
-        }
-
-        .movie-thumbnail {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: var(--transition);
-        }
-
-        .movie-card:hover .movie-thumbnail {
-            transform: scale(1.05);
-        }
-
-        .movie-badge {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: rgba(0,0,0,0.7);
-            color: var(--primary-color);
-            padding: 4px 8px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            border-radius: 4px;
-        }
-
-        .movie-info {
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            flex: 1;
-        }
-
-        .movie-title {
-            font-size: 1.15rem;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: var(--text-light);
-        }
-
-        .movie-description {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            line-height: 1.5;
-            margin-bottom: 20px;
-            flex: 1;
-        }
-
-        /* Download Button Styling */
-        .download-btn {
-            background-color: var(--primary-color);
-            color: var(--text-light);
-            border: none;
-            padding: 10px 15px;
-            border-radius: 5px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: var(--transition);
-            text-decoration: none;
-            text-align: center;
-        }
-
-        .download-btn:hover {
-            background-color: var(--primary-hover);
-        }
-
-        /* Footer Section Styling */
-        footer {
-            background-color: #0b0b0b;
-            border-top: 1px solid #282828;
-            padding: 30px 5%;
-            text-align: center;
-            color: var(--text-muted);
-            font-size: 0.85rem;
-        }
-
-        .footer-links {
-            margin-bottom: 15px;
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-        }
-
-        .footer-links a {
-            color: var(--text-muted);
-            text-decoration: none;
-            transition: var(--transition);
-        }
-
-        .footer-links a:hover {
-            color: var(--text-light);
-        }
-
-        /* Toast Alert Container */
-        #toast-container {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 1000;
-        }
-
-        .toast {
-            background: #222;
-            color: #fff;
-            padding: 12px 20px;
-            border-left: 4px solid var(--primary-color);
-            border-radius: 4px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.4);
-            margin-top: 10px;
-            font-size: 0.9rem;
-            opacity: 0;
-            transform: translateX(50px);
-            animation: slideIn 0.3s forwards;
-        }
-
-        @keyframes slideIn {
-            to { opacity: 1; transform: translateX(0); }
-        }
-
-        /* Responsive Design for Mobile Devices */
-        @media (max-width: 768px) {
-            header {
-                flex-direction: column;
-                gap: 15px;
-            }
-            nav ul {
-                gap: 15px;
-            }
-            .movie-grid {
-                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            }
-        }
-    </style>
+    @media print {
+      body { background: white; padding: 0; }
+      .notebook-form, .btn-bar, .search-input, .no-print { display: none !important; }
+      .main-content { border: none; padding: 0; }
+    }
+  </style>
 </head>
 <body>
 
-    <header>
-        <div class="site-title">
-            <i class="fa-solid fa-film"></i> CineVault
+<div class="wrapper">
+  <div class="top-header">
+    <div>
+      <h1>MAGNUM CLOTHING</h1>
+      <span>Security Gate & Store Inward Entry Notebook</span>
+    </div>
+    <div style="text-align: right;">
+      <span id="liveClock"></span>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <!-- Entry Form -->
+    <div class="notebook-form no-print">
+      <div class="form-title">+ New Material Inward Entry (GRN)</div>
+      <form id="entryForm">
+        <div class="grid">
+          <div class="field">
+            <label>Entry Date & Time</label>
+            <input type="datetime-local" id="inTime" required>
+          </div>
+          <div class="field">
+            <label>Vendor / Supplier</label>
+            <input type="text" id="vendor" placeholder="e.g. Vardhman Textiles" required>
+          </div>
+          <div class="field">
+            <label>DC / Invoice No.</label>
+            <input type="text" id="dcNo" placeholder="e.g. DC-9842" required>
+          </div>
+          <div class="field">
+            <label>PO Reference</label>
+            <input type="text" id="poNo" placeholder="e.g. PO-2026-104" required>
+          </div>
+          <div class="field">
+            <label>Item / Fabric / Trim</label>
+            <input type="text" id="itemName" placeholder="e.g. Cotton Twill Fabric" required>
+          </div>
+          <div class="field">
+            <label>No. of Rolls / Cartons</label>
+            <input type="number" id="packages" placeholder="e.g. 15" required>
+          </div>
+          <div class="field">
+            <label>Challan Qty</label>
+            <input type="number" id="challanQty" step="any" placeholder="Dispatched Qty" required>
+          </div>
+          <div class="field">
+            <label>Received Qty</label>
+            <input type="number" id="receivedQty" step="any" placeholder="Counted Qty" required>
+          </div>
+          <div class="field">
+            <label>Unit (UOM)</label>
+            <select id="uom">
+              <option value="Meters">Meters</option>
+              <option value="Pieces">Pieces</option>
+              <option value="Kgs">Kgs</option>
+              <option value="Cones">Cones</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Vehicle No.</label>
+            <input type="text" id="vehicleNo" placeholder="e.g. TN-09-AX-5544" required>
+          </div>
+          <div class="field">
+            <label>Receiver / Gatekeeper</label>
+            <input type="text" id="receiver" placeholder="Your Name" required>
+          </div>
+          <div class="field">
+            <label>Remarks / Quality Check</label>
+            <input type="text" id="remarks" placeholder="Roll condition, seal intact, etc.">
+          </div>
         </div>
-        <nav>
-            <ul>
-                <li><a href="#" class="active">Home</a></li>
-                <li><a href="#">Action</a></li>
-                <li><a href="#">Comedy</a></li>
-                <li><a href="#">Drama</a></li>
-                <li><a href="#">Sci-Fi</a></li>
-            </ul>
-        </nav>
-    </header>
-
-    <main>
-        <h2 class="section-heading">Available Downloads</h2>
-
-        <div class="movie-grid">
-            <div class="movie-card">
-                <div class="thumbnail-container">
-                    <span class="movie-badge">1080p BluRay</span>
-                    <img src="https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?q=80&w=500&auto=format&fit=crop" alt="Cyber City Poster" class="movie-thumbnail">
-                </div>
-                <div class="movie-info">
-                    <h3 class="movie-title">Cyber City</h3>
-                    <p class="movie-description">In a dystopian neon-lit metropolis, a rogue hacker fights against corporate network tyranny.</p>
-                    <button class="download-btn" onclick="startDownload('Cyber City')">
-                        <i class="fa-solid fa-download"></i> Download Movie
-                    </button>
-                </div>
-            </div>
-
-            <div class="movie-card">
-                <div class="thumbnail-container">
-                    <span class="movie-badge">4K Ultra HD</span>
-                    <img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=500&auto=format&fit=crop" alt="The Last Stand Poster" class="movie-thumbnail">
-                </div>
-                <div class="movie-info">
-                    <h3 class="movie-title">The Last Stand</h3>
-                    <p class="movie-description">A former tactical agent takes on an impossible mission to safeguard humanity's final outpost.</p>
-                    <button class="download-btn" onclick="startDownload('The Last Stand')">
-                        <i class="fa-solid fa-download"></i> Download Movie
-                    </button>
-                </div>
-            </div>
-
-            <div class="movie-card">
-                <div class="thumbnail-container">
-                    <span class="movie-badge">1080p HD</span>
-                    <img src="https://images.unsplash.com/photo-1574267432553-4b4628081524?q=80&w=500&auto=format&fit=crop" alt="Laugh Track Poster" class="movie-thumbnail">
-                </div>
-                <div class="movie-info">
-                    <h3 class="movie-title">Laugh Track</h3>
-                    <p class="movie-description">An unexpected road trip forces two estranged siblings to confront their chaotic childhood.</p>
-                    <button class="download-btn" onclick="startDownload('Laugh Track')">
-                        <i class="fa-solid fa-download"></i> Download Movie
-                    </button>
-                </div>
-            </div>
-
-            <div class="movie-card">
-                <div class="thumbnail-container">
-                    <span class="movie-badge">1080p BluRay</span>
-                    <img src="https://images.unsplash.com/photo-1440404653325-ab127d49abc1?q=80&w=500&auto=format&fit=crop" alt="Midnight Shadows Poster" class="movie-thumbnail">
-                </div>
-                <div class="movie-info">
-                    <h3 class="movie-title">Midnight Shadows</h3>
-                    <p class="movie-description">A gripping investigative thriller uncovering deep secrets buried inside a coastal town.</p>
-                    <button class="download-btn" onclick="startDownload('Midnight Shadows')">
-                        <i class="fa-solid fa-download"></i> Download Movie
-                    </button>
-                </div>
-            </div>
+        <div class="btn-bar">
+          <button type="reset" class="btn btn-secondary">Clear</button>
+          <button type="submit" class="btn btn-primary">Log Inward Entry</button>
         </div>
-    </main>
+      </form>
+    </div>
 
-    <footer>
-        <div class="footer-links">
-            <a href="#">Terms of Service</a>
-            <a href="#">Privacy Policy</a>
-            <a href="#">DMCA Disclaimer</a>
-            <a href="#">Contact Support</a>
-        </div>
-        <p>&copy; 2026 CineVault. All rights reserved.</p>
-    </footer>
+    <!-- Notebook Register Log -->
+    <div class="register-header">
+      <div style="font-weight: 700; font-size: 15px;">DAILY INWARD LOG BOOK</div>
+      <div style="display: flex; gap: 8px;">
+        <input type="text" id="searchBox" class="search-input" placeholder="Search Vendor, DC, or Vehicle..." onkeyup="renderTable()">
+        <button class="btn btn-secondary no-print" onclick="window.print()">Print Register</button>
+        <button class="btn btn-success no-print" onclick="exportToCSV()">Export CSV</button>
+      </div>
+    </div>
 
-    <div id="toast-container"></div>
+    <div class="table-container">
+      <table id="notebookTable">
+        <thead>
+          <tr>
+            <th>GRN #</th>
+            <th>Date & Time</th>
+            <th>Vendor</th>
+            <th>DC / Inv #</th>
+            <th>PO #</th>
+            <th>Item Details</th>
+            <th>Pkgs</th>
+            <th>Challan</th>
+            <th>Received</th>
+            <th>Diff</th>
+            <th>Vehicle #</th>
+            <th>Receiver</th>
+            <th>Status</th>
+            <th class="no-print">Action</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody">
+          <!-- Dynamically populated entries -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
 
-    <script>
-        /**
-         * Function to simulate the start of a movie download.
-         * Generates a sleek floating notification banner when clicked.
-         * @param {string} movieTitle - The name of the movie being downloaded.
-         */
-        function startDownload(movieTitle) {
-            const container = document.getElementById('toast-container');
-            
-            // Create the notification element
-            const toast = document.createElement('div');
-            toast.className = 'toast';
-            toast.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> Initializing secure download for <strong>${movieTitle}</strong>...`;
-            
-            container.appendChild(toast);
+<script>
+  // Clock display
+  setInterval(() => {
+    document.getElementById('liveClock').innerText = new Date().toLocaleString();
+  }, 1000);
 
-            // Change message text after 2 seconds to simulate download progress/completion
-            setTimeout(() => {
-                toast.innerHTML = `<i class="fa-solid fa-check-circle" style="color: #4bb543;"></i> Download started: <strong>${movieTitle}</strong>`;
-            }, 2000);
+  // Set default datetime to now
+  const now = new Date();
+  now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+  document.getElementById('inTime').value = now.toISOString().slice(0,16);
 
-            // Remove the notification banner entirely after 5 seconds
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                setTimeout(() => toast.remove(), 300);
-            }, 5000);
-        }
-    </script>
+  // Storage key
+  const STORAGE_KEY = 'MAGNUM_GRN_LOGS';
+  let entries = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [
+    {
+      grn: 'MC-26-001',
+      time: '2026-09-09 10:15',
+      vendor: 'Arvind Mills Ltd.',
+      dcNo: 'DC-8812',
+      poNo: 'PO-0412',
+      item: 'Indigo Denim 14oz',
+      packages: 20,
+      challanQty: 1000,
+      receivedQty: 1000,
+      uom: 'Meters',
+      vehicle: 'TN-01-AB-1234',
+      receiver: 'Senthil',
+      remarks: 'Seals OK'
+    }
+  ];
+
+  function saveAndRefresh() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+    renderTable();
+  }
+
+  function renderTable() {
+    const filter = document.getElementById('searchBox').value.toLowerCase();
+    const tbody = document.getElementById('tableBody');
+    tbody.innerHTML = '';
+
+    entries.forEach((item, index) => {
+      const rowSearch = `${item.grn} ${item.vendor} ${item.dcNo} ${item.vehicle} ${item.item}`.toLowerCase();
+      if (!rowSearch.includes(filter)) return;
+
+      const diff = Number(item.receivedQty) - Number(item.challanQty);
+      const isShort = diff < 0;
+
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td><strong>${item.grn}</strong></td>
+        <td>${item.time}</td>
+        <td>${item.vendor}</td>
+        <td>${item.dcNo}</td>
+        <td>${item.poNo}</td>
+        <td>${item.item}</td>
+        <td>${item.packages}</td>
+        <td>${item.challanQty} ${item.uom}</td>
+        <td>${item.receivedQty} ${item.uom}</td>
+        <td style="color:${isShort ? '#b91c1c' : '#15803d'}; font-weight:600;">${diff > 0 ? '+' + diff : diff}</td>
+        <td>${item.vehicle}</td>
+        <td>${item.receiver}</td>
+        <td><span class="status-badge ${isShort ? 'status-short' : 'status-ok'}">${isShort ? 'Shortage' : 'Complete'}</span></td>
+        <td class="no-print"><button onclick="deleteEntry(${index})" style="color:red; border:none; background:none; cursor:pointer;">✕</button></td>
+      `;
+      tbody.appendChild(row);
+    });
+  }
+
+  document.getElementById('entryForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const count = entries.length + 1;
+    const padded = String(count).padStart(3, '0');
+    
+    const newEntry = {
+      grn: `MC-26-${padded}`,
+      time: document.getElementById('inTime').value.replace('T', ' '),
+      vendor: document.getElementById('vendor').value,
+      dcNo: document.getElementById('dcNo').value,
+      poNo: document.getElementById('poNo').value,
+      item: document.getElementById('itemName').value,
+      packages: document.getElementById('packages').value,
+      challanQty: document.getElementById('challanQty').value,
+      receivedQty: document.getElementById('receivedQty').value,
+      uom: document.getElementById('uom').value,
+      vehicle: document.getElementById('vehicleNo').value,
+      receiver: document.getElementById('receiver').value,
+      remarks: document.getElementById('remarks').value
+    };
+
+    entries.unshift(newEntry);
+    saveAndRefresh();
+    this.reset();
+    document.getElementById('inTime').value = new Date().toISOString().slice(0,16);
+  });
+
+  function deleteEntry(idx) {
+    if (confirm('Delete this entry from register?')) {
+      entries.splice(idx, 1);
+      saveAndRefresh();
+    }
+  }
+
+  function exportToCSV() {
+    let csv = "GRN,Date,Vendor,DC No,PO No,Item,Packages,Challan Qty,Received Qty,UOM,Vehicle,Receiver,Remarks\n";
+    entries.forEach(e => {
+      csv += `"${e.grn}","${e.time}","${e.vendor}","${e.dcNo}","${e.poNo}","${e.item}",${e.packages},${e.challanQty},${e.receivedQty},"${e.uom}","${e.vehicle}","${e.receiver}","${e.remarks || ''}"\n`;
+    });
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `Magnum_Inward_Notebook_${new Date().toISOString().slice(0,10)}.csv`;
+    link.click();
+  }
+
+  // Initial load
+  renderTable();
+</script>
+
 </body>
 </html>

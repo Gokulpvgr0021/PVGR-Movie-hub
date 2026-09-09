@@ -442,20 +442,7 @@
   <!-- Header -->
   <header class="app-header">
     <div class="brand-wrap">
-      <svg class="brand-logo" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
-        <rect width="512" height="512" rx="100" fill="#ffffff" stroke="#e2e8f0" stroke-width="8"/>
-        <g transform="translate(60, 95) scale(0.72)">
-          <path d="M30 430 V175 H115 V220 C138 180 185 165 235 175 C285 185 305 220 320 255 C345 185 410 165 470 175 V430 H385 V275 C385 240 365 225 340 225 C310 225 295 245 295 285 V430 H210 V275 C210 240 190 225 165 225 C135 225 115 245 115 285 V430 Z" fill="#000000"/>
-          <g transform="translate(355, 30)">
-            <rect x="60" y="0" width="28" height="65" rx="4" fill="#eab308"/>
-            <rect x="85" y="18" width="28" height="65" rx="4" transform="rotate(45 85 18)" fill="#ea580c"/>
-            <rect x="90" y="65" width="28" height="65" rx="4" transform="rotate(90 90 65)" fill="#1e3a8a"/>
-            <rect x="70" y="100" width="28" height="65" rx="4" transform="rotate(135 70 100)" fill="#7e22ce"/>
-            <rect x="-5" y="65" width="28" height="65" rx="4" fill="#0284c7"/>
-            <rect x="15" y="20" width="28" height="65" rx="4" transform="rotate(-45 15 20)" fill="#0d9488"/>
-          </g>
-        </g>
-      </svg>
+      <img src="31890.png" alt="Magnum Logo" class="brand-logo" style="object-fit: cover;">
       <div class="brand-text">
         <h1>SKL FABRIC TEAM</h1>
         <p>Magnum Clothing Stores</p>
@@ -654,8 +641,6 @@
     }
   });
 
-  const appSvg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='100' fill='%23ffffff'/><g transform='translate(60, 95) scale(0.72)'><path d='M30 430 V175 H115 V220 C138 180 185 165 235 175 C285 185 305 220 320 255 C345 185 410 165 470 175 V430 H385 V275 C385 240 365 225 340 225 C310 225 295 245 295 285 V430 H210 V275 C210 240 190 225 165 225 C135 225 115 245 115 285 V430 Z' fill='%23000000'/><g transform='translate(355, 30)'><rect x='60' y='0' width='28' height='65' rx='4' fill='%23eab308'/><rect x='85' y='18' width='28' height='65' rx='4' transform='rotate(45 85 18)' fill='%23ea580c'/><rect x='90' y='65' width='28' height='65' rx='4' transform='rotate(90 90 65)' fill='%231e3a8a'/><rect x='70' y='100' width='28' height='65' rx='4' transform='rotate(135 70 100)' fill='%237e22ce'/><rect x='-5' y='65' width='28' height='65' rx='4' fill='%230284c7'/><rect x='15' y='20' width='28' height='65' rx='4' transform='rotate(-45 15 20)' fill='%230d9488'/></g></g></svg>`;
-
   const manifest = {
     name: "SKL Fabric GRN",
     short_name: "SKL GRN",
@@ -666,13 +651,14 @@
     theme_color: "#ffffff",
     icons: [
       {
-        src: `data:image/svg+xml;charset=utf-8,${encodeURIComponent(appSvg)}`,
+        src: "31890.png",
         sizes: "192x192 512x512",
-        type: "image/svg+xml",
+        type: "image/png",
         purpose: "any maskable"
       }
     ]
   };
+  
   const manifestBlob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
   const manifestLink = document.createElement('link');
   manifestLink.rel = 'manifest';

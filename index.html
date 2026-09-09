@@ -2,163 +2,228 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Magnum Clothing - Inward Entry Register</title>
+  
+  <!-- PWA & Fullscreen Meta Tags -->
+  <meta name="theme-color" content="#1e3a8a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="mobile-web-app-capable" content="yes">
+
   <style>
     :root {
       --primary: #1e3a8a;
       --primary-hover: #172554;
-      --success: #166534;
-      --bg: #f1f5f9;
-      --card-bg: #ffffff;
+      --success: #15803d;
+      --danger: #b91c1c;
+      --bg: #f8fafc;
       --border: #cbd5e1;
       --text: #0f172a;
     }
 
     * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { background: var(--bg); margin: 0; padding: 20px; color: var(--text); }
-    .wrapper { max-width: 1250px; margin: 0 auto; }
+    
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background: var(--bg);
+      color: var(--text);
+    }
 
-    /* Top Navigation Header */
-    .top-header {
+    .app-layout {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      width: 100vw;
+    }
+
+    /* Fixed App Bar */
+    .top-bar {
       background: var(--primary);
       color: white;
-      padding: 16px 24px;
-      border-radius: 8px 8px 0 0;
+      padding: 10px 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-    }
-    .top-header h1 { margin: 0; font-size: 20px; text-transform: uppercase; letter-spacing: 0.5px; }
-    .top-header span { font-size: 13px; opacity: 0.85; }
-
-    .main-content {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-top: none;
-      padding: 24px;
-      border-radius: 0 0 8px 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+      flex-shrink: 0;
+      z-index: 10;
     }
 
-    /* Form Container */
-    .notebook-form {
-      background: #f8fafc;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 16px;
-      margin-bottom: 24px;
-    }
-    .form-title { font-weight: 700; color: var(--primary); margin-bottom: 12px; font-size: 14px; text-transform: uppercase; }
-    .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
-    .field { display: flex; flex-direction: column; }
-    label { font-size: 11px; font-weight: 700; color: #475569; margin-bottom: 4px; text-transform: uppercase; }
-    input, select {
-      padding: 8px 10px;
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      font-size: 13px;
-    }
-    input:focus, select:focus { outline: none; border-color: var(--primary); }
+    .brand { display: flex; align-items: baseline; gap: 12px; }
+    .brand h1 { margin: 0; font-size: 18px; font-weight: 800; letter-spacing: 0.5px; }
+    .brand span { font-size: 12px; opacity: 0.85; }
 
-    .btn-bar { display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px; }
+    .top-controls { display: flex; align-items: center; gap: 8px; }
+
     .btn {
-      padding: 9px 16px;
-      border: none;
+      padding: 6px 12px;
       border-radius: 4px;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 600;
+      border: none;
       cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.15s ease;
     }
+    .btn-light { background: #ffffff; color: var(--primary); }
+    .btn-light:hover { background: #f1f5f9; }
+    .btn-install { background: #facc15; color: #713f12; font-weight: 700; }
+    .btn-install:hover { background: #eab308; }
     .btn-primary { background: var(--primary); color: white; }
     .btn-primary:hover { background: var(--primary-hover); }
-    .btn-secondary { background: #e2e8f0; color: #334155; }
+    .btn-danger { background: var(--danger); color: white; }
     .btn-success { background: var(--success); color: white; }
 
-    /* Notebook Register Table */
-    .register-header {
+    /* Main Split Content */
+    .content-area {
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      flex: 1;
+      overflow: hidden;
+      background: #f1f5f9;
+    }
+
+    /* Left Drawer: Entry Form */
+    .entry-panel {
+      background: #ffffff;
+      border-right: 1px solid var(--border);
+      padding: 16px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+    .panel-title { font-size: 13px; font-weight: 700; color: var(--primary); text-transform: uppercase; margin-bottom: 12px; }
+    
+    .form-grid { display: flex; flex-direction: column; gap: 10px; }
+    .field { display: flex; flex-direction: column; }
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    label { font-size: 11px; font-weight: 700; color: #475569; margin-bottom: 3px; text-transform: uppercase; }
+    input, select {
+      padding: 7px 9px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-size: 13px;
+    }
+    input:focus, select:focus { outline: none; border-color: var(--primary); ring: 2px solid rgba(30,58,138,0.2); }
+
+    /* Right Panel: Notebook Table */
+    .register-panel {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .register-toolbar {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 12px;
+      flex-shrink: 0;
     }
-    .search-input { width: 280px; }
-
-    .table-container { overflow-x: auto; border: 1px solid var(--border); border-radius: 4px; }
+    .table-box {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      flex: 1;
+      overflow: auto;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
     table { width: 100%; border-collapse: collapse; font-size: 12px; text-align: left; }
-    th { background: #f1f5f9; padding: 10px 8px; border-bottom: 2px solid var(--border); color: #334155; white-space: nowrap; }
-    td { padding: 8px; border-bottom: 1px solid #e2e8f0; vertical-align: middle; white-space: nowrap; }
+    thead th {
+      position: sticky;
+      top: 0;
+      background: #f8fafc;
+      color: #334155;
+      padding: 10px 8px;
+      border-bottom: 2px solid var(--border);
+      white-space: nowrap;
+      z-index: 5;
+    }
+    td { padding: 8px; border-bottom: 1px solid #e2e8f0; white-space: nowrap; }
     tr:hover { background: #f8fafc; }
 
-    .status-badge {
+    .tag {
       padding: 3px 8px;
       border-radius: 12px;
-      font-weight: bold;
+      font-weight: 700;
       font-size: 10px;
       text-transform: uppercase;
     }
-    .status-ok { background: #dcfce7; color: #15803d; }
-    .status-short { background: #fee2e2; color: #b91c1c; }
+    .tag-ok { background: #dcfce7; color: var(--success); }
+    .tag-alert { background: #fee2e2; color: var(--danger); }
 
-    @media print {
-      body { background: white; padding: 0; }
-      .notebook-form, .btn-bar, .search-input, .no-print { display: none !important; }
-      .main-content { border: none; padding: 0; }
+    /* Responsive */
+    @media (max-width: 900px) {
+      .content-area { grid-template-columns: 1fr; overflow-y: auto; }
+      .register-panel { min-height: 400px; }
     }
   </style>
 </head>
 <body>
 
-<div class="wrapper">
-  <div class="top-header">
-    <div>
+<div class="app-layout" id="appRoot">
+  <!-- Top App Navigation -->
+  <div class="top-bar">
+    <div class="brand">
       <h1>MAGNUM CLOTHING</h1>
-      <span>Security Gate & Store Inward Entry Notebook</span>
+      <span>Digital Inward Notebook & GRN</span>
     </div>
-    <div style="text-align: right;">
-      <span id="liveClock"></span>
+    <div class="top-controls">
+      <span id="liveClock" style="font-size: 12px; margin-right: 8px; font-variant-numeric: tabular-nums;"></span>
+      <button class="btn btn-install" id="installBtn" style="display: none;" onclick="triggerAppInstall()">
+        📲 Install App
+      </button>
+      <button class="btn btn-light" onclick="toggleFullScreen()">
+        ⛶ Fullscreen
+      </button>
+      <button class="btn btn-light" onclick="exportToCSV()">
+        📥 Export CSV
+      </button>
     </div>
   </div>
 
-  <div class="main-content">
-    <!-- Entry Form -->
-    <div class="notebook-form no-print">
-      <div class="form-title">+ New Material Inward Entry (GRN)</div>
-      <form id="entryForm">
-        <div class="grid">
+  <!-- Main Body Content -->
+  <div class="content-area">
+    <!-- Entry Register Drawer -->
+    <div class="entry-panel">
+      <div class="panel-title">New Inward Entry</div>
+      <form id="entryForm" class="form-grid">
+        <div class="field">
+          <label>Entry Date & Time</label>
+          <input type="datetime-local" id="inTime" required>
+        </div>
+        <div class="field">
+          <label>Vendor / Mills</label>
+          <input type="text" id="vendor" placeholder="e.g. Vardhman Textiles" required>
+        </div>
+        <div class="field-row">
           <div class="field">
-            <label>Entry Date & Time</label>
-            <input type="datetime-local" id="inTime" required>
+            <label>DC / Invoice #</label>
+            <input type="text" id="dcNo" placeholder="DC-1092" required>
           </div>
           <div class="field">
-            <label>Vendor / Supplier</label>
-            <input type="text" id="vendor" placeholder="e.g. Vardhman Textiles" required>
+            <label>PO Number</label>
+            <input type="text" id="poNo" placeholder="PO-881" required>
+          </div>
+        </div>
+        <div class="field">
+          <label>Material Details</label>
+          <input type="text" id="itemName" placeholder="e.g. 100% Cotton Knitted Fabric" required>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Packages / Rolls</label>
+            <input type="number" id="packages" placeholder="Cartons/Rolls" required>
           </div>
           <div class="field">
-            <label>DC / Invoice No.</label>
-            <input type="text" id="dcNo" placeholder="e.g. DC-9842" required>
-          </div>
-          <div class="field">
-            <label>PO Reference</label>
-            <input type="text" id="poNo" placeholder="e.g. PO-2026-104" required>
-          </div>
-          <div class="field">
-            <label>Item / Fabric / Trim</label>
-            <input type="text" id="itemName" placeholder="e.g. Cotton Twill Fabric" required>
-          </div>
-          <div class="field">
-            <label>No. of Rolls / Cartons</label>
-            <input type="number" id="packages" placeholder="e.g. 15" required>
-          </div>
-          <div class="field">
-            <label>Challan Qty</label>
-            <input type="number" id="challanQty" step="any" placeholder="Dispatched Qty" required>
-          </div>
-          <div class="field">
-            <label>Received Qty</label>
-            <input type="number" id="receivedQty" step="any" placeholder="Counted Qty" required>
-          </div>
-          <div class="field">
-            <label>Unit (UOM)</label>
+            <label>UOM</label>
             <select id="uom">
               <option value="Meters">Meters</option>
               <option value="Pieces">Pieces</option>
@@ -166,97 +231,193 @@
               <option value="Cones">Cones</option>
             </select>
           </div>
+        </div>
+        <div class="field-row">
           <div class="field">
-            <label>Vehicle No.</label>
-            <input type="text" id="vehicleNo" placeholder="e.g. TN-09-AX-5544" required>
+            <label>Challan Qty</label>
+            <input type="number" step="any" id="challanQty" placeholder="Sent" required>
           </div>
           <div class="field">
-            <label>Receiver / Gatekeeper</label>
-            <input type="text" id="receiver" placeholder="Your Name" required>
-          </div>
-          <div class="field">
-            <label>Remarks / Quality Check</label>
-            <input type="text" id="remarks" placeholder="Roll condition, seal intact, etc.">
+            <label>Received Qty</label>
+            <input type="number" step="any" id="receivedQty" placeholder="Counted" required>
           </div>
         </div>
-        <div class="btn-bar">
-          <button type="reset" class="btn btn-secondary">Clear</button>
-          <button type="submit" class="btn btn-primary">Log Inward Entry</button>
+        <div class="field-row">
+          <div class="field">
+            <label>Vehicle No.</label>
+            <input type="text" id="vehicleNo" placeholder="TN-09-AB-1234" required>
+          </div>
+          <div class="field">
+            <label>Receiver Name</label>
+            <input type="text" id="receiver" placeholder="Store Officer" required>
+          </div>
+        </div>
+        <div class="field">
+          <label>Remarks / QC Notes</label>
+          <input type="text" id="remarks" placeholder="Seals checked, clean packing">
+        </div>
+        <div style="display:flex; gap: 8px; margin-top: 6px;">
+          <button type="reset" class="btn" style="background:#e2e8f0; color:#334155; flex:1;">Reset</button>
+          <button type="submit" class="btn btn-primary" style="flex:2;">+ Log Inward</button>
         </div>
       </form>
     </div>
 
-    <!-- Notebook Register Log -->
-    <div class="register-header">
-      <div style="font-weight: 700; font-size: 15px;">DAILY INWARD LOG BOOK</div>
-      <div style="display: flex; gap: 8px;">
-        <input type="text" id="searchBox" class="search-input" placeholder="Search Vendor, DC, or Vehicle..." onkeyup="renderTable()">
-        <button class="btn btn-secondary no-print" onclick="window.print()">Print Register</button>
-        <button class="btn btn-success no-print" onclick="exportToCSV()">Export CSV</button>
+    <!-- Active Register Log -->
+    <div class="register-panel">
+      <div class="register-toolbar">
+        <div style="font-weight: 700; font-size: 14px; color: #1e293b;">STORE LOGBOOK REGISTER</div>
+        <input type="text" id="searchBox" placeholder="Filter by Vendor, DC, or Vehicle..." onkeyup="renderTable()" style="width: 260px; padding: 6px 10px; border-radius: 4px; border: 1px solid var(--border);">
       </div>
-    </div>
 
-    <div class="table-container">
-      <table id="notebookTable">
-        <thead>
-          <tr>
-            <th>GRN #</th>
-            <th>Date & Time</th>
-            <th>Vendor</th>
-            <th>DC / Inv #</th>
-            <th>PO #</th>
-            <th>Item Details</th>
-            <th>Pkgs</th>
-            <th>Challan</th>
-            <th>Received</th>
-            <th>Diff</th>
-            <th>Vehicle #</th>
-            <th>Receiver</th>
-            <th>Status</th>
-            <th class="no-print">Action</th>
-          </tr>
-        </thead>
-        <tbody id="tableBody">
-          <!-- Dynamically populated entries -->
-        </tbody>
-      </table>
+      <div class="table-box">
+        <table id="logTable">
+          <thead>
+            <tr>
+              <th>GRN Ref</th>
+              <th>Date & Time</th>
+              <th>Vendor</th>
+              <th>DC No</th>
+              <th>PO No</th>
+              <th>Material</th>
+              <th>Pkgs</th>
+              <th>Challan</th>
+              <th>Received</th>
+              <th>Variance</th>
+              <th>Vehicle</th>
+              <th>Receiver</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
     </div>
   </div>
 </div>
 
+<!-- Inline Web Manifest & PWA Installation Logic -->
 <script>
-  // Clock display
-  setInterval(() => {
-    document.getElementById('liveClock').innerText = new Date().toLocaleString();
-  }, 1000);
+  // 1. Dynamic Web App Manifest for App Download Prompt
+  const manifest = {
+    name: "Magnum Clothing GRN",
+    short_name: "MagnumGRN",
+    start_url: window.location.href,
+    display: "fullscreen",
+    orientation: "landscape-primary",
+    background_color: "#1e3a8a",
+    theme_color: "#1e3a8a",
+    icons: [
+      {
+        src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%231e3a8a'/%3E%3Ctext x='50' y='65' fill='%23ffffff' font-size='42' font-family='sans-serif' font-weight='bold' text-anchor='middle'%3EMC%3C/text%3E%3C/svg%3E",
+        sizes: "192x192 512x512",
+        type: "image/svg+xml"
+      }
+    ]
+  };
+  const stringManifest = JSON.stringify(manifest);
+  const blob = new Blob([stringManifest], {type: 'application/json'});
+  const manifestURL = URL.createObjectURL(blob);
+  const link = document.createElement('link');
+  link.rel = 'manifest';
+  link.href = manifestURL;
+  document.head.appendChild(link);
 
-  // Set default datetime to now
-  const now = new Date();
-  now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-  document.getElementById('inTime').value = now.toISOString().slice(0,16);
+  // 2. Register Mock ServiceWorker to satisfy PWA criteria
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      const swCode = `self.addEventListener('fetch', e => e.respondWith(fetch(e.request).catch(() => new Response('Offline'))));`;
+      const swBlob = new Blob([swCode], { type: 'application/javascript' });
+      navigator.serviceWorker.register(URL.createObjectURL(swBlob)).catch(() => {});
+    });
+  }
 
-  // Storage key
-  const STORAGE_KEY = 'MAGNUM_GRN_LOGS';
-  let entries = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [
+  // 3. Handle App Download / Install Prompt
+  let deferredPrompt;
+  const installBtn = document.getElementById('installBtn');
+
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    installBtn.style.display = 'inline-flex';
+  });
+
+  function triggerAppInstall() {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === 'accepted') {
+          installBtn.style.display = 'none';
+        }
+        deferredPrompt = null;
+      });
+    } else {
+      alert("To download on Chrome/Edge: Click the three dots in your browser bar and select 'Install Magnum Clothing...' or 'Install App'.");
+    }
+  }
+
+  // 4. Always Fullscreen Toggle Logic
+  function toggleFullScreen() {
+    const elem = document.documentElement;
+    if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+      if (elem.requestFullscreen) {
+        elem.requestFullscreen().catch(() => {});
+      } else if (elem.webkitRequestFullscreen) {
+        elem.webkitRequestFullscreen();
+      }
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+      }
+    }
+  }
+
+  // Optional: Click anywhere on body to request fullscreen if supported and desired
+  window.addEventListener('click', () => {
+    // Only attempt on touch devices if not already fullscreen
+    if (!document.fullscreenElement && window.matchMedia('(display-mode: standalone)').matches) {
+      document.documentElement.requestFullscreen().catch(() => {});
+    }
+  }, { once: true });
+
+  // 5. Digital Notebook Storage & Operations
+  const STORAGE_KEY = 'MAGNUM_REGISTER_DATA';
+  let logs = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [
     {
-      grn: 'MC-26-001',
-      time: '2026-09-09 10:15',
-      vendor: 'Arvind Mills Ltd.',
-      dcNo: 'DC-8812',
-      poNo: 'PO-0412',
-      item: 'Indigo Denim 14oz',
-      packages: 20,
+      grn: "MC-26-001",
+      time: "2026-09-09 09:30",
+      vendor: "Arvind Mills Ltd",
+      dcNo: "DC-4421",
+      poNo: "PO-1082",
+      item: "Indigo Twill 12oz",
+      packages: 18,
       challanQty: 1000,
       receivedQty: 1000,
-      uom: 'Meters',
-      vehicle: 'TN-01-AB-1234',
-      receiver: 'Senthil',
-      remarks: 'Seals OK'
+      uom: "Meters",
+      vehicle: "TN-01-AB-7744",
+      receiver: "Murugan",
+      remarks: "Quality checked"
     }
   ];
 
-  function saveAndRefresh() {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+  function updateClock() {
+    document.getElementById('liveClock').innerText = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  }
+  setInterval(updateClock, 1000);
+  updateClock();
+
+  function resetDateTime() {
+    const now = new Date();
+    now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+    document.getElementById('inTime').value = now.toISOString().slice(0, 16);
+  }
+  resetDateTime();
+
+  function persistAndDraw() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(logs));
     renderTable();
   }
 
@@ -265,12 +426,12 @@
     const tbody = document.getElementById('tableBody');
     tbody.innerHTML = '';
 
-    entries.forEach((item, index) => {
-      const rowSearch = `${item.grn} ${item.vendor} ${item.dcNo} ${item.vehicle} ${item.item}`.toLowerCase();
-      if (!rowSearch.includes(filter)) return;
+    logs.forEach((item, index) => {
+      const match = `${item.grn} ${item.vendor} ${item.dcNo} ${item.vehicle} ${item.item}`.toLowerCase();
+      if (!match.includes(filter)) return;
 
-      const diff = Number(item.receivedQty) - Number(item.challanQty);
-      const isShort = diff < 0;
+      const variance = Number(item.receivedQty) - Number(item.challanQty);
+      const isShort = variance < 0;
 
       const row = document.createElement('tr');
       row.innerHTML = `
@@ -283,11 +444,13 @@
         <td>${item.packages}</td>
         <td>${item.challanQty} ${item.uom}</td>
         <td>${item.receivedQty} ${item.uom}</td>
-        <td style="color:${isShort ? '#b91c1c' : '#15803d'}; font-weight:600;">${diff > 0 ? '+' + diff : diff}</td>
+        <td style="color:${isShort ? 'var(--danger)' : 'var(--success)'}; font-weight:700;">
+          ${variance > 0 ? '+' + variance : variance}
+        </td>
         <td>${item.vehicle}</td>
         <td>${item.receiver}</td>
-        <td><span class="status-badge ${isShort ? 'status-short' : 'status-ok'}">${isShort ? 'Shortage' : 'Complete'}</span></td>
-        <td class="no-print"><button onclick="deleteEntry(${index})" style="color:red; border:none; background:none; cursor:pointer;">✕</button></td>
+        <td><span class="tag ${isShort ? 'tag-alert' : 'tag-ok'}">${isShort ? 'Shortage' : 'Complete'}</span></td>
+        <td><button onclick="deleteEntry(${index})" style="background:none; border:none; color:var(--danger); cursor:pointer; font-weight:bold;">✕</button></td>
       `;
       tbody.appendChild(row);
     });
@@ -295,11 +458,10 @@
 
   document.getElementById('entryForm').addEventListener('submit', function(e) {
     e.preventDefault();
-    const count = entries.length + 1;
-    const padded = String(count).padStart(3, '0');
+    const grnId = "MC-26-" + String(logs.length + 1).padStart(3, '0');
     
-    const newEntry = {
-      grn: `MC-26-${padded}`,
+    const entry = {
+      grn: grnId,
       time: document.getElementById('inTime').value.replace('T', ' '),
       vendor: document.getElementById('vendor').value,
       dcNo: document.getElementById('dcNo').value,
@@ -314,32 +476,31 @@
       remarks: document.getElementById('remarks').value
     };
 
-    entries.unshift(newEntry);
-    saveAndRefresh();
+    logs.unshift(entry);
+    persistAndDraw();
     this.reset();
-    document.getElementById('inTime').value = new Date().toISOString().slice(0,16);
+    resetDateTime();
   });
 
-  function deleteEntry(idx) {
-    if (confirm('Delete this entry from register?')) {
-      entries.splice(idx, 1);
-      saveAndRefresh();
+  function deleteEntry(index) {
+    if (confirm("Delete this GRN record?")) {
+      logs.splice(index, 1);
+      persistAndDraw();
     }
   }
 
   function exportToCSV() {
-    let csv = "GRN,Date,Vendor,DC No,PO No,Item,Packages,Challan Qty,Received Qty,UOM,Vehicle,Receiver,Remarks\n";
-    entries.forEach(e => {
+    let csv = "GRN Ref,Date & Time,Vendor,DC No,PO No,Item,Packages,Challan Qty,Received Qty,UOM,Vehicle,Receiver,Remarks\n";
+    logs.forEach(e => {
       csv += `"${e.grn}","${e.time}","${e.vendor}","${e.dcNo}","${e.poNo}","${e.item}",${e.packages},${e.challanQty},${e.receivedQty},"${e.uom}","${e.vehicle}","${e.receiver}","${e.remarks || ''}"\n`;
     });
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
-    link.download = `Magnum_Inward_Notebook_${new Date().toISOString().slice(0,10)}.csv`;
+    link.download = `Magnum_GRN_Book_${new Date().toISOString().slice(0,10)}.csv`;
     link.click();
   }
 
-  // Initial load
   renderTable();
 </script>
 

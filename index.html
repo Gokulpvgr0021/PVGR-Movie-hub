@@ -12,6 +12,10 @@
   <meta name="apple-mobile-web-app-title" content="SKL Fabric">
   <meta name="theme-color" content="#ffffff">
 
+  <!-- PDF Generation Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+
   <style>
     :root {
       --primary: #000000;
@@ -455,8 +459,8 @@
       <button class="icon-btn" onclick="toggleFullScreen()">
         ⛶
       </button>
-      <button class="icon-btn" onclick="exportToCSV()">
-        📥 CSV
+      <button class="icon-btn" onclick="exportToPDF()">
+        📥 PDF
       </button>
     </div>
   </header>
@@ -885,16 +889,62 @@
     }
   }
 
-  function exportToCSV() {
-    let csv = "GRN Ref,Date & Time,Vendor,Style No,Color,DC No,PO No,Item,Packages,Challan Qty,Received Qty,UOM,Receiver,Remarks\n";
-    logs.forEach(e => {
-      csv += `"${e.grn}","${e.time}","${e.vendor}","${e.styleNo}","${e.color}","${e.dcNo}","${e.poNo}","${e.item}",${e.packages},${e.challanQty},${e.receivedQty},"${e.uom}","${e.receiver}","${e.remarks || ''}"\n`;
+  // --- NEW PDF EXPORT FUNCTION ---
+  function exportToPDF() {
+    const { jsPDF } = window.jspdf;
+    
+    // Generate landscape PDF to fit more columns
+    const doc = new jsPDF('landscape'); 
+    
+    doc.setFontSize(16);
+    doc.text("SKL Fabric GRN Report - Magnum Clothing", 14, 15);
+    
+    // Define Table Columns
+    const tableColumn = ["GRN Ref", "Date & Time", "Vendor", "Style / Color", "Item / Construction", "PO No", "Qty Recd", "Photo"];
+    const tableRows = [];
+
+    // Map logs data to table format
+    logs.forEach(item => {
+      const rowData = [
+        item.grn,
+        item.time,
+        item.vendor,
+        `${item.styleNo}\n${item.color}`, // Combine style & color
+        item.item,
+        item.poNo,
+        `${item.receivedQty} ${item.uom}`,
+        "" // Leave photo column empty for the custom hook
+      ];
+      tableRows.push(rowData);
     });
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = `SKL_Fabric_GRN_${new Date().toISOString().slice(0,10)}.csv`;
-    link.click();
+
+    // Render Table using AutoTable plugin
+    doc.autoTable({
+      head: [tableColumn],
+      body: tableRows,
+      startY: 20,
+      styles: { fontSize: 8, cellPadding: 3, valign: 'middle' },
+      bodyStyles: { minCellHeight: 25 }, // Create vertical space for images
+      columnStyles: {
+        7: { cellWidth: 30 } // Fix width for the photo column
+      },
+      didDrawCell: function (data) {
+        // Intercept cell drawing to inject images manually
+        if (data.column.index === 7 && data.cell.section === 'body') {
+          const imgData = logs[data.row.index].photo;
+          if (imgData) {
+            // Draw image exactly inside the bounds of the cell
+            doc.addImage(imgData, 'JPEG', data.cell.x + 2, data.cell.y + 2, 21, 21);
+          } else {
+            doc.text("N/A", data.cell.x + 2, data.cell.y + 12);
+          }
+        }
+      }
+    });
+
+    // Save Download
+    const filename = `SKL_Fabric_GRN_${new Date().toISOString().slice(0,10)}.pdf`;
+    doc.save(filename);
   }
 
   document.getElementById('logCount').innerText = logs.length;

@@ -164,7 +164,6 @@
       letter-spacing: 0.3px;
     }
 
-    /* Forced Uppercase & Large Touch Size */
     input, select, textarea {
       font-size: 16px;
       padding: 12px 14px;
@@ -177,7 +176,6 @@
       transition: border-color 0.15s;
     }
 
-    /* Always Uppercase for Text Inputs */
     input[type="text"], textarea, .force-caps {
       text-transform: uppercase !important;
     }
@@ -492,15 +490,9 @@
             </div>
           </div>
 
-          <div class="field-row">
-            <div class="field">
-              <label>Vehicle No.</label>
-              <input type="text" id="vehicleNo" placeholder="TN-09-AB-1234" autocapitalize="characters" required>
-            </div>
-            <div class="field">
-              <label>Receiver Name</label>
-              <input type="text" id="receiver" placeholder="STAFF NAME" autocapitalize="characters" required>
-            </div>
+          <div class="field">
+            <label>Receiver Name</label>
+            <input type="text" id="receiver" placeholder="STAFF NAME" autocapitalize="characters" required>
           </div>
 
           <div class="field">
@@ -516,7 +508,7 @@
     <!-- View 2: Notebook Register View with Editable PO -->
     <div class="view-panel" id="registerView">
       <div class="search-bar">
-        <input type="text" id="searchBox" placeholder="🔎 SEARCH MILL, DC, VEHICLE, PO..." autocapitalize="characters" onkeyup="renderCards()">
+        <input type="text" id="searchBox" placeholder="🔎 SEARCH MILL, DC, PO..." autocapitalize="characters" onkeyup="renderCards()">
       </div>
       <div id="cardsList"></div>
     </div>
@@ -642,7 +634,6 @@
       challanQty: 1200,
       receivedQty: 1200,
       uom: "KGS",
-      vehicle: "TN-09-CD-3321",
       receiver: "MURUGAN",
       remarks: "SHADE INSPECTION VERIFIED AND PASSED"
     }
@@ -682,7 +673,7 @@
     container.innerHTML = '';
 
     logs.forEach((item, index) => {
-      const match = `${item.grn} ${item.vendor} ${item.dcNo} ${item.poNo} ${item.vehicle} ${item.item}`.toUpperCase();
+      const match = `${item.grn} ${item.vendor} ${item.dcNo} ${item.poNo} ${item.item}`.toUpperCase();
       if (!match.includes(filter)) return;
 
       const variance = Number(item.receivedQty) - Number(item.challanQty);
@@ -699,7 +690,7 @@
         <div class="vendor-name">${item.vendor}</div>
         <div class="item-desc">${item.item}</div>
 
-        <!-- Editable PO Bar with forced CAPS -->
+        <!-- Editable PO Bar -->
         <div class="po-edit-bar">
           <span class="po-label">PO #:</span>
           <input type="text" id="po-input-${index}" class="po-input-inline" value="${item.poNo || ''}" placeholder="ENTER / EDIT PO" autocapitalize="characters">
@@ -708,7 +699,6 @@
 
         <div class="meta-pills">
           <span class="meta-pill">DC: ${item.dcNo}</span>
-          <span class="meta-pill">🚛 ${item.vehicle}</span>
           <span class="meta-pill">📦 ${item.packages} ROLLS</span>
         </div>
 
@@ -756,7 +746,6 @@
       challanQty: document.getElementById('challanQty').value,
       receivedQty: document.getElementById('receivedQty').value,
       uom: document.getElementById('uom').value,
-      vehicle: document.getElementById('vehicleNo').value.trim().toUpperCase(),
       receiver: document.getElementById('receiver').value.trim().toUpperCase(),
       remarks: document.getElementById('remarks').value.trim().toUpperCase()
     };
@@ -777,9 +766,9 @@
   }
 
   function exportToCSV() {
-    let csv = "GRN Ref,Date & Time,Vendor,DC No,PO No,Item,Packages,Challan Qty,Received Qty,UOM,Vehicle,Receiver,Remarks\n";
+    let csv = "GRN Ref,Date & Time,Vendor,DC No,PO No,Item,Packages,Challan Qty,Received Qty,UOM,Receiver,Remarks\n";
     logs.forEach(e => {
-      csv += `"${e.grn}","${e.time}","${e.vendor}","${e.dcNo}","${e.poNo}","${e.item}",${e.packages},${e.challanQty},${e.receivedQty},"${e.uom}","${e.vehicle}","${e.receiver}","${e.remarks || ''}"\n`;
+      csv += `"${e.grn}","${e.time}","${e.vendor}","${e.dcNo}","${e.poNo}","${e.item}",${e.packages},${e.challanQty},${e.receivedQty},"${e.uom}","${e.receiver}","${e.remarks || ''}"\n`;
     });
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement("a");

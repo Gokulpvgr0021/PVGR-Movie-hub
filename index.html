@@ -164,6 +164,7 @@
       letter-spacing: 0.3px;
     }
 
+    /* Forced Uppercase & Large Touch Size */
     input, select, textarea {
       font-size: 16px;
       padding: 12px 14px;
@@ -174,6 +175,11 @@
       width: 100%;
       outline: none;
       transition: border-color 0.15s;
+    }
+
+    /* Always Uppercase for Text Inputs */
+    input[type="text"], textarea, .force-caps {
+      text-transform: uppercase !important;
     }
 
     input:focus, select:focus, textarea:focus {
@@ -213,6 +219,7 @@
       display: flex;
       flex-direction: column;
       gap: 9px;
+      text-transform: uppercase;
     }
 
     .log-card-header {
@@ -248,6 +255,7 @@
       padding: 8px 10px;
       border-radius: 6px;
       line-height: 1.4;
+      font-weight: 600;
     }
 
     /* Editable PO Section inside Card */
@@ -277,6 +285,7 @@
       border: 1px solid #cbd5e1 !important;
       background: #ffffff !important;
       border-radius: 4px !important;
+      text-transform: uppercase !important;
     }
 
     .po-save-btn {
@@ -306,7 +315,7 @@
       background: #f1f5f9;
       padding: 4px 8px;
       border-radius: 4px;
-      font-weight: 600;
+      font-weight: 700;
       color: #475569;
     }
 
@@ -340,7 +349,7 @@
     .tag-ok { background: var(--success-bg); color: var(--success); }
     .tag-short { background: var(--danger-bg); color: var(--danger); }
 
-    /* Sticky Bottom Mobile Tabs */
+    /* Sticky Bottom Navigation */
     .bottom-nav {
       position: fixed;
       bottom: 0;
@@ -437,37 +446,37 @@
 
           <div class="field">
             <label>Mill / Supplier Name</label>
-            <input type="text" id="vendor" placeholder="e.g. Vardhman / Arvind Mills" required>
+            <input type="text" id="vendor" placeholder="E.G. VARDHMAN / ARVIND MILLS" autocapitalize="characters" required>
           </div>
 
           <div class="field-row">
             <div class="field">
               <label>DC / Invoice #</label>
-              <input type="text" id="dcNo" placeholder="DC-8891" required>
+              <input type="text" id="dcNo" placeholder="DC-8891" autocapitalize="characters" required>
             </div>
             <div class="field">
               <label>PO Number (Editable Later)</label>
-              <input type="text" id="poNo" placeholder="PO-1044 / Pending">
+              <input type="text" id="poNo" placeholder="PO-1044" autocapitalize="characters">
             </div>
           </div>
 
           <div class="field">
             <label>Fabric Style & Construction</label>
-            <input type="text" id="itemName" placeholder="e.g. 100% Cotton 30s Single Jersey Navy" required>
+            <input type="text" id="itemName" placeholder="E.G. 100% COTTON 30S SINGLE JERSEY" autocapitalize="characters" required>
           </div>
 
           <div class="field-row">
             <div class="field">
               <label>Rolls / Pkgs</label>
-              <input type="number" id="packages" placeholder="e.g. 24" required>
+              <input type="number" id="packages" placeholder="E.G. 24" required>
             </div>
             <div class="field">
               <label>Unit (UOM)</label>
               <select id="uom">
-                <option value="Kgs">Kgs</option>
-                <option value="Meters">Meters</option>
-                <option value="Pieces">Pieces</option>
-                <option value="Cones">Cones</option>
+                <option value="KGS">KGS</option>
+                <option value="METERS">METERS</option>
+                <option value="PIECES">PIECES</option>
+                <option value="CONES">CONES</option>
               </select>
             </div>
           </div>
@@ -486,17 +495,17 @@
           <div class="field-row">
             <div class="field">
               <label>Vehicle No.</label>
-              <input type="text" id="vehicleNo" placeholder="TN-09-AB-1234" required>
+              <input type="text" id="vehicleNo" placeholder="TN-09-AB-1234" autocapitalize="characters" required>
             </div>
             <div class="field">
               <label>Receiver Name</label>
-              <input type="text" id="receiver" placeholder="Your Name" required>
+              <input type="text" id="receiver" placeholder="STAFF NAME" autocapitalize="characters" required>
             </div>
           </div>
 
           <div class="field">
             <label>Inspection Notes / Remarks</label>
-            <textarea id="remarks" rows="2" placeholder="Shade variation, seal checks, shortage remarks..."></textarea>
+            <textarea id="remarks" rows="2" placeholder="SHADE VARIATION, SEAL CHECKS, REMARKS..." autocapitalize="characters"></textarea>
           </div>
 
           <button type="submit" class="submit-btn">+ Save GRN Entry</button>
@@ -507,7 +516,7 @@
     <!-- View 2: Notebook Register View with Editable PO -->
     <div class="view-panel" id="registerView">
       <div class="search-bar">
-        <input type="text" id="searchBox" placeholder="🔎 Search Mill, DC, Vehicle, PO..." onkeyup="renderCards()">
+        <input type="text" id="searchBox" placeholder="🔎 SEARCH MILL, DC, VEHICLE, PO..." autocapitalize="characters" onkeyup="renderCards()">
       </div>
       <div id="cardsList"></div>
     </div>
@@ -525,6 +534,16 @@
 </div>
 
 <script>
+  // Enforce Caps Lock globally on all text inputs
+  document.addEventListener('input', function(e) {
+    if (e.target && (e.target.tagName === 'INPUT' && e.target.type === 'text' || e.target.tagName === 'TEXTAREA')) {
+      const start = e.target.selectionStart;
+      const end = e.target.selectionEnd;
+      e.target.value = e.target.value.toUpperCase();
+      e.target.setSelectionRange(start, end);
+    }
+  });
+
   const appSvg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='100' fill='%23ffffff'/><g transform='translate(60, 95) scale(0.72)'><path d='M30 430 V175 H115 V220 C138 180 185 165 235 175 C285 185 305 220 320 255 C345 185 410 165 470 175 V430 H385 V275 C385 240 365 225 340 225 C310 225 295 245 295 285 V430 H210 V275 C210 240 190 225 165 225 C135 225 115 245 115 285 V430 Z' fill='%23000000'/><g transform='translate(355, 30)'><rect x='60' y='0' width='28' height='65' rx='4' fill='%23eab308'/><rect x='85' y='18' width='28' height='65' rx='4' transform='rotate(45 85 18)' fill='%23ea580c'/><rect x='90' y='65' width='28' height='65' rx='4' transform='rotate(90 90 65)' fill='%231e3a8a'/><rect x='70' y='100' width='28' height='65' rx='4' transform='rotate(135 70 100)' fill='%237e22ce'/><rect x='-5' y='65' width='28' height='65' rx='4' fill='%230284c7'/><rect x='15' y='20' width='28' height='65' rx='4' transform='rotate(-45 15 20)' fill='%230d9488'/></g></g></svg>`;
 
   const manifest = {
@@ -615,17 +634,17 @@
     {
       grn: "MC-SKL-001",
       time: "2026-09-09 11:30",
-      vendor: "Vardhman Textiles Ltd",
+      vendor: "VARDHMAN TEXTILES LTD",
       dcNo: "DC-7721",
       poNo: "PO-SKL-99",
-      item: "100% Cotton 30s Single Jersey Navy Melange 160 GSM",
+      item: "100% COTTON 30S SINGLE JERSEY NAVY MELANGE 160 GSM",
       packages: 32,
       challanQty: 1200,
       receivedQty: 1200,
-      uom: "Kgs",
+      uom: "KGS",
       vehicle: "TN-09-CD-3321",
-      receiver: "Murugan",
-      remarks: "Shade inspection verified and passed"
+      receiver: "MURUGAN",
+      remarks: "SHADE INSPECTION VERIFIED AND PASSED"
     }
   ];
 
@@ -641,17 +660,15 @@
     document.getElementById('logCount').innerText = logs.length;
   }
 
-  // Update PO Number Whenever Needed
   function updatePO(index) {
     const input = document.getElementById(`po-input-${index}`);
-    const updatedVal = input.value.trim();
+    const updatedVal = input.value.trim().toUpperCase();
     logs[index].poNo = updatedVal || 'N/A';
     persist();
     
-    // Quick visual feedback
     const btn = document.getElementById(`po-btn-${index}`);
     const originalText = btn.innerText;
-    btn.innerText = "✓ Saved";
+    btn.innerText = "✓ SAVED";
     btn.style.background = "#15803d";
     setTimeout(() => {
       btn.innerText = originalText;
@@ -659,14 +676,13 @@
     }, 1200);
   }
 
-  // Render Mobile Cards with Inline PO Editor
   function renderCards() {
-    const filter = document.getElementById('searchBox').value.toLowerCase();
+    const filter = document.getElementById('searchBox').value.toUpperCase();
     const container = document.getElementById('cardsList');
     container.innerHTML = '';
 
     logs.forEach((item, index) => {
-      const match = `${item.grn} ${item.vendor} ${item.dcNo} ${item.poNo} ${item.vehicle} ${item.item}`.toLowerCase();
+      const match = `${item.grn} ${item.vendor} ${item.dcNo} ${item.poNo} ${item.vehicle} ${item.item}`.toUpperCase();
       if (!match.includes(filter)) return;
 
       const variance = Number(item.receivedQty) - Number(item.challanQty);
@@ -683,30 +699,30 @@
         <div class="vendor-name">${item.vendor}</div>
         <div class="item-desc">${item.item}</div>
 
-        <!-- Editable PO Bar -->
+        <!-- Editable PO Bar with forced CAPS -->
         <div class="po-edit-bar">
           <span class="po-label">PO #:</span>
-          <input type="text" id="po-input-${index}" class="po-input-inline" value="${item.poNo || ''}" placeholder="Enter / Edit PO">
-          <button type="button" id="po-btn-${index}" class="po-save-btn" onclick="updatePO(${index})">💾 Save PO</button>
+          <input type="text" id="po-input-${index}" class="po-input-inline" value="${item.poNo || ''}" placeholder="ENTER / EDIT PO" autocapitalize="characters">
+          <button type="button" id="po-btn-${index}" class="po-save-btn" onclick="updatePO(${index})">💾 SAVE PO</button>
         </div>
 
         <div class="meta-pills">
           <span class="meta-pill">DC: ${item.dcNo}</span>
           <span class="meta-pill">🚛 ${item.vehicle}</span>
-          <span class="meta-pill">📦 ${item.packages} Rolls</span>
+          <span class="meta-pill">📦 ${item.packages} ROLLS</span>
         </div>
 
         <div class="qty-comparison">
           <div class="qty-box">
-            <span>Challan</span>
+            <span>CHALLAN</span>
             <strong>${item.challanQty} ${item.uom}</strong>
           </div>
           <div class="qty-box">
-            <span>Received</span>
+            <span>RECEIVED</span>
             <strong>${item.receivedQty} ${item.uom}</strong>
           </div>
           <div class="qty-box">
-            <span>Variance</span>
+            <span>VARIANCE</span>
             <strong style="color:${isShort ? 'var(--danger)' : 'var(--success)'}">
               ${variance > 0 ? '+' + variance : variance}
             </strong>
@@ -714,9 +730,9 @@
         </div>
 
         <div class="card-footer">
-          <span class="tag ${isShort ? 'tag-short' : 'tag-ok'}">${isShort ? 'Shortage' : 'Complete'}</span>
+          <span class="tag ${isShort ? 'tag-short' : 'tag-ok'}">${isShort ? 'SHORTAGE' : 'COMPLETE'}</span>
           <div style="display:flex; align-items:center; gap: 10px;">
-            <span style="font-size:11px; color:#64748b;">By: ${item.receiver}</span>
+            <span style="font-size:11px; color:#64748b;">BY: ${item.receiver}</span>
             <button onclick="deleteEntry(${index})" style="background:none; border:none; color:var(--danger); font-size:16px; cursor:pointer; padding:4px;">✕</button>
           </div>
         </div>
@@ -725,7 +741,6 @@
     });
   }
 
-  // Handle Form Submit
   document.getElementById('entryForm').addEventListener('submit', function(e) {
     e.preventDefault();
     const grnId = "MC-SKL-" + String(logs.length + 1).padStart(3, '0');
@@ -733,17 +748,17 @@
     const entry = {
       grn: grnId,
       time: document.getElementById('inTime').value.replace('T', ' '),
-      vendor: document.getElementById('vendor').value,
-      dcNo: document.getElementById('dcNo').value,
-      poNo: document.getElementById('poNo').value || 'Pending',
-      item: document.getElementById('itemName').value,
+      vendor: document.getElementById('vendor').value.trim().toUpperCase(),
+      dcNo: document.getElementById('dcNo').value.trim().toUpperCase(),
+      poNo: document.getElementById('poNo').value.trim().toUpperCase() || 'PENDING',
+      item: document.getElementById('itemName').value.trim().toUpperCase(),
       packages: document.getElementById('packages').value,
       challanQty: document.getElementById('challanQty').value,
       receivedQty: document.getElementById('receivedQty').value,
       uom: document.getElementById('uom').value,
-      vehicle: document.getElementById('vehicleNo').value,
-      receiver: document.getElementById('receiver').value,
-      remarks: document.getElementById('remarks').value
+      vehicle: document.getElementById('vehicleNo').value.trim().toUpperCase(),
+      receiver: document.getElementById('receiver').value.trim().toUpperCase(),
+      remarks: document.getElementById('remarks').value.trim().toUpperCase()
     };
 
     logs.unshift(entry);
@@ -769,7 +784,7 @@
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
-    link.download = `SKL_Fabric_Mobile_GRN_${new Date().toISOString().slice(0,10)}.csv`;
+    link.download = `SKL_Fabric_GRN_${new Date().toISOString().slice(0,10)}.csv`;
     link.click();
   }
 

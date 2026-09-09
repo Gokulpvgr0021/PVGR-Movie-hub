@@ -3,21 +3,25 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Magnum Clothing - Inward Entry Register</title>
+  <title>SKL Warehouse - Magnum Clothing GRN Register</title>
   
-  <!-- PWA & Fullscreen Meta Tags -->
-  <meta name="theme-color" content="#1e3a8a">
+  <!-- PWA & Mobile Web Capabilities -->
+  <meta name="theme-color" content="#1e293b">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="mobile-web-app-capable" content="yes">
 
+  <!-- SVG App Icon & Favicon matching the Magnum Clothing SKL Logo -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='110' fill='%23ffffff'/%3E%3Cg transform='translate(60, 95) scale(0.72)'%3E%3Cpath d='M30 430 V175 H115 V220 C138 180 185 165 235 175 C285 185 305 220 320 255 C345 185 410 165 470 175 V430 H385 V275 C385 240 365 225 340 225 C310 225 295 245 295 285 V430 H210 V275 C210 240 190 225 165 225 C135 225 115 245 115 285 V430 Z' fill='%23000000'/%3E%3Cg transform='translate(355, 30)'%3E%3Crect x='60' y='0' width='28' height='65' rx='4' fill='%23eab308'/%3E%3Crect x='85' y='18' width='28' height='65' rx='4' transform='rotate(45 85 18)' fill='%23ea580c'/%3E%3Crect x='90' y='65' width='28' height='65' rx='4' transform='rotate(90 90 65)' fill='%231e3a8a'/%3E%3Crect x='70' y='100' width='28' height='65' rx='4' transform='rotate(135 70 100)' fill='%237e22ce'/%3E%3Crect x='-5' y='65' width='28' height='65' rx='4' fill='%230284c7'/%3E%3Crect x='15' y='20' width='28' height='65' rx='4' transform='rotate(-45 15 20)' fill='%230d9488'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E">
+
   <style>
     :root {
-      --primary: #1e3a8a;
-      --primary-hover: #172554;
+      --primary: #0f172a;
+      --accent: #2563eb;
       --success: #15803d;
-      --danger: #b91c1c;
+      --danger: #dc2626;
       --bg: #f8fafc;
+      --card: #ffffff;
       --border: #cbd5e1;
       --text: #0f172a;
     }
@@ -41,56 +45,87 @@
       width: 100vw;
     }
 
-    /* Fixed App Bar */
+    /* Top Navigation with Logo */
     .top-bar {
-      background: var(--primary);
-      color: white;
-      padding: 10px 20px;
+      background: #ffffff;
+      border-bottom: 2px solid #e2e8f0;
+      padding: 8px 18px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.15);
       flex-shrink: 0;
-      z-index: 10;
+      z-index: 20;
     }
 
-    .brand { display: flex; align-items: baseline; gap: 12px; }
-    .brand h1 { margin: 0; font-size: 18px; font-weight: 800; letter-spacing: 0.5px; }
-    .brand span { font-size: 12px; opacity: 0.85; }
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
 
-    .top-controls { display: flex; align-items: center; gap: 8px; }
+    .app-icon-img {
+      width: 44px;
+      height: 44px;
+      border-radius: 8px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    }
+
+    .title-group h1 {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      color: #000000;
+      text-transform: uppercase;
+    }
+    .title-group p {
+      margin: 2px 0 0 0;
+      font-size: 11px;
+      font-weight: 600;
+      color: #64748b;
+      letter-spacing: 0.2px;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
 
     .btn {
-      padding: 6px 12px;
-      border-radius: 4px;
+      padding: 7px 13px;
+      border-radius: 6px;
       font-size: 12px;
-      font-weight: 600;
-      border: none;
+      font-weight: 700;
+      border: 1px solid var(--border);
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      transition: background 0.15s ease;
+      background: #ffffff;
+      color: #1e293b;
+      transition: all 0.15s ease;
     }
-    .btn-light { background: #ffffff; color: var(--primary); }
-    .btn-light:hover { background: #f1f5f9; }
-    .btn-install { background: #facc15; color: #713f12; font-weight: 700; }
-    .btn-install:hover { background: #eab308; }
-    .btn-primary { background: var(--primary); color: white; }
-    .btn-primary:hover { background: var(--primary-hover); }
-    .btn-danger { background: var(--danger); color: white; }
-    .btn-success { background: var(--success); color: white; }
+    .btn:hover { background: #f1f5f9; }
+    .btn-install {
+      background: #000000;
+      color: #ffffff;
+      border-color: #000000;
+    }
+    .btn-install:hover { background: #333333; }
+    .btn-primary { background: #000000; color: #ffffff; border: none; }
+    .btn-primary:hover { background: #262626; }
 
-    /* Main Split Content */
+    /* Main Split Layout */
     .content-area {
       display: grid;
-      grid-template-columns: 360px 1fr;
+      grid-template-columns: 370px 1fr;
       flex: 1;
       overflow: hidden;
       background: #f1f5f9;
     }
 
-    /* Left Drawer: Entry Form */
+    /* Left Panel: Entry Form */
     .entry-panel {
       background: #ffffff;
       border-right: 1px solid var(--border);
@@ -99,21 +134,29 @@
       display: flex;
       flex-direction: column;
     }
-    .panel-title { font-size: 13px; font-weight: 700; color: var(--primary); text-transform: uppercase; margin-bottom: 12px; }
-    
-    .form-grid { display: flex; flex-direction: column; gap: 10px; }
+    .panel-header {
+      font-size: 12px;
+      font-weight: 800;
+      color: #0f172a;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 6px;
+    }
+
+    .form-grid { display: flex; flex-direction: column; gap: 9px; }
     .field { display: flex; flex-direction: column; }
     .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    label { font-size: 11px; font-weight: 700; color: #475569; margin-bottom: 3px; text-transform: uppercase; }
+    label { font-size: 10px; font-weight: 700; color: #475569; margin-bottom: 3px; text-transform: uppercase; }
     input, select {
       padding: 7px 9px;
       border: 1px solid var(--border);
       border-radius: 4px;
-      font-size: 13px;
+      font-size: 12px;
     }
-    input:focus, select:focus { outline: none; border-color: var(--primary); ring: 2px solid rgba(30,58,138,0.2); }
+    input:focus, select:focus { outline: none; border-color: #000; }
 
-    /* Right Panel: Notebook Table */
+    /* Right Panel: Daily Inward Table */
     .register-panel {
       padding: 16px;
       display: flex;
@@ -127,13 +170,13 @@
       margin-bottom: 12px;
       flex-shrink: 0;
     }
-    .table-box {
+    .table-card {
       background: white;
       border: 1px solid var(--border);
       border-radius: 6px;
       flex: 1;
       overflow: auto;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
     }
     table { width: 100%; border-collapse: collapse; font-size: 12px; text-align: left; }
     thead th {
@@ -157,9 +200,8 @@
       text-transform: uppercase;
     }
     .tag-ok { background: #dcfce7; color: var(--success); }
-    .tag-alert { background: #fee2e2; color: var(--danger); }
+    .tag-short { background: #fee2e2; color: var(--danger); }
 
-    /* Responsive */
     @media (max-width: 900px) {
       .content-area { grid-template-columns: 1fr; overflow-y: auto; }
       .register-panel { min-height: 400px; }
@@ -171,37 +213,55 @@
 <div class="app-layout" id="appRoot">
   <!-- Top App Navigation -->
   <div class="top-bar">
-    <div class="brand">
-      <h1>MAGNUM CLOTHING</h1>
-      <span>Digital Inward Notebook & GRN</span>
+    <div class="logo-container">
+      <!-- App Icon Embedded Directly -->
+      <svg class="app-icon-img" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+        <rect width="512" height="512" rx="90" fill="#ffffff" stroke="#e2e8f0" stroke-width="8"/>
+        <g transform="translate(60, 95) scale(0.72)">
+          <path d="M30 430 V175 H115 V220 C138 180 185 165 235 175 C285 185 305 220 320 255 C345 185 410 165 470 175 V430 H385 V275 C385 240 365 225 340 225 C310 225 295 245 295 285 V430 H210 V275 C210 240 190 225 165 225 C135 225 115 245 115 285 V430 Z" fill="#000000"/>
+          <g transform="translate(355, 30)">
+            <rect x="60" y="0" width="28" height="65" rx="4" fill="#eab308"/>
+            <rect x="85" y="18" width="28" height="65" rx="4" transform="rotate(45 85 18)" fill="#ea580c"/>
+            <rect x="90" y="65" width="28" height="65" rx="4" transform="rotate(90 90 65)" fill="#1e3a8a"/>
+            <rect x="70" y="100" width="28" height="65" rx="4" transform="rotate(135 70 100)" fill="#7e22ce"/>
+            <rect x="-5" y="65" width="28" height="65" rx="4" fill="#0284c7"/>
+            <rect x="15" y="20" width="28" height="65" rx="4" transform="rotate(-45 15 20)" fill="#0d9488"/>
+          </g>
+        </g>
+      </svg>
+      <div class="title-group">
+        <h1>SKL Warehouse Fabric Team</h1>
+        <p>magnum clothing — inward gate register</p>
+      </div>
     </div>
-    <div class="top-controls">
-      <span id="liveClock" style="font-size: 12px; margin-right: 8px; font-variant-numeric: tabular-nums;"></span>
+
+    <div class="top-actions">
+      <span id="liveClock" style="font-size: 12px; font-weight:600; color:#475569; margin-right: 8px;"></span>
       <button class="btn btn-install" id="installBtn" style="display: none;" onclick="triggerAppInstall()">
-        📲 Install App
+        📲 Download App
       </button>
-      <button class="btn btn-light" onclick="toggleFullScreen()">
-        ⛶ Fullscreen
+      <button class="btn" onclick="toggleFullScreen()">
+        ⛶ Full Screen
       </button>
-      <button class="btn btn-light" onclick="exportToCSV()">
+      <button class="btn" onclick="exportToCSV()">
         📥 Export CSV
       </button>
     </div>
   </div>
 
-  <!-- Main Body Content -->
+  <!-- Content Workspace -->
   <div class="content-area">
-    <!-- Entry Register Drawer -->
+    <!-- Left Inward Form -->
     <div class="entry-panel">
-      <div class="panel-title">New Inward Entry</div>
+      <div class="panel-header">+ New Fabric / Trims Inward</div>
       <form id="entryForm" class="form-grid">
         <div class="field">
           <label>Entry Date & Time</label>
           <input type="datetime-local" id="inTime" required>
         </div>
         <div class="field">
-          <label>Vendor / Mills</label>
-          <input type="text" id="vendor" placeholder="e.g. Vardhman Textiles" required>
+          <label>Supplier / Mill Name</label>
+          <input type="text" id="vendor" placeholder="e.g. Vardhman / Arvind Mills" required>
         </div>
         <div class="field-row">
           <div class="field">
@@ -210,24 +270,24 @@
           </div>
           <div class="field">
             <label>PO Number</label>
-            <input type="text" id="poNo" placeholder="PO-881" required>
+            <input type="text" id="poNo" placeholder="PO-MC-441" required>
           </div>
         </div>
         <div class="field">
-          <label>Material Details</label>
-          <input type="text" id="itemName" placeholder="e.g. 100% Cotton Knitted Fabric" required>
+          <label>Fabric / Item Details</label>
+          <input type="text" id="itemName" placeholder="e.g. 100% Cotton 30s Single Jersey" required>
         </div>
         <div class="field-row">
           <div class="field">
-            <label>Packages / Rolls</label>
-            <input type="number" id="packages" placeholder="Cartons/Rolls" required>
+            <label>No. of Rolls / Cartons</label>
+            <input type="number" id="packages" placeholder="e.g. 25" required>
           </div>
           <div class="field">
             <label>UOM</label>
             <select id="uom">
               <option value="Meters">Meters</option>
-              <option value="Pieces">Pieces</option>
               <option value="Kgs">Kgs</option>
+              <option value="Pieces">Pieces</option>
               <option value="Cones">Cones</option>
             </select>
           </div>
@@ -239,7 +299,7 @@
           </div>
           <div class="field">
             <label>Received Qty</label>
-            <input type="number" step="any" id="receivedQty" placeholder="Counted" required>
+            <input type="number" step="any" id="receivedQty" placeholder="Actual" required>
           </div>
         </div>
         <div class="field-row">
@@ -248,38 +308,38 @@
             <input type="text" id="vehicleNo" placeholder="TN-09-AB-1234" required>
           </div>
           <div class="field">
-            <label>Receiver Name</label>
-            <input type="text" id="receiver" placeholder="Store Officer" required>
+            <label>Inspector / Receiver</label>
+            <input type="text" id="receiver" placeholder="Staff Name" required>
           </div>
         </div>
         <div class="field">
-          <label>Remarks / QC Notes</label>
-          <input type="text" id="remarks" placeholder="Seals checked, clean packing">
+          <label>Inspection Notes / Remarks</label>
+          <input type="text" id="remarks" placeholder="Roll seals intact, shade pass">
         </div>
-        <div style="display:flex; gap: 8px; margin-top: 6px;">
-          <button type="reset" class="btn" style="background:#e2e8f0; color:#334155; flex:1;">Reset</button>
-          <button type="submit" class="btn btn-primary" style="flex:2;">+ Log Inward</button>
+        <div style="display:flex; gap: 8px; margin-top: 8px;">
+          <button type="reset" class="btn" style="flex:1;">Reset</button>
+          <button type="submit" class="btn btn-primary" style="flex:2;">Log Inward</button>
         </div>
       </form>
     </div>
 
-    <!-- Active Register Log -->
+    <!-- Right Live Register Log -->
     <div class="register-panel">
       <div class="register-toolbar">
-        <div style="font-weight: 700; font-size: 14px; color: #1e293b;">STORE LOGBOOK REGISTER</div>
-        <input type="text" id="searchBox" placeholder="Filter by Vendor, DC, or Vehicle..." onkeyup="renderTable()" style="width: 260px; padding: 6px 10px; border-radius: 4px; border: 1px solid var(--border);">
+        <div style="font-weight: 700; font-size: 13px; text-transform: uppercase;">Warehouse Daily Inward Notebook</div>
+        <input type="text" id="searchBox" placeholder="Filter Mill, DC #, Vehicle..." onkeyup="renderTable()" style="width: 260px; padding: 6px 10px; border-radius: 4px; border: 1px solid var(--border);">
       </div>
 
-      <div class="table-box">
+      <div class="table-card">
         <table id="logTable">
           <thead>
             <tr>
               <th>GRN Ref</th>
               <th>Date & Time</th>
-              <th>Vendor</th>
+              <th>Supplier / Mill</th>
               <th>DC No</th>
               <th>PO No</th>
-              <th>Material</th>
+              <th>Fabric Details</th>
               <th>Pkgs</th>
               <th>Challan</th>
               <th>Received</th>
@@ -297,34 +357,34 @@
   </div>
 </div>
 
-<!-- Inline Web Manifest & PWA Installation Logic -->
 <script>
-  // 1. Dynamic Web App Manifest for App Download Prompt
+  // Exact Magnum Clothing SVG App Icon Data
+  const appSvg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='100' fill='%23ffffff'/><g transform='translate(60, 95) scale(0.72)'><path d='M30 430 V175 H115 V220 C138 180 185 165 235 175 C285 185 305 220 320 255 C345 185 410 165 470 175 V430 H385 V275 C385 240 365 225 340 225 C310 225 295 245 295 285 V430 H210 V275 C210 240 190 225 165 225 C135 225 115 245 115 285 V430 Z' fill='%23000000'/><g transform='translate(355, 30)'><rect x='60' y='0' width='28' height='65' rx='4' fill='%23eab308'/><rect x='85' y='18' width='28' height='65' rx='4' transform='rotate(45 85 18)' fill='%23ea580c'/><rect x='90' y='65' width='28' height='65' rx='4' transform='rotate(90 90 65)' fill='%231e3a8a'/><rect x='70' y='100' width='28' height='65' rx='4' transform='rotate(135 70 100)' fill='%237e22ce'/><rect x='-5' y='65' width='28' height='65' rx='4' fill='%230284c7'/><rect x='15' y='20' width='28' height='65' rx='4' transform='rotate(-45 15 20)' fill='%230d9488'/></g></g></svg>`;
+
+  // 1. Web App Manifest with the Magnum "m" Star Icon
   const manifest = {
-    name: "Magnum Clothing GRN",
-    short_name: "MagnumGRN",
+    name: "Magnum SKL Fabric GRN",
+    short_name: "SKL Fabric",
     start_url: window.location.href,
     display: "fullscreen",
     orientation: "landscape-primary",
-    background_color: "#1e3a8a",
-    theme_color: "#1e3a8a",
+    background_color: "#ffffff",
+    theme_color: "#0f172a",
     icons: [
       {
-        src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%231e3a8a'/%3E%3Ctext x='50' y='65' fill='%23ffffff' font-size='42' font-family='sans-serif' font-weight='bold' text-anchor='middle'%3EMC%3C/text%3E%3C/svg%3E",
+        src: `data:image/svg+xml;charset=utf-8,${encodeURIComponent(appSvg)}`,
         sizes: "192x192 512x512",
         type: "image/svg+xml"
       }
     ]
   };
-  const stringManifest = JSON.stringify(manifest);
-  const blob = new Blob([stringManifest], {type: 'application/json'});
-  const manifestURL = URL.createObjectURL(blob);
+  const blob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
   const link = document.createElement('link');
   link.rel = 'manifest';
-  link.href = manifestURL;
+  link.href = URL.createObjectURL(blob);
   document.head.appendChild(link);
 
-  // 2. Register Mock ServiceWorker to satisfy PWA criteria
+  // 2. Service Worker for PWA Installation Eligibility
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       const swCode = `self.addEventListener('fetch', e => e.respondWith(fetch(e.request).catch(() => new Response('Offline'))));`;
@@ -333,7 +393,7 @@
     });
   }
 
-  // 3. Handle App Download / Install Prompt
+  // 3. Download App Handler
   let deferredPrompt;
   const installBtn = document.getElementById('installBtn');
 
@@ -353,11 +413,11 @@
         deferredPrompt = null;
       });
     } else {
-      alert("To download on Chrome/Edge: Click the three dots in your browser bar and select 'Install Magnum Clothing...' or 'Install App'.");
+      alert("To add this App to your Home Screen / Desktop:\n- On Android/Chrome: Tap 3 dots > 'Install App' or 'Add to Home Screen'\n- On iPhone/iPad: Tap Share > 'Add to Home Screen'\n- On PC/Mac: Click the install icon in your address bar.");
     }
   }
 
-  // 4. Always Fullscreen Toggle Logic
+  // 4. Fullscreen Mode
   function toggleFullScreen() {
     const elem = document.documentElement;
     if (!document.fullscreenElement && !document.webkitFullscreenElement) {
@@ -375,31 +435,23 @@
     }
   }
 
-  // Optional: Click anywhere on body to request fullscreen if supported and desired
-  window.addEventListener('click', () => {
-    // Only attempt on touch devices if not already fullscreen
-    if (!document.fullscreenElement && window.matchMedia('(display-mode: standalone)').matches) {
-      document.documentElement.requestFullscreen().catch(() => {});
-    }
-  }, { once: true });
-
-  // 5. Digital Notebook Storage & Operations
-  const STORAGE_KEY = 'MAGNUM_REGISTER_DATA';
+  // 5. Inward Register State & Operations
+  const STORAGE_KEY = 'MAGNUM_SKL_FABRIC_LOGS';
   let logs = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [
     {
-      grn: "MC-26-001",
-      time: "2026-09-09 09:30",
-      vendor: "Arvind Mills Ltd",
-      dcNo: "DC-4421",
-      poNo: "PO-1082",
-      item: "Indigo Twill 12oz",
-      packages: 18,
-      challanQty: 1000,
-      receivedQty: 1000,
-      uom: "Meters",
-      vehicle: "TN-01-AB-7744",
+      grn: "MC-SKL-001",
+      time: "2026-09-09 11:30",
+      vendor: "Vardhman Textiles Ltd",
+      dcNo: "DC-7721",
+      poNo: "PO-SKL-99",
+      item: "Single Jersey 160 GSM Navy",
+      packages: 32,
+      challanQty: 1200,
+      receivedQty: 1200,
+      uom: "Kgs",
+      vehicle: "TN-09-CD-3321",
       receiver: "Murugan",
-      remarks: "Quality checked"
+      remarks: "Quality Approved"
     }
   ];
 
@@ -449,7 +501,7 @@
         </td>
         <td>${item.vehicle}</td>
         <td>${item.receiver}</td>
-        <td><span class="tag ${isShort ? 'tag-alert' : 'tag-ok'}">${isShort ? 'Shortage' : 'Complete'}</span></td>
+        <td><span class="tag ${isShort ? 'tag-short' : 'tag-ok'}">${isShort ? 'Shortage' : 'Complete'}</span></td>
         <td><button onclick="deleteEntry(${index})" style="background:none; border:none; color:var(--danger); cursor:pointer; font-weight:bold;">✕</button></td>
       `;
       tbody.appendChild(row);
@@ -458,7 +510,7 @@
 
   document.getElementById('entryForm').addEventListener('submit', function(e) {
     e.preventDefault();
-    const grnId = "MC-26-" + String(logs.length + 1).padStart(3, '0');
+    const grnId = "MC-SKL-" + String(logs.length + 1).padStart(3, '0');
     
     const entry = {
       grn: grnId,
@@ -483,7 +535,7 @@
   });
 
   function deleteEntry(index) {
-    if (confirm("Delete this GRN record?")) {
+    if (confirm("Delete this entry?")) {
       logs.splice(index, 1);
       persistAndDraw();
     }
@@ -497,7 +549,7 @@
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
-    link.download = `Magnum_GRN_Book_${new Date().toISOString().slice(0,10)}.csv`;
+    link.download = `SKL_Fabric_Register_${new Date().toISOString().slice(0,10)}.csv`;
     link.click();
   }
 

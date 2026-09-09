@@ -5,13 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>SKL Warehouse - Magnum Clothing GRN Register</title>
   
-  <!-- PWA & Mobile Web Capabilities -->
-  <meta name="theme-color" content="#1e293b">
+  <meta name="theme-color" content="#0f172a">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="mobile-web-app-capable" content="yes">
 
-  <!-- SVG App Icon & Favicon matching the Magnum Clothing SKL Logo -->
+  <!-- Magnum Clothing SKL Logo Vector -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='110' fill='%23ffffff'/%3E%3Cg transform='translate(60, 95) scale(0.72)'%3E%3Cpath d='M30 430 V175 H115 V220 C138 180 185 165 235 175 C285 185 305 220 320 255 C345 185 410 165 470 175 V430 H385 V275 C385 240 365 225 340 225 C310 225 295 245 295 285 V430 H210 V275 C210 240 190 225 165 225 C135 225 115 245 115 285 V430 Z' fill='%23000000'/%3E%3Cg transform='translate(355, 30)'%3E%3Crect x='60' y='0' width='28' height='65' rx='4' fill='%23eab308'/%3E%3Crect x='85' y='18' width='28' height='65' rx='4' transform='rotate(45 85 18)' fill='%23ea580c'/%3E%3Crect x='90' y='65' width='28' height='65' rx='4' transform='rotate(90 90 65)' fill='%231e3a8a'/%3E%3Crect x='70' y='100' width='28' height='65' rx='4' transform='rotate(135 70 100)' fill='%237e22ce'/%3E%3Crect x='-5' y='65' width='28' height='65' rx='4' fill='%230284c7'/%3E%3Crect x='15' y='20' width='28' height='65' rx='4' transform='rotate(-45 15 20)' fill='%230d9488'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E">
 
   <style>
@@ -33,7 +32,7 @@
       padding: 0;
       width: 100vw;
       height: 100vh;
-      overflow: hidden;
+      overflow-x: hidden;
       background: var(--bg);
       color: var(--text);
     }
@@ -41,38 +40,41 @@
     .app-layout {
       display: flex;
       flex-direction: column;
-      height: 100vh;
+      min-height: 100vh;
       width: 100vw;
     }
 
-    /* Top Navigation with Logo */
+    /* Top Sticky Navigation */
     .top-bar {
+      position: sticky;
+      top: 0;
       background: #ffffff;
       border-bottom: 2px solid #e2e8f0;
-      padding: 8px 18px;
+      padding: 10px 24px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      flex-shrink: 0;
-      z-index: 20;
+      z-index: 50;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
     }
 
     .logo-container {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 14px;
     }
 
     .app-icon-img {
-      width: 44px;
-      height: 44px;
+      width: 48px;
+      height: 48px;
       border-radius: 8px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      flex-shrink: 0;
     }
 
     .title-group h1 {
       margin: 0;
-      font-size: 15px;
+      font-size: 17px;
       font-weight: 800;
       letter-spacing: 0.5px;
       color: #000000;
@@ -80,22 +82,21 @@
     }
     .title-group p {
       margin: 2px 0 0 0;
-      font-size: 11px;
+      font-size: 12px;
       font-weight: 600;
       color: #64748b;
-      letter-spacing: 0.2px;
     }
 
     .top-actions {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
     }
 
     .btn {
-      padding: 7px 13px;
+      padding: 9px 16px;
       border-radius: 6px;
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 700;
       border: 1px solid var(--border);
       cursor: pointer;
@@ -113,108 +114,158 @@
       border-color: #000000;
     }
     .btn-install:hover { background: #333333; }
-    .btn-primary { background: #000000; color: #ffffff; border: none; }
+    .btn-primary { 
+      background: #000000; 
+      color: #ffffff; 
+      border: none;
+      font-size: 14px;
+      padding: 12px 24px;
+    }
     .btn-primary:hover { background: #262626; }
 
-    /* Main Split Layout */
+    /* Wide Content Area */
     .content-area {
-      display: grid;
-      grid-template-columns: 370px 1fr;
       flex: 1;
-      overflow: hidden;
-      background: #f1f5f9;
-    }
-
-    /* Left Panel: Entry Form */
-    .entry-panel {
-      background: #ffffff;
-      border-right: 1px solid var(--border);
-      padding: 16px;
-      overflow-y: auto;
+      padding: 24px 32px;
+      max-width: 1500px;
+      width: 100%;
+      margin: 0 auto;
       display: flex;
       flex-direction: column;
+      gap: 24px;
+    }
+
+    /* Wide Entry Form Card */
+    .entry-panel {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 24px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
     }
     .panel-header {
-      font-size: 12px;
+      font-size: 14px;
       font-weight: 800;
       color: #0f172a;
       text-transform: uppercase;
-      margin-bottom: 12px;
-      border-bottom: 1px solid #e2e8f0;
-      padding-bottom: 6px;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #f1f5f9;
+      padding-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
-    .form-grid { display: flex; flex-direction: column; gap: 9px; }
+    /* Roomy Inputs Layout */
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 16px;
+    }
+    .col-12 { grid-column: span 12; }
+    .col-6  { grid-column: span 6; }
+    .col-4  { grid-column: span 4; }
+    .col-3  { grid-column: span 3; }
+    .col-2  { grid-column: span 2; }
+
     .field { display: flex; flex-direction: column; }
-    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    label { font-size: 10px; font-weight: 700; color: #475569; margin-bottom: 3px; text-transform: uppercase; }
-    input, select {
-      padding: 7px 9px;
-      border: 1px solid var(--border);
-      border-radius: 4px;
+    label {
       font-size: 12px;
+      font-weight: 700;
+      color: #334155;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
     }
-    input:focus, select:focus { outline: none; border-color: #000; }
+    
+    /* Long and Spacious Input Boxes */
+    input, select, textarea {
+      padding: 11px 14px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 15px;
+      color: #0f172a;
+      background: #ffffff;
+      width: 100%;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: #000000;
+      box-shadow: 0 0 0 3px rgba(0,0,0,0.06);
+    }
 
-    /* Right Panel: Daily Inward Table */
+    .form-buttons {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    /* Wide Notebook Register Card */
     .register-panel {
-      padding: 16px;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 24px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
       display: flex;
       flex-direction: column;
-      overflow: hidden;
+      gap: 16px;
     }
     .register-toolbar {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 12px;
-      flex-shrink: 0;
+      gap: 16px;
+      flex-wrap: wrap;
     }
-    .table-card {
-      background: white;
+    .search-wide {
+      width: 400px;
+      max-width: 100%;
+      padding: 10px 14px;
+      font-size: 14px;
+    }
+
+    .table-container {
       border: 1px solid var(--border);
       border-radius: 6px;
-      flex: 1;
-      overflow: auto;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      overflow-x: auto;
     }
-    table { width: 100%; border-collapse: collapse; font-size: 12px; text-align: left; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; }
     thead th {
-      position: sticky;
-      top: 0;
       background: #f8fafc;
       color: #334155;
-      padding: 10px 8px;
+      padding: 12px 10px;
       border-bottom: 2px solid var(--border);
       white-space: nowrap;
-      z-index: 5;
+      font-weight: 700;
     }
-    td { padding: 8px; border-bottom: 1px solid #e2e8f0; white-space: nowrap; }
+    td { padding: 10px; border-bottom: 1px solid #e2e8f0; white-space: nowrap; }
     tr:hover { background: #f8fafc; }
 
     .tag {
-      padding: 3px 8px;
+      padding: 4px 9px;
       border-radius: 12px;
       font-weight: 700;
-      font-size: 10px;
+      font-size: 11px;
       text-transform: uppercase;
     }
     .tag-ok { background: #dcfce7; color: var(--success); }
     .tag-short { background: #fee2e2; color: var(--danger); }
 
-    @media (max-width: 900px) {
-      .content-area { grid-template-columns: 1fr; overflow-y: auto; }
-      .register-panel { min-height: 400px; }
+    @media (max-width: 1024px) {
+      .col-6, .col-4, .col-3, .col-2 { grid-column: span 12; }
+      .content-area { padding: 16px; }
     }
   </style>
 </head>
 <body>
 
 <div class="app-layout" id="appRoot">
-  <!-- Top App Navigation -->
+  <!-- Top Navigation Header -->
   <div class="top-bar">
     <div class="logo-container">
-      <!-- App Icon Embedded Directly -->
       <svg class="app-icon-img" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
         <rect width="512" height="512" rx="90" fill="#ffffff" stroke="#e2e8f0" stroke-width="8"/>
         <g transform="translate(60, 95) scale(0.72)">
@@ -230,13 +281,13 @@
         </g>
       </svg>
       <div class="title-group">
-        <h1>SKL Warehouse Fabric Team</h1>
-        <p>magnum clothing — inward gate register</p>
+        <h1>SKL WAREHOUSE FABRIC TEAM</h1>
+        <p>MAGNUM CLOTHING — INWARD GATE & STORES REGISTER</p>
       </div>
     </div>
 
     <div class="top-actions">
-      <span id="liveClock" style="font-size: 12px; font-weight:600; color:#475569; margin-right: 8px;"></span>
+      <span id="liveClock" style="font-size: 13px; font-weight:700; color:#475569; margin-right: 10px;"></span>
       <button class="btn btn-install" id="installBtn" style="display: none;" onclick="triggerAppInstall()">
         📲 Download App
       </button>
@@ -244,93 +295,105 @@
         ⛶ Full Screen
       </button>
       <button class="btn" onclick="exportToCSV()">
-        📥 Export CSV
+        📥 Export Excel/CSV
       </button>
     </div>
   </div>
 
-  <!-- Content Workspace -->
   <div class="content-area">
-    <!-- Left Inward Form -->
+    <!-- Spacious Entry Panel -->
     <div class="entry-panel">
-      <div class="panel-header">+ New Fabric / Trims Inward</div>
-      <form id="entryForm" class="form-grid">
-        <div class="field">
-          <label>Entry Date & Time</label>
-          <input type="datetime-local" id="inTime" required>
-        </div>
-        <div class="field">
-          <label>Supplier / Mill Name</label>
-          <input type="text" id="vendor" placeholder="e.g. Vardhman / Arvind Mills" required>
-        </div>
-        <div class="field-row">
-          <div class="field">
+      <div class="panel-header">
+        <span>+ New Inward Entry Form</span>
+        <span style="font-size: 12px; color: #64748b;">All fields expandable for long textile codes & notes</span>
+      </div>
+
+      <form id="entryForm">
+        <div class="form-grid">
+          <div class="field col-3">
+            <label>Entry Date & Time</label>
+            <input type="datetime-local" id="inTime" required>
+          </div>
+
+          <div class="field col-5">
+            <label>Supplier / Mill Name</label>
+            <input type="text" id="vendor" placeholder="e.g. Vardhman Textiles Ltd / Arvind Mills Ltd" required>
+          </div>
+
+          <div class="field col-2">
             <label>DC / Invoice #</label>
-            <input type="text" id="dcNo" placeholder="DC-1092" required>
+            <input type="text" id="dcNo" placeholder="DC-88421" required>
           </div>
-          <div class="field">
+
+          <div class="field col-2">
             <label>PO Number</label>
-            <input type="text" id="poNo" placeholder="PO-MC-441" required>
+            <input type="text" id="poNo" placeholder="PO-SKL-2026-90" required>
           </div>
-        </div>
-        <div class="field">
-          <label>Fabric / Item Details</label>
-          <input type="text" id="itemName" placeholder="e.g. 100% Cotton 30s Single Jersey" required>
-        </div>
-        <div class="field-row">
-          <div class="field">
-            <label>No. of Rolls / Cartons</label>
-            <input type="number" id="packages" placeholder="e.g. 25" required>
+
+          <div class="field col-8">
+            <label>Fabric Style & Construction Details</label>
+            <input type="text" id="itemName" placeholder="e.g. 100% Combed Cotton 30s Single Jersey 160 GSM Navy Melange" required>
           </div>
-          <div class="field">
-            <label>UOM</label>
+
+          <div class="field col-2">
+            <label>Packages / Rolls</label>
+            <input type="number" id="packages" placeholder="e.g. 45 Rolls" required>
+          </div>
+
+          <div class="field col-2">
+            <label>Unit of Measure (UOM)</label>
             <select id="uom">
-              <option value="Meters">Meters</option>
               <option value="Kgs">Kgs</option>
+              <option value="Meters">Meters</option>
               <option value="Pieces">Pieces</option>
               <option value="Cones">Cones</option>
             </select>
           </div>
-        </div>
-        <div class="field-row">
-          <div class="field">
-            <label>Challan Qty</label>
-            <input type="number" step="any" id="challanQty" placeholder="Sent" required>
+
+          <div class="field col-3">
+            <label>Challan / Dispatched Quantity</label>
+            <input type="number" step="any" id="challanQty" placeholder="0.00" required>
           </div>
-          <div class="field">
-            <label>Received Qty</label>
-            <input type="number" step="any" id="receivedQty" placeholder="Actual" required>
+
+          <div class="field col-3">
+            <label>Actual Received Quantity</label>
+            <input type="number" step="any" id="receivedQty" placeholder="0.00" required>
+          </div>
+
+          <div class="field col-3">
+            <label>Lorry / Vehicle Number</label>
+            <input type="text" id="vehicleNo" placeholder="e.g. TN-09-AB-9876" required>
+          </div>
+
+          <div class="field col-3">
+            <label>Receiver / Gate In-Charge</label>
+            <input type="text" id="receiver" placeholder="Your Name" required>
+          </div>
+
+          <div class="field col-12">
+            <label>Inspection Notes, Shade Variation, Roll Seal Condition & Remarks</label>
+            <input type="text" id="remarks" placeholder="Type detailed roll tags, lot numbers, shrinkage test notes, shortage details here...">
           </div>
         </div>
-        <div class="field-row">
-          <div class="field">
-            <label>Vehicle No.</label>
-            <input type="text" id="vehicleNo" placeholder="TN-09-AB-1234" required>
-          </div>
-          <div class="field">
-            <label>Inspector / Receiver</label>
-            <input type="text" id="receiver" placeholder="Staff Name" required>
-          </div>
-        </div>
-        <div class="field">
-          <label>Inspection Notes / Remarks</label>
-          <input type="text" id="remarks" placeholder="Roll seals intact, shade pass">
-        </div>
-        <div style="display:flex; gap: 8px; margin-top: 8px;">
-          <button type="reset" class="btn" style="flex:1;">Reset</button>
-          <button type="submit" class="btn btn-primary" style="flex:2;">Log Inward</button>
+
+        <div class="form-buttons">
+          <button type="reset" class="btn" style="padding: 12px 24px; font-size: 14px;">Clear Fields</button>
+          <button type="submit" class="btn btn-primary">+ Save & Log Inward Entry</button>
         </div>
       </form>
     </div>
 
-    <!-- Right Live Register Log -->
+    <!-- Wide Daily Ledger Register -->
     <div class="register-panel">
       <div class="register-toolbar">
-        <div style="font-weight: 700; font-size: 13px; text-transform: uppercase;">Warehouse Daily Inward Notebook</div>
-        <input type="text" id="searchBox" placeholder="Filter Mill, DC #, Vehicle..." onkeyup="renderTable()" style="width: 260px; padding: 6px 10px; border-radius: 4px; border: 1px solid var(--border);">
+        <div>
+          <h2 style="margin: 0; font-size: 16px; font-weight: 800; text-transform: uppercase;">DAILY WAREHOUSE INWARD REGISTER</h2>
+          <p style="margin: 4px 0 0 0; font-size: 12px; color: #64748b;">Live record of all fabric shipments received at the gate.</p>
+        </div>
+        <input type="text" id="searchBox" class="search-wide" placeholder="🔎 Search Mill Name, Invoice, Vehicle No, or Fabric..." onkeyup="renderTable()">
       </div>
 
-      <div class="table-card">
+      <div class="table-container">
         <table id="logTable">
           <thead>
             <tr>
@@ -339,12 +402,12 @@
               <th>Supplier / Mill</th>
               <th>DC No</th>
               <th>PO No</th>
-              <th>Fabric Details</th>
-              <th>Pkgs</th>
-              <th>Challan</th>
-              <th>Received</th>
-              <th>Variance</th>
-              <th>Vehicle</th>
+              <th>Fabric & Construction</th>
+              <th>Rolls</th>
+              <th>Challan Qty</th>
+              <th>Received Qty</th>
+              <th>Difference</th>
+              <th>Vehicle No</th>
               <th>Receiver</th>
               <th>Status</th>
               <th>Action</th>
@@ -358,10 +421,10 @@
 </div>
 
 <script>
-  // Exact Magnum Clothing SVG App Icon Data
+  // Exact SVG Logo for Favicon & Web Manifest
   const appSvg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='100' fill='%23ffffff'/><g transform='translate(60, 95) scale(0.72)'><path d='M30 430 V175 H115 V220 C138 180 185 165 235 175 C285 185 305 220 320 255 C345 185 410 165 470 175 V430 H385 V275 C385 240 365 225 340 225 C310 225 295 245 295 285 V430 H210 V275 C210 240 190 225 165 225 C135 225 115 245 115 285 V430 Z' fill='%23000000'/><g transform='translate(355, 30)'><rect x='60' y='0' width='28' height='65' rx='4' fill='%23eab308'/><rect x='85' y='18' width='28' height='65' rx='4' transform='rotate(45 85 18)' fill='%23ea580c'/><rect x='90' y='65' width='28' height='65' rx='4' transform='rotate(90 90 65)' fill='%231e3a8a'/><rect x='70' y='100' width='28' height='65' rx='4' transform='rotate(135 70 100)' fill='%237e22ce'/><rect x='-5' y='65' width='28' height='65' rx='4' fill='%230284c7'/><rect x='15' y='20' width='28' height='65' rx='4' transform='rotate(-45 15 20)' fill='%230d9488'/></g></g></svg>`;
 
-  // 1. Web App Manifest with the Magnum "m" Star Icon
+  // Dynamic Web Manifest
   const manifest = {
     name: "Magnum SKL Fabric GRN",
     short_name: "SKL Fabric",
@@ -384,7 +447,7 @@
   link.href = URL.createObjectURL(blob);
   document.head.appendChild(link);
 
-  // 2. Service Worker for PWA Installation Eligibility
+  // Service Worker
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       const swCode = `self.addEventListener('fetch', e => e.respondWith(fetch(e.request).catch(() => new Response('Offline'))));`;
@@ -393,7 +456,7 @@
     });
   }
 
-  // 3. Download App Handler
+  // App Install Prompt Handler
   let deferredPrompt;
   const installBtn = document.getElementById('installBtn');
 
@@ -413,11 +476,11 @@
         deferredPrompt = null;
       });
     } else {
-      alert("To add this App to your Home Screen / Desktop:\n- On Android/Chrome: Tap 3 dots > 'Install App' or 'Add to Home Screen'\n- On iPhone/iPad: Tap Share > 'Add to Home Screen'\n- On PC/Mac: Click the install icon in your address bar.");
+      alert("To install:\n1. On Android/Chrome: Tap menu > 'Install App' / 'Add to Home screen'\n2. On iPhone/iPad: Tap Share > 'Add to Home Screen'\n3. On PC/Mac: Click the install icon in your address bar.");
     }
   }
 
-  // 4. Fullscreen Mode
+  // Full Screen Toggle
   function toggleFullScreen() {
     const elem = document.documentElement;
     if (!document.fullscreenElement && !document.webkitFullscreenElement) {
@@ -435,7 +498,7 @@
     }
   }
 
-  // 5. Inward Register State & Operations
+  // Notebook Storage & Render
   const STORAGE_KEY = 'MAGNUM_SKL_FABRIC_LOGS';
   let logs = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [
     {
@@ -444,14 +507,14 @@
       vendor: "Vardhman Textiles Ltd",
       dcNo: "DC-7721",
       poNo: "PO-SKL-99",
-      item: "Single Jersey 160 GSM Navy",
+      item: "100% Cotton 30s Single Jersey 160 GSM Navy Melange",
       packages: 32,
       challanQty: 1200,
       receivedQty: 1200,
       uom: "Kgs",
       vehicle: "TN-09-CD-3321",
       receiver: "Murugan",
-      remarks: "Quality Approved"
+      remarks: "Shade approval verified, lot tags attached"
     }
   ];
 
@@ -492,7 +555,7 @@
         <td>${item.vendor}</td>
         <td>${item.dcNo}</td>
         <td>${item.poNo}</td>
-        <td>${item.item}</td>
+        <td style="max-width: 280px; overflow: hidden; text-overflow: ellipsis;" title="${item.item}">${item.item}</td>
         <td>${item.packages}</td>
         <td>${item.challanQty} ${item.uom}</td>
         <td>${item.receivedQty} ${item.uom}</td>
@@ -502,7 +565,7 @@
         <td>${item.vehicle}</td>
         <td>${item.receiver}</td>
         <td><span class="tag ${isShort ? 'tag-short' : 'tag-ok'}">${isShort ? 'Shortage' : 'Complete'}</span></td>
-        <td><button onclick="deleteEntry(${index})" style="background:none; border:none; color:var(--danger); cursor:pointer; font-weight:bold;">✕</button></td>
+        <td><button onclick="deleteEntry(${index})" style="background:none; border:none; color:var(--danger); cursor:pointer; font-weight:bold; font-size:14px;">✕</button></td>
       `;
       tbody.appendChild(row);
     });
@@ -535,7 +598,7 @@
   });
 
   function deleteEntry(index) {
-    if (confirm("Delete this entry?")) {
+    if (confirm("Delete this GRN entry?")) {
       logs.splice(index, 1);
       persistAndDraw();
     }

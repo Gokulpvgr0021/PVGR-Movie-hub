@@ -44,7 +44,6 @@
       touch-action: manipulation;
     }
 
-    /* Full Viewport App Frame */
     .mobile-frame {
       display: flex;
       flex-direction: column;
@@ -132,7 +131,7 @@
     .view-panel { display: none; }
     .view-panel.active { display: block; }
 
-    /* Long Spacious Form Inputs for Mobile */
+    /* Long Inputs for Mobile */
     .form-card {
       background: var(--card);
       border: 1px solid var(--border);
@@ -165,7 +164,6 @@
       letter-spacing: 0.3px;
     }
 
-    /* Minimum 16px font prevents mobile safari/chrome from auto-zooming */
     input, select, textarea {
       font-size: 16px;
       padding: 12px 14px;
@@ -200,7 +198,7 @@
 
     .submit-btn:active { background: #262626; }
 
-    /* Register Mobile Cards */
+    /* Register Cards */
     .search-bar {
       margin-bottom: 14px;
     }
@@ -210,11 +208,11 @@
       border: 1px solid var(--border);
       border-radius: 12px;
       padding: 14px;
-      margin-bottom: 12px;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+      margin-bottom: 14px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 9px;
     }
 
     .log-card-header {
@@ -252,12 +250,56 @@
       line-height: 1.4;
     }
 
+    /* Editable PO Section inside Card */
+    .po-edit-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      padding: 6px 8px;
+      border-radius: 6px;
+    }
+
+    .po-label {
+      font-size: 11px;
+      font-weight: 800;
+      color: #475569;
+      white-space: nowrap;
+    }
+
+    .po-input-inline {
+      flex: 1;
+      padding: 6px 8px !important;
+      font-size: 13px !important;
+      font-weight: 700;
+      color: #0f172a;
+      border: 1px solid #cbd5e1 !important;
+      background: #ffffff !important;
+      border-radius: 4px !important;
+    }
+
+    .po-save-btn {
+      background: #000000;
+      color: #ffffff;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .po-save-btn:active {
+      background: #333333;
+    }
+
     .meta-pills {
       display: flex;
       flex-wrap: wrap;
       gap: 6px;
       font-size: 11px;
-      margin-top: 2px;
     }
 
     .meta-pill {
@@ -275,7 +317,7 @@
       border-radius: 8px;
       padding: 8px 10px;
       text-align: center;
-      margin-top: 4px;
+      margin-top: 2px;
     }
 
     .qty-box span { font-size: 10px; text-transform: uppercase; color: var(--text-muted); font-weight: 700; }
@@ -285,8 +327,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-top: 4px;
-      padding-top: 6px;
+      padding-top: 4px;
     }
 
     .tag {
@@ -299,7 +340,7 @@
     .tag-ok { background: var(--success-bg); color: var(--success); }
     .tag-short { background: var(--danger-bg); color: var(--danger); }
 
-    /* Sticky Bottom Mobile Navigation Bar */
+    /* Sticky Bottom Mobile Tabs */
     .bottom-nav {
       position: fixed;
       bottom: 0;
@@ -348,10 +389,9 @@
 <body>
 
 <div class="mobile-frame">
-  <!-- Sticky Header -->
+  <!-- Header -->
   <header class="app-header">
     <div class="brand-wrap">
-      <!-- Embedded Magnum Clothing Vector Logo -->
       <svg class="brand-logo" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
         <rect width="512" height="512" rx="100" fill="#ffffff" stroke="#e2e8f0" stroke-width="8"/>
         <g transform="translate(60, 95) scale(0.72)">
@@ -384,7 +424,7 @@
     </div>
   </header>
 
-  <!-- Scrollable App Content -->
+  <!-- Scroll View -->
   <main class="app-scroll">
     <!-- View 1: New Inward Entry Form -->
     <div class="view-panel active" id="entryView">
@@ -406,8 +446,8 @@
               <input type="text" id="dcNo" placeholder="DC-8891" required>
             </div>
             <div class="field">
-              <label>PO Number</label>
-              <input type="text" id="poNo" placeholder="PO-1044" required>
+              <label>PO Number (Editable Later)</label>
+              <input type="text" id="poNo" placeholder="PO-1044 / Pending">
             </div>
           </div>
 
@@ -459,21 +499,21 @@
             <textarea id="remarks" rows="2" placeholder="Shade variation, seal checks, shortage remarks..."></textarea>
           </div>
 
-          <button type="submit" class="submit-btn">+ Log Inward Entry</button>
+          <button type="submit" class="submit-btn">+ Save GRN Entry</button>
         </form>
       </div>
     </div>
 
-    <!-- View 2: Notebook Register View -->
+    <!-- View 2: Notebook Register View with Editable PO -->
     <div class="view-panel" id="registerView">
       <div class="search-bar">
-        <input type="text" id="searchBox" placeholder="🔎 Search Mill, DC, or Vehicle..." onkeyup="renderCards()">
+        <input type="text" id="searchBox" placeholder="🔎 Search Mill, DC, Vehicle, PO..." onkeyup="renderCards()">
       </div>
       <div id="cardsList"></div>
     </div>
   </main>
 
-  <!-- Bottom Navigation Bar for Mobile Thumb Access -->
+  <!-- Sticky Bottom Tabs -->
   <nav class="bottom-nav">
     <button class="nav-tab active" id="tabEntry" onclick="switchTab('entry')">
       ✍️ Inward Entry
@@ -485,10 +525,8 @@
 </div>
 
 <script>
-  // SVG Vector definition for App Manifest & Favicon
   const appSvg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='100' fill='%23ffffff'/><g transform='translate(60, 95) scale(0.72)'><path d='M30 430 V175 H115 V220 C138 180 185 165 235 175 C285 185 305 220 320 255 C345 185 410 165 470 175 V430 H385 V275 C385 240 365 225 340 225 C310 225 295 245 295 285 V430 H210 V275 C210 240 190 225 165 225 C135 225 115 245 115 285 V430 Z' fill='%23000000'/><g transform='translate(355, 30)'><rect x='60' y='0' width='28' height='65' rx='4' fill='%23eab308'/><rect x='85' y='18' width='28' height='65' rx='4' transform='rotate(45 85 18)' fill='%23ea580c'/><rect x='90' y='65' width='28' height='65' rx='4' transform='rotate(90 90 65)' fill='%231e3a8a'/><rect x='70' y='100' width='28' height='65' rx='4' transform='rotate(135 70 100)' fill='%237e22ce'/><rect x='-5' y='65' width='28' height='65' rx='4' fill='%230284c7'/><rect x='15' y='20' width='28' height='65' rx='4' transform='rotate(-45 15 20)' fill='%230d9488'/></g></g></svg>`;
 
-  // Dynamic PWA Manifest forced to Portrait Standalone
   const manifest = {
     name: "SKL Fabric GRN",
     short_name: "SKL GRN",
@@ -512,7 +550,6 @@
   manifestLink.href = URL.createObjectURL(manifestBlob);
   document.head.appendChild(manifestLink);
 
-  // Register Lightweight Service Worker for Install Prompt
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       const swCode = `self.addEventListener('fetch', e => e.respondWith(fetch(e.request).catch(() => new Response('Offline'))));`;
@@ -521,7 +558,6 @@
     });
   }
 
-  // Handle Download / Install Button
   let deferredPrompt;
   const installBtn = document.getElementById('installBtn');
 
@@ -539,11 +575,10 @@
         deferredPrompt = null;
       });
     } else {
-      alert("To Download to your Phone:\n• Android: Tap Chrome menu (⋮) > 'Install App' or 'Add to Home screen'\n• iPhone: Tap Share (square with arrow) > 'Add to Home Screen'");
+      alert("To Download to your Phone:\n• Android: Tap Chrome menu (⋮) > 'Install App' / 'Add to Home screen'\n• iPhone: Tap Share > 'Add to Home Screen'");
     }
   }
 
-  // Full Screen Request
   function toggleFullScreen() {
     const el = document.documentElement;
     if (!document.fullscreenElement && !document.webkitFullscreenElement) {
@@ -555,7 +590,6 @@
     }
   }
 
-  // Tab Switcher
   function switchTab(tab) {
     const entryView = document.getElementById('entryView');
     const registerView = document.getElementById('registerView');
@@ -576,7 +610,6 @@
     }
   }
 
-  // Data Store
   const STORAGE_KEY = 'MAGNUM_SKL_MOBILE_GRN';
   let logs = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [
     {
@@ -606,17 +639,34 @@
   function persist() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(logs));
     document.getElementById('logCount').innerText = logs.length;
-    renderCards();
   }
 
-  // Render Mobile Cards View
+  // Update PO Number Whenever Needed
+  function updatePO(index) {
+    const input = document.getElementById(`po-input-${index}`);
+    const updatedVal = input.value.trim();
+    logs[index].poNo = updatedVal || 'N/A';
+    persist();
+    
+    // Quick visual feedback
+    const btn = document.getElementById(`po-btn-${index}`);
+    const originalText = btn.innerText;
+    btn.innerText = "✓ Saved";
+    btn.style.background = "#15803d";
+    setTimeout(() => {
+      btn.innerText = originalText;
+      btn.style.background = "#000000";
+    }, 1200);
+  }
+
+  // Render Mobile Cards with Inline PO Editor
   function renderCards() {
     const filter = document.getElementById('searchBox').value.toLowerCase();
     const container = document.getElementById('cardsList');
     container.innerHTML = '';
 
     logs.forEach((item, index) => {
-      const match = `${item.grn} ${item.vendor} ${item.dcNo} ${item.vehicle} ${item.item}`.toLowerCase();
+      const match = `${item.grn} ${item.vendor} ${item.dcNo} ${item.poNo} ${item.vehicle} ${item.item}`.toLowerCase();
       if (!match.includes(filter)) return;
 
       const variance = Number(item.receivedQty) - Number(item.challanQty);
@@ -633,9 +683,15 @@
         <div class="vendor-name">${item.vendor}</div>
         <div class="item-desc">${item.item}</div>
 
+        <!-- Editable PO Bar -->
+        <div class="po-edit-bar">
+          <span class="po-label">PO #:</span>
+          <input type="text" id="po-input-${index}" class="po-input-inline" value="${item.poNo || ''}" placeholder="Enter / Edit PO">
+          <button type="button" id="po-btn-${index}" class="po-save-btn" onclick="updatePO(${index})">💾 Save PO</button>
+        </div>
+
         <div class="meta-pills">
           <span class="meta-pill">DC: ${item.dcNo}</span>
-          <span class="meta-pill">PO: ${item.poNo}</span>
           <span class="meta-pill">🚛 ${item.vehicle}</span>
           <span class="meta-pill">📦 ${item.packages} Rolls</span>
         </div>
@@ -679,7 +735,7 @@
       time: document.getElementById('inTime').value.replace('T', ' '),
       vendor: document.getElementById('vendor').value,
       dcNo: document.getElementById('dcNo').value,
-      poNo: document.getElementById('poNo').value,
+      poNo: document.getElementById('poNo').value || 'Pending',
       item: document.getElementById('itemName').value,
       packages: document.getElementById('packages').value,
       challanQty: document.getElementById('challanQty').value,
@@ -701,6 +757,7 @@
     if (confirm("Delete this GRN record?")) {
       logs.splice(index, 1);
       persist();
+      renderCards();
     }
   }
 
@@ -716,7 +773,6 @@
     link.click();
   }
 
-  // Initial Load
   document.getElementById('logCount').innerText = logs.length;
   renderCards();
 </script>

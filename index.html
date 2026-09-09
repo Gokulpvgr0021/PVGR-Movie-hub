@@ -2,272 +2,358 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>SKL Warehouse - Magnum Clothing GRN Register</title>
-  
-  <meta name="theme-color" content="#0f172a">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>SKL Fabric GRN - Magnum Clothing</title>
+
+  <!-- PWA Fullscreen & Mobile Standalone Tags -->
+  <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="mobile-web-app-capable" content="yes">
-
-  <!-- Magnum Clothing SKL Logo Vector -->
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='110' fill='%23ffffff'/%3E%3Cg transform='translate(60, 95) scale(0.72)'%3E%3Cpath d='M30 430 V175 H115 V220 C138 180 185 165 235 175 C285 185 305 220 320 255 C345 185 410 165 470 175 V430 H385 V275 C385 240 365 225 340 225 C310 225 295 245 295 285 V430 H210 V275 C210 240 190 225 165 225 C135 225 115 245 115 285 V430 Z' fill='%23000000'/%3E%3Cg transform='translate(355, 30)'%3E%3Crect x='60' y='0' width='28' height='65' rx='4' fill='%23eab308'/%3E%3Crect x='85' y='18' width='28' height='65' rx='4' transform='rotate(45 85 18)' fill='%23ea580c'/%3E%3Crect x='90' y='65' width='28' height='65' rx='4' transform='rotate(90 90 65)' fill='%231e3a8a'/%3E%3Crect x='70' y='100' width='28' height='65' rx='4' transform='rotate(135 70 100)' fill='%237e22ce'/%3E%3Crect x='-5' y='65' width='28' height='65' rx='4' fill='%230284c7'/%3E%3Crect x='15' y='20' width='28' height='65' rx='4' transform='rotate(-45 15 20)' fill='%230d9488'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E">
+  <meta name="apple-mobile-web-app-title" content="SKL Fabric">
+  <meta name="theme-color" content="#ffffff">
 
   <style>
     :root {
-      --primary: #0f172a;
+      --primary: #000000;
       --accent: #2563eb;
-      --success: #15803d;
-      --danger: #dc2626;
       --bg: #f8fafc;
       --card: #ffffff;
-      --border: #cbd5e1;
+      --border: #e2e8f0;
       --text: #0f172a;
+      --text-muted: #64748b;
+      --success: #15803d;
+      --danger: #dc2626;
+      --danger-bg: #fee2e2;
+      --success-bg: #dcfce7;
     }
 
-    * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
     html, body {
       margin: 0;
       padding: 0;
-      width: 100vw;
-      height: 100vh;
-      overflow-x: hidden;
+      width: 100%;
+      height: 100%;
       background: var(--bg);
       color: var(--text);
+      overflow-x: hidden;
+      touch-action: manipulation;
     }
 
-    .app-layout {
+    /* Full Viewport App Frame */
+    .mobile-frame {
       display: flex;
       flex-direction: column;
-      min-height: 100vh;
-      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      width: 100%;
+      padding-top: env(safe-area-inset-top, 0px);
+      padding-bottom: env(safe-area-inset-bottom, 0px);
     }
 
-    /* Top Sticky Navigation */
-    .top-bar {
-      position: sticky;
-      top: 0;
+    /* Top Sticky Brand Bar */
+    .app-header {
       background: #ffffff;
-      border-bottom: 2px solid #e2e8f0;
-      padding: 10px 24px;
+      padding: 12px 16px;
       display: flex;
+      align-items: center;
       justify-content: space-between;
-      align-items: center;
-      z-index: 50;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-    }
-
-    .logo-container {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-
-    .app-icon-img {
-      width: 48px;
-      height: 48px;
-      border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      border-bottom: 1px solid var(--border);
       flex-shrink: 0;
     }
 
-    .title-group h1 {
-      margin: 0;
-      font-size: 17px;
-      font-weight: 800;
-      letter-spacing: 0.5px;
-      color: #000000;
-      text-transform: uppercase;
-    }
-    .title-group p {
-      margin: 2px 0 0 0;
-      font-size: 12px;
-      font-weight: 600;
-      color: #64748b;
-    }
-
-    .top-actions {
+    .brand-wrap {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
     }
 
-    .btn {
-      padding: 9px 16px;
-      border-radius: 6px;
+    .brand-logo {
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      flex-shrink: 0;
+    }
+
+    .brand-text h1 {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: -0.2px;
+      text-transform: uppercase;
+      color: #000000;
+    }
+
+    .brand-text p {
+      margin: 2px 0 0 0;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .header-btns {
+      display: flex;
+      gap: 6px;
+    }
+
+    .icon-btn {
+      background: #f1f5f9;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 7px 10px;
       font-size: 13px;
       font-weight: 700;
-      border: 1px solid var(--border);
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      background: #ffffff;
-      color: #1e293b;
-      transition: all 0.15s ease;
+      gap: 4px;
     }
-    .btn:hover { background: #f1f5f9; }
-    .btn-install {
+
+    .btn-install-prompt {
       background: #000000;
       color: #ffffff;
       border-color: #000000;
     }
-    .btn-install:hover { background: #333333; }
-    .btn-primary { 
-      background: #000000; 
-      color: #ffffff; 
-      border: none;
-      font-size: 14px;
-      padding: 12px 24px;
-    }
-    .btn-primary:hover { background: #262626; }
 
-    /* Wide Content Area */
-    .content-area {
+    /* Scrollable App Viewport */
+    .app-scroll {
       flex: 1;
-      padding: 24px 32px;
-      max-width: 1500px;
-      width: 100%;
-      margin: 0 auto;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 16px 14px 90px 14px;
+    }
+
+    .view-panel { display: none; }
+    .view-panel.active { display: block; }
+
+    /* Long Spacious Form Inputs for Mobile */
+    .form-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+
+    .field {
       display: flex;
       flex-direction: column;
-      gap: 24px;
+      margin-bottom: 14px;
     }
 
-    /* Wide Entry Form Card */
-    .entry-panel {
-      background: #ffffff;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 24px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
-    }
-    .panel-header {
-      font-size: 14px;
-      font-weight: 800;
-      color: #0f172a;
-      text-transform: uppercase;
-      margin-bottom: 20px;
-      border-bottom: 2px solid #f1f5f9;
-      padding-bottom: 10px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    /* Roomy Inputs Layout */
-    .form-grid {
+    .field-row {
       display: grid;
-      grid-template-columns: repeat(12, 1fr);
-      gap: 16px;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 14px;
     }
-    .col-12 { grid-column: span 12; }
-    .col-6  { grid-column: span 6; }
-    .col-4  { grid-column: span 4; }
-    .col-3  { grid-column: span 3; }
-    .col-2  { grid-column: span 2; }
 
-    .field { display: flex; flex-direction: column; }
+    .field-row .field { margin-bottom: 0; }
+
     label {
-      font-size: 12px;
-      font-weight: 700;
-      color: #334155;
-      margin-bottom: 6px;
+      font-size: 11px;
+      font-weight: 800;
       text-transform: uppercase;
+      color: #475569;
+      margin-bottom: 5px;
       letter-spacing: 0.3px;
     }
-    
-    /* Long and Spacious Input Boxes */
+
+    /* Minimum 16px font prevents mobile safari/chrome from auto-zooming */
     input, select, textarea {
-      padding: 11px 14px;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      font-size: 15px;
-      color: #0f172a;
-      background: #ffffff;
-      width: 100%;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-    input:focus, select:focus, textarea:focus {
-      outline: none;
-      border-color: #000000;
-      box-shadow: 0 0 0 3px rgba(0,0,0,0.06);
-    }
-
-    .form-buttons {
-      display: flex;
-      justify-content: flex-end;
-      gap: 12px;
-      margin-top: 18px;
-    }
-
-    /* Wide Notebook Register Card */
-    .register-panel {
-      background: #ffffff;
-      border: 1px solid var(--border);
+      font-size: 16px;
+      padding: 12px 14px;
       border-radius: 8px;
-      padding: 24px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      border: 1.5px solid var(--border);
+      background: #ffffff;
+      color: var(--text);
+      width: 100%;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: #000000;
+      box-shadow: 0 0 0 2px rgba(0,0,0,0.05);
+    }
+
+    .submit-btn {
+      width: 100%;
+      background: #000000;
+      color: #ffffff;
+      padding: 14px;
+      font-size: 15px;
+      font-weight: 800;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 6px;
+    }
+
+    .submit-btn:active { background: #262626; }
+
+    /* Register Mobile Cards */
+    .search-bar {
+      margin-bottom: 14px;
+    }
+
+    .log-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 12px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04);
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 8px;
     }
-    .register-toolbar {
+
+    .log-card-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-    .search-wide {
-      width: 400px;
-      max-width: 100%;
-      padding: 10px 14px;
-      font-size: 14px;
+      border-bottom: 1px dashed var(--border);
+      padding-bottom: 8px;
     }
 
-    .table-container {
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      overflow-x: auto;
+    .grn-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: #000;
     }
-    table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; }
-    thead th {
-      background: #f8fafc;
-      color: #334155;
-      padding: 12px 10px;
-      border-bottom: 2px solid var(--border);
-      white-space: nowrap;
+
+    .log-time {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .vendor-name {
+      font-size: 15px;
       font-weight: 700;
+      color: #0f172a;
     }
-    td { padding: 10px; border-bottom: 1px solid #e2e8f0; white-space: nowrap; }
-    tr:hover { background: #f8fafc; }
+
+    .item-desc {
+      font-size: 13px;
+      color: #334155;
+      background: #f8fafc;
+      padding: 8px 10px;
+      border-radius: 6px;
+      line-height: 1.4;
+    }
+
+    .meta-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      font-size: 11px;
+      margin-top: 2px;
+    }
+
+    .meta-pill {
+      background: #f1f5f9;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-weight: 600;
+      color: #475569;
+    }
+
+    .qty-comparison {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      background: #f8fafc;
+      border-radius: 8px;
+      padding: 8px 10px;
+      text-align: center;
+      margin-top: 4px;
+    }
+
+    .qty-box span { font-size: 10px; text-transform: uppercase; color: var(--text-muted); font-weight: 700; }
+    .qty-box strong { display: block; font-size: 13px; color: #000; margin-top: 2px; }
+
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 4px;
+      padding-top: 6px;
+    }
 
     .tag {
-      padding: 4px 9px;
-      border-radius: 12px;
-      font-weight: 700;
-      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 10px;
+      font-size: 10px;
+      font-weight: 800;
       text-transform: uppercase;
     }
-    .tag-ok { background: #dcfce7; color: var(--success); }
-    .tag-short { background: #fee2e2; color: var(--danger); }
+    .tag-ok { background: var(--success-bg); color: var(--success); }
+    .tag-short { background: var(--danger-bg); color: var(--danger); }
 
-    @media (max-width: 1024px) {
-      .col-6, .col-4, .col-3, .col-2 { grid-column: span 12; }
-      .content-area { padding: 16px; }
+    /* Sticky Bottom Mobile Navigation Bar */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: #ffffff;
+      border-top: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      padding: 8px 12px;
+      padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+      z-index: 100;
+    }
+
+    .nav-tab {
+      background: none;
+      border: none;
+      padding: 10px 0;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-muted);
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .nav-tab.active {
+      color: #000000;
+      background: #f1f5f9;
+    }
+
+    .badge-count {
+      background: #000;
+      color: #fff;
+      font-size: 10px;
+      padding: 1px 6px;
+      border-radius: 10px;
+      margin-left: 4px;
     }
   </style>
 </head>
 <body>
 
-<div class="app-layout" id="appRoot">
-  <!-- Top Navigation Header -->
-  <div class="top-bar">
-    <div class="logo-container">
-      <svg class="app-icon-img" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
-        <rect width="512" height="512" rx="90" fill="#ffffff" stroke="#e2e8f0" stroke-width="8"/>
+<div class="mobile-frame">
+  <!-- Sticky Header -->
+  <header class="app-header">
+    <div class="brand-wrap">
+      <!-- Embedded Magnum Clothing Vector Logo -->
+      <svg class="brand-logo" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+        <rect width="512" height="512" rx="100" fill="#ffffff" stroke="#e2e8f0" stroke-width="8"/>
         <g transform="translate(60, 95) scale(0.72)">
           <path d="M30 430 V175 H115 V220 C138 180 185 165 235 175 C285 185 305 220 320 255 C345 185 410 165 470 175 V430 H385 V275 C385 240 365 225 340 225 C310 225 295 245 295 285 V430 H210 V275 C210 240 190 225 165 225 C135 225 115 245 115 285 V430 Z" fill="#000000"/>
           <g transform="translate(355, 30)">
@@ -280,174 +366,153 @@
           </g>
         </g>
       </svg>
-      <div class="title-group">
-        <h1>SKL WAREHOUSE FABRIC TEAM</h1>
-        <p>MAGNUM CLOTHING — INWARD GATE & STORES REGISTER</p>
+      <div class="brand-text">
+        <h1>SKL FABRIC TEAM</h1>
+        <p>Magnum Clothing Stores</p>
       </div>
     </div>
-
-    <div class="top-actions">
-      <span id="liveClock" style="font-size: 13px; font-weight:700; color:#475569; margin-right: 10px;"></span>
-      <button class="btn btn-install" id="installBtn" style="display: none;" onclick="triggerAppInstall()">
-        📲 Download App
+    <div class="header-btns">
+      <button class="icon-btn btn-install-prompt" id="installBtn" style="display: none;" onclick="triggerInstall()">
+        📲 Install
       </button>
-      <button class="btn" onclick="toggleFullScreen()">
-        ⛶ Full Screen
+      <button class="icon-btn" onclick="toggleFullScreen()">
+        ⛶
       </button>
-      <button class="btn" onclick="exportToCSV()">
-        📥 Export Excel/CSV
+      <button class="icon-btn" onclick="exportToCSV()">
+        📥 CSV
       </button>
     </div>
-  </div>
+  </header>
 
-  <div class="content-area">
-    <!-- Spacious Entry Panel -->
-    <div class="entry-panel">
-      <div class="panel-header">
-        <span>+ New Inward Entry Form</span>
-        <span style="font-size: 12px; color: #64748b;">All fields expandable for long textile codes & notes</span>
-      </div>
-
-      <form id="entryForm">
-        <div class="form-grid">
-          <div class="field col-3">
-            <label>Entry Date & Time</label>
+  <!-- Scrollable App Content -->
+  <main class="app-scroll">
+    <!-- View 1: New Inward Entry Form -->
+    <div class="view-panel active" id="entryView">
+      <div class="form-card">
+        <form id="entryForm">
+          <div class="field">
+            <label>Inward Date & Time</label>
             <input type="datetime-local" id="inTime" required>
           </div>
 
-          <div class="field col-5">
-            <label>Supplier / Mill Name</label>
-            <input type="text" id="vendor" placeholder="e.g. Vardhman Textiles Ltd / Arvind Mills Ltd" required>
+          <div class="field">
+            <label>Mill / Supplier Name</label>
+            <input type="text" id="vendor" placeholder="e.g. Vardhman / Arvind Mills" required>
           </div>
 
-          <div class="field col-2">
-            <label>DC / Invoice #</label>
-            <input type="text" id="dcNo" placeholder="DC-88421" required>
+          <div class="field-row">
+            <div class="field">
+              <label>DC / Invoice #</label>
+              <input type="text" id="dcNo" placeholder="DC-8891" required>
+            </div>
+            <div class="field">
+              <label>PO Number</label>
+              <input type="text" id="poNo" placeholder="PO-1044" required>
+            </div>
           </div>
 
-          <div class="field col-2">
-            <label>PO Number</label>
-            <input type="text" id="poNo" placeholder="PO-SKL-2026-90" required>
+          <div class="field">
+            <label>Fabric Style & Construction</label>
+            <input type="text" id="itemName" placeholder="e.g. 100% Cotton 30s Single Jersey Navy" required>
           </div>
 
-          <div class="field col-8">
-            <label>Fabric Style & Construction Details</label>
-            <input type="text" id="itemName" placeholder="e.g. 100% Combed Cotton 30s Single Jersey 160 GSM Navy Melange" required>
+          <div class="field-row">
+            <div class="field">
+              <label>Rolls / Pkgs</label>
+              <input type="number" id="packages" placeholder="e.g. 24" required>
+            </div>
+            <div class="field">
+              <label>Unit (UOM)</label>
+              <select id="uom">
+                <option value="Kgs">Kgs</option>
+                <option value="Meters">Meters</option>
+                <option value="Pieces">Pieces</option>
+                <option value="Cones">Cones</option>
+              </select>
+            </div>
           </div>
 
-          <div class="field col-2">
-            <label>Packages / Rolls</label>
-            <input type="number" id="packages" placeholder="e.g. 45 Rolls" required>
+          <div class="field-row">
+            <div class="field">
+              <label>Challan Qty</label>
+              <input type="number" step="any" id="challanQty" placeholder="Sent" required>
+            </div>
+            <div class="field">
+              <label>Received Qty</label>
+              <input type="number" step="any" id="receivedQty" placeholder="Actual" required>
+            </div>
           </div>
 
-          <div class="field col-2">
-            <label>Unit of Measure (UOM)</label>
-            <select id="uom">
-              <option value="Kgs">Kgs</option>
-              <option value="Meters">Meters</option>
-              <option value="Pieces">Pieces</option>
-              <option value="Cones">Cones</option>
-            </select>
+          <div class="field-row">
+            <div class="field">
+              <label>Vehicle No.</label>
+              <input type="text" id="vehicleNo" placeholder="TN-09-AB-1234" required>
+            </div>
+            <div class="field">
+              <label>Receiver Name</label>
+              <input type="text" id="receiver" placeholder="Your Name" required>
+            </div>
           </div>
 
-          <div class="field col-3">
-            <label>Challan / Dispatched Quantity</label>
-            <input type="number" step="any" id="challanQty" placeholder="0.00" required>
+          <div class="field">
+            <label>Inspection Notes / Remarks</label>
+            <textarea id="remarks" rows="2" placeholder="Shade variation, seal checks, shortage remarks..."></textarea>
           </div>
 
-          <div class="field col-3">
-            <label>Actual Received Quantity</label>
-            <input type="number" step="any" id="receivedQty" placeholder="0.00" required>
-          </div>
-
-          <div class="field col-3">
-            <label>Lorry / Vehicle Number</label>
-            <input type="text" id="vehicleNo" placeholder="e.g. TN-09-AB-9876" required>
-          </div>
-
-          <div class="field col-3">
-            <label>Receiver / Gate In-Charge</label>
-            <input type="text" id="receiver" placeholder="Your Name" required>
-          </div>
-
-          <div class="field col-12">
-            <label>Inspection Notes, Shade Variation, Roll Seal Condition & Remarks</label>
-            <input type="text" id="remarks" placeholder="Type detailed roll tags, lot numbers, shrinkage test notes, shortage details here...">
-          </div>
-        </div>
-
-        <div class="form-buttons">
-          <button type="reset" class="btn" style="padding: 12px 24px; font-size: 14px;">Clear Fields</button>
-          <button type="submit" class="btn btn-primary">+ Save & Log Inward Entry</button>
-        </div>
-      </form>
-    </div>
-
-    <!-- Wide Daily Ledger Register -->
-    <div class="register-panel">
-      <div class="register-toolbar">
-        <div>
-          <h2 style="margin: 0; font-size: 16px; font-weight: 800; text-transform: uppercase;">DAILY WAREHOUSE INWARD REGISTER</h2>
-          <p style="margin: 4px 0 0 0; font-size: 12px; color: #64748b;">Live record of all fabric shipments received at the gate.</p>
-        </div>
-        <input type="text" id="searchBox" class="search-wide" placeholder="🔎 Search Mill Name, Invoice, Vehicle No, or Fabric..." onkeyup="renderTable()">
-      </div>
-
-      <div class="table-container">
-        <table id="logTable">
-          <thead>
-            <tr>
-              <th>GRN Ref</th>
-              <th>Date & Time</th>
-              <th>Supplier / Mill</th>
-              <th>DC No</th>
-              <th>PO No</th>
-              <th>Fabric & Construction</th>
-              <th>Rolls</th>
-              <th>Challan Qty</th>
-              <th>Received Qty</th>
-              <th>Difference</th>
-              <th>Vehicle No</th>
-              <th>Receiver</th>
-              <th>Status</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody id="tableBody"></tbody>
-        </table>
+          <button type="submit" class="submit-btn">+ Log Inward Entry</button>
+        </form>
       </div>
     </div>
-  </div>
+
+    <!-- View 2: Notebook Register View -->
+    <div class="view-panel" id="registerView">
+      <div class="search-bar">
+        <input type="text" id="searchBox" placeholder="🔎 Search Mill, DC, or Vehicle..." onkeyup="renderCards()">
+      </div>
+      <div id="cardsList"></div>
+    </div>
+  </main>
+
+  <!-- Bottom Navigation Bar for Mobile Thumb Access -->
+  <nav class="bottom-nav">
+    <button class="nav-tab active" id="tabEntry" onclick="switchTab('entry')">
+      ✍️ Inward Entry
+    </button>
+    <button class="nav-tab" id="tabRegister" onclick="switchTab('register')">
+      📋 Daily Log <span class="badge-count" id="logCount">0</span>
+    </button>
+  </nav>
 </div>
 
 <script>
-  // Exact SVG Logo for Favicon & Web Manifest
+  // SVG Vector definition for App Manifest & Favicon
   const appSvg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='100' fill='%23ffffff'/><g transform='translate(60, 95) scale(0.72)'><path d='M30 430 V175 H115 V220 C138 180 185 165 235 175 C285 185 305 220 320 255 C345 185 410 165 470 175 V430 H385 V275 C385 240 365 225 340 225 C310 225 295 245 295 285 V430 H210 V275 C210 240 190 225 165 225 C135 225 115 245 115 285 V430 Z' fill='%23000000'/><g transform='translate(355, 30)'><rect x='60' y='0' width='28' height='65' rx='4' fill='%23eab308'/><rect x='85' y='18' width='28' height='65' rx='4' transform='rotate(45 85 18)' fill='%23ea580c'/><rect x='90' y='65' width='28' height='65' rx='4' transform='rotate(90 90 65)' fill='%231e3a8a'/><rect x='70' y='100' width='28' height='65' rx='4' transform='rotate(135 70 100)' fill='%237e22ce'/><rect x='-5' y='65' width='28' height='65' rx='4' fill='%230284c7'/><rect x='15' y='20' width='28' height='65' rx='4' transform='rotate(-45 15 20)' fill='%230d9488'/></g></g></svg>`;
 
-  // Dynamic Web Manifest
+  // Dynamic PWA Manifest forced to Portrait Standalone
   const manifest = {
-    name: "Magnum SKL Fabric GRN",
-    short_name: "SKL Fabric",
+    name: "SKL Fabric GRN",
+    short_name: "SKL GRN",
     start_url: window.location.href,
-    display: "fullscreen",
-    orientation: "landscape-primary",
+    display: "standalone",
+    orientation: "portrait",
     background_color: "#ffffff",
-    theme_color: "#0f172a",
+    theme_color: "#ffffff",
     icons: [
       {
         src: `data:image/svg+xml;charset=utf-8,${encodeURIComponent(appSvg)}`,
         sizes: "192x192 512x512",
-        type: "image/svg+xml"
+        type: "image/svg+xml",
+        purpose: "any maskable"
       }
     ]
   };
-  const blob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
-  const link = document.createElement('link');
-  link.rel = 'manifest';
-  link.href = URL.createObjectURL(blob);
-  document.head.appendChild(link);
+  const manifestBlob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
+  const manifestLink = document.createElement('link');
+  manifestLink.rel = 'manifest';
+  manifestLink.href = URL.createObjectURL(manifestBlob);
+  document.head.appendChild(manifestLink);
 
-  // Service Worker
+  // Register Lightweight Service Worker for Install Prompt
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       const swCode = `self.addEventListener('fetch', e => e.respondWith(fetch(e.request).catch(() => new Response('Offline'))));`;
@@ -456,7 +521,7 @@
     });
   }
 
-  // App Install Prompt Handler
+  // Handle Download / Install Button
   let deferredPrompt;
   const installBtn = document.getElementById('installBtn');
 
@@ -466,40 +531,53 @@
     installBtn.style.display = 'inline-flex';
   });
 
-  function triggerAppInstall() {
+  function triggerInstall() {
     if (deferredPrompt) {
       deferredPrompt.prompt();
-      deferredPrompt.userChoice.then((choiceResult) => {
-        if (choiceResult.outcome === 'accepted') {
-          installBtn.style.display = 'none';
-        }
+      deferredPrompt.userChoice.then((res) => {
+        if (res.outcome === 'accepted') installBtn.style.display = 'none';
         deferredPrompt = null;
       });
     } else {
-      alert("To install:\n1. On Android/Chrome: Tap menu > 'Install App' / 'Add to Home screen'\n2. On iPhone/iPad: Tap Share > 'Add to Home Screen'\n3. On PC/Mac: Click the install icon in your address bar.");
+      alert("To Download to your Phone:\n• Android: Tap Chrome menu (⋮) > 'Install App' or 'Add to Home screen'\n• iPhone: Tap Share (square with arrow) > 'Add to Home Screen'");
     }
   }
 
-  // Full Screen Toggle
+  // Full Screen Request
   function toggleFullScreen() {
-    const elem = document.documentElement;
+    const el = document.documentElement;
     if (!document.fullscreenElement && !document.webkitFullscreenElement) {
-      if (elem.requestFullscreen) {
-        elem.requestFullscreen().catch(() => {});
-      } else if (elem.webkitRequestFullscreen) {
-        elem.webkitRequestFullscreen();
-      }
+      if (el.requestFullscreen) el.requestFullscreen().catch(() => {});
+      else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
     } else {
-      if (document.exitFullscreen) {
-        document.exitFullscreen();
-      } else if (document.webkitExitFullscreen) {
-        document.webkitExitFullscreen();
-      }
+      if (document.exitFullscreen) document.exitFullscreen();
+      else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
     }
   }
 
-  // Notebook Storage & Render
-  const STORAGE_KEY = 'MAGNUM_SKL_FABRIC_LOGS';
+  // Tab Switcher
+  function switchTab(tab) {
+    const entryView = document.getElementById('entryView');
+    const registerView = document.getElementById('registerView');
+    const tabEntry = document.getElementById('tabEntry');
+    const tabRegister = document.getElementById('tabRegister');
+
+    if (tab === 'entry') {
+      entryView.classList.add('active');
+      registerView.classList.remove('active');
+      tabEntry.classList.add('active');
+      tabRegister.classList.remove('active');
+    } else {
+      entryView.classList.remove('active');
+      registerView.classList.add('active');
+      tabEntry.classList.remove('active');
+      tabRegister.classList.add('active');
+      renderCards();
+    }
+  }
+
+  // Data Store
+  const STORAGE_KEY = 'MAGNUM_SKL_MOBILE_GRN';
   let logs = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [
     {
       grn: "MC-SKL-001",
@@ -507,39 +585,35 @@
       vendor: "Vardhman Textiles Ltd",
       dcNo: "DC-7721",
       poNo: "PO-SKL-99",
-      item: "100% Cotton 30s Single Jersey 160 GSM Navy Melange",
+      item: "100% Cotton 30s Single Jersey Navy Melange 160 GSM",
       packages: 32,
       challanQty: 1200,
       receivedQty: 1200,
       uom: "Kgs",
       vehicle: "TN-09-CD-3321",
       receiver: "Murugan",
-      remarks: "Shade approval verified, lot tags attached"
+      remarks: "Shade inspection verified and passed"
     }
   ];
 
-  function updateClock() {
-    document.getElementById('liveClock').innerText = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-  }
-  setInterval(updateClock, 1000);
-  updateClock();
-
-  function resetDateTime() {
+  function resetDate() {
     const now = new Date();
     now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
     document.getElementById('inTime').value = now.toISOString().slice(0, 16);
   }
-  resetDateTime();
+  resetDate();
 
-  function persistAndDraw() {
+  function persist() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(logs));
-    renderTable();
+    document.getElementById('logCount').innerText = logs.length;
+    renderCards();
   }
 
-  function renderTable() {
+  // Render Mobile Cards View
+  function renderCards() {
     const filter = document.getElementById('searchBox').value.toLowerCase();
-    const tbody = document.getElementById('tableBody');
-    tbody.innerHTML = '';
+    const container = document.getElementById('cardsList');
+    container.innerHTML = '';
 
     logs.forEach((item, index) => {
       const match = `${item.grn} ${item.vendor} ${item.dcNo} ${item.vehicle} ${item.item}`.toLowerCase();
@@ -548,33 +622,58 @@
       const variance = Number(item.receivedQty) - Number(item.challanQty);
       const isShort = variance < 0;
 
-      const row = document.createElement('tr');
-      row.innerHTML = `
-        <td><strong>${item.grn}</strong></td>
-        <td>${item.time}</td>
-        <td>${item.vendor}</td>
-        <td>${item.dcNo}</td>
-        <td>${item.poNo}</td>
-        <td style="max-width: 280px; overflow: hidden; text-overflow: ellipsis;" title="${item.item}">${item.item}</td>
-        <td>${item.packages}</td>
-        <td>${item.challanQty} ${item.uom}</td>
-        <td>${item.receivedQty} ${item.uom}</td>
-        <td style="color:${isShort ? 'var(--danger)' : 'var(--success)'}; font-weight:700;">
-          ${variance > 0 ? '+' + variance : variance}
-        </td>
-        <td>${item.vehicle}</td>
-        <td>${item.receiver}</td>
-        <td><span class="tag ${isShort ? 'tag-short' : 'tag-ok'}">${isShort ? 'Shortage' : 'Complete'}</span></td>
-        <td><button onclick="deleteEntry(${index})" style="background:none; border:none; color:var(--danger); cursor:pointer; font-weight:bold; font-size:14px;">✕</button></td>
+      const card = document.createElement('div');
+      card.className = 'log-card';
+      card.innerHTML = `
+        <div class="log-card-header">
+          <span class="grn-title">${item.grn}</span>
+          <span class="log-time">${item.time}</span>
+        </div>
+
+        <div class="vendor-name">${item.vendor}</div>
+        <div class="item-desc">${item.item}</div>
+
+        <div class="meta-pills">
+          <span class="meta-pill">DC: ${item.dcNo}</span>
+          <span class="meta-pill">PO: ${item.poNo}</span>
+          <span class="meta-pill">🚛 ${item.vehicle}</span>
+          <span class="meta-pill">📦 ${item.packages} Rolls</span>
+        </div>
+
+        <div class="qty-comparison">
+          <div class="qty-box">
+            <span>Challan</span>
+            <strong>${item.challanQty} ${item.uom}</strong>
+          </div>
+          <div class="qty-box">
+            <span>Received</span>
+            <strong>${item.receivedQty} ${item.uom}</strong>
+          </div>
+          <div class="qty-box">
+            <span>Variance</span>
+            <strong style="color:${isShort ? 'var(--danger)' : 'var(--success)'}">
+              ${variance > 0 ? '+' + variance : variance}
+            </strong>
+          </div>
+        </div>
+
+        <div class="card-footer">
+          <span class="tag ${isShort ? 'tag-short' : 'tag-ok'}">${isShort ? 'Shortage' : 'Complete'}</span>
+          <div style="display:flex; align-items:center; gap: 10px;">
+            <span style="font-size:11px; color:#64748b;">By: ${item.receiver}</span>
+            <button onclick="deleteEntry(${index})" style="background:none; border:none; color:var(--danger); font-size:16px; cursor:pointer; padding:4px;">✕</button>
+          </div>
+        </div>
       `;
-      tbody.appendChild(row);
+      container.appendChild(card);
     });
   }
 
+  // Handle Form Submit
   document.getElementById('entryForm').addEventListener('submit', function(e) {
     e.preventDefault();
     const grnId = "MC-SKL-" + String(logs.length + 1).padStart(3, '0');
-    
+
     const entry = {
       grn: grnId,
       time: document.getElementById('inTime').value.replace('T', ' '),
@@ -592,15 +691,16 @@
     };
 
     logs.unshift(entry);
-    persistAndDraw();
+    persist();
     this.reset();
-    resetDateTime();
+    resetDate();
+    switchTab('register');
   });
 
   function deleteEntry(index) {
-    if (confirm("Delete this GRN entry?")) {
+    if (confirm("Delete this GRN record?")) {
       logs.splice(index, 1);
-      persistAndDraw();
+      persist();
     }
   }
 
@@ -612,11 +712,13 @@
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
-    link.download = `SKL_Fabric_Register_${new Date().toISOString().slice(0,10)}.csv`;
+    link.download = `SKL_Fabric_Mobile_GRN_${new Date().toISOString().slice(0,10)}.csv`;
     link.click();
   }
 
-  renderTable();
+  // Initial Load
+  document.getElementById('logCount').innerText = logs.length;
+  renderCards();
 </script>
 
 </body>

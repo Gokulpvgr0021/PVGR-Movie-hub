@@ -88,43 +88,14 @@
     input[type="text"], textarea { text-transform: uppercase !important; }
     input:focus, select:focus, textarea:focus { border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15); }
 
-    .form-overlay {
-      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(255,255,255,0.6); z-index: 10; display: none; border-radius: 12px;
-    }
-
-    /* AI Photo Scanner Styles */
+    /* Standard Photo Scanner Styles (No AI) */
     .upload-box {
       border: 2px dashed #cbd5e1; border-radius: 8px; padding: 12px; text-align: center;
       background: #f8fafc; cursor: pointer; position: relative; overflow: hidden; transition: border-color 0.2s;
     }
     .upload-box:hover { border-color: #2563eb; background: #eff6ff; }
     .preview-wrapper { position: relative; width: 100%; display: none; border-radius: 6px; overflow: hidden; margin-top: 8px; background: #000; }
-    .preview-thumb { width: 100%; max-height: 200px; object-fit: contain; display: block; opacity: 0.8; }
-    .scanner-fx { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; }
-
-    @keyframes scan { 0% { top: 0%; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { top: 98%; opacity: 0; } }
-    .laser-line {
-      position: absolute; left: 0; width: 100%; height: 3px; background-color: #10b981;
-      box-shadow: 0 0 15px 2px rgba(16, 185, 129, 0.7); animation: scan 2.5s ease-in-out infinite alternate;
-    }
-    .scanning-overlay {
-      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-      background: linear-gradient(to bottom, rgba(16, 185, 129, 0.05), rgba(16, 185, 129, 0.2)); animation: pulse-bg 2.5s ease-in-out infinite alternate;
-    }
-    @keyframes pulse-bg { 0% { opacity: 0.2; } 100% { opacity: 0.6; } }
-
-    .ai-pill {
-      position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
-      background: rgba(15, 23, 42, 0.9); color: #34d399; padding: 6px 12px;
-      border-radius: 20px; font-size: 11px; font-weight: 800; display: flex; align-items: center; gap: 6px; white-space: nowrap; border: 1px solid #334155;
-    }
-
-    .spinner {
-      border: 2px solid rgba(255, 255, 255, 0.2); width: 14px; height: 14px;
-      border-radius: 50%; border-left-color: #34d399; animation: spin 1s linear infinite;
-    }
-    @keyframes spin { 100% { transform: rotate(360deg); } }
+    .preview-thumb { width: 100%; max-height: 200px; object-fit: contain; display: block; }
 
     .submit-btn {
       width: 100%; background: #000000; color: #ffffff; padding: 14px; font-size: 15px; font-weight: 800;
@@ -174,7 +145,7 @@
       <img src="31890.png" alt="Magnum Logo" class="brand-logo">
       <div class="brand-text">
         <h1>SKL FABRIC TEAM</h1>
-        <p>AI GRN Scanner</p>
+        <p>GRN Register</p>
       </div>
     </div>
     <div class="header-btns">
@@ -186,29 +157,23 @@
   <main class="app-scroll">
     <div class="view-panel active" id="entryView">
       <div class="form-card">
-        <div class="form-overlay" id="formOverlay"></div>
         <form id="entryForm">
           
-          <!-- AI Photo Upload Box -->
+          <!-- Manual Photo Upload Box -->
           <div class="field">
-            <label>Auto-Fill with AI (Snap Invoice/Challan)</label>
+            <label>Snap / Upload Document (Optional)</label>
             <div class="upload-box" onclick="document.getElementById('photoInput').click()">
               <div id="uploadPrompt">
                 <span style="font-size: 24px; display:block; margin-bottom:4px;">📸</span>
-                <span style="font-size: 13px; font-weight:700; color: #475569;">TAP TO SCAN DOCUMENT</span>
+                <span style="font-size: 13px; font-weight:700; color: #475569;">TAP TO SNAP PHOTO</span>
               </div>
               <input type="file" id="photoInput" accept="image/*" capture="environment" style="display: none;" onchange="handleImage(this)">
               
               <div class="preview-wrapper" id="previewWrapper">
                 <img id="formImgPreview" class="preview-thumb">
-                <div class="scanner-fx" id="scannerFx">
-                  <div class="laser-line"></div>
-                  <div class="scanning-overlay"></div>
-                  <div class="ai-pill"><div class="spinner"></div> AI Analyzing...</div>
-                </div>
               </div>
             </div>
-            <button type="button" id="btnRetake" onclick="resetScanner(event)" style="display:none; margin-top:8px; background:none; border:1px solid #cbd5e1; padding:6px; border-radius:6px; font-size:11px; font-weight:700; color:#475569; width: 100%;">↺ RETAKE PHOTO OR STOP SCAN</button>
+            <button type="button" id="btnRetake" onclick="resetScanner(event)" style="display:none; margin-top:8px; background:none; border:1px solid #cbd5e1; padding:6px; border-radius:6px; font-size:11px; font-weight:700; color:#475569; width: 100%;">↺ RETAKE PHOTO</button>
           </div>
 
           <hr style="border:0; border-top:1px solid #e2e8f0; margin-bottom:14px;">
@@ -218,15 +183,15 @@
             <input type="datetime-local" id="inTime" required>
           </div>
           <div class="field">
-            <label>Mill / Supplier Name <span style="color:#2563eb;">✨</span></label>
+            <label>Mill / Supplier Name</label>
             <input type="text" id="vendor" placeholder="E.G. VARDHMAN / ARVIND MILLS" required>
           </div>
           <div class="field-row">
             <div class="field"><label>Style Number</label><input type="text" id="styleNo" placeholder="E.G. MG-DENIM-09" required></div>
-            <div class="field"><label>PO Number <span style="color:#2563eb;">✨</span></label><input type="text" id="poNo" placeholder="PO-1044"></div>
+            <div class="field"><label>PO Number</label><input type="text" id="poNo" placeholder="PO-1044"></div>
           </div>
           <div class="field-row">
-            <div class="field"><label>DC / Invoice # <span style="color:#2563eb;">✨</span></label><input type="text" id="dcNo" placeholder="DC-8891" required></div>
+            <div class="field"><label>DC / Invoice #</label><input type="text" id="dcNo" placeholder="DC-8891" required></div>
             <div class="field"><label>Fabric / Colour</label><input type="text" id="color" placeholder="NAVY BLUE" required></div>
           </div>
           <div class="field">
@@ -246,7 +211,7 @@
           </div>
           <div class="field"><label>Receiver Name</label><input type="text" id="receiver" placeholder="STAFF NAME" required></div>
           <div class="field">
-            <label>Inspection Notes / Vehicle <span style="color:#2563eb;">✨</span></label>
+            <label>Inspection Notes / Vehicle</label>
             <textarea id="remarks" rows="2" placeholder="SHADE VARIATION, TN-09-AB-1234..."></textarea>
           </div>
 
@@ -278,13 +243,7 @@
 </div>
 
 <script>
-  // ----------------------------------------------------
-  // GEMINI AI CONFIGURATION
-  // ----------------------------------------------------
-  const GEMINI_API_KEY = "AQ.Ab8RN6J868YNVTqlrVFK5HwbSX3EKk_8-NZt5CAO-btw6DmMUg"; 
-  
   let currentCompressedImage = "";
-  let isScanning = false;
 
   // Handle Image Upload & Compression
   function handleImage(input) {
@@ -312,10 +271,7 @@
           document.getElementById('uploadPrompt').style.display = 'none';
           document.getElementById('previewWrapper').style.display = 'block';
           document.getElementById('formImgPreview').src = currentCompressedImage;
-          
-          const base64Data = currentCompressedImage.split(',')[1];
-          startScanner();
-          analyzeImageWithGemini(base64Data, 'image/jpeg');
+          document.getElementById('btnRetake').style.display = 'inline-block';
         };
         img.src = e.target.result;
       };
@@ -323,80 +279,13 @@
     }
   }
 
-  function startScanner() {
-    isScanning = true;
-    document.getElementById('scannerFx').style.display = 'block';
-    document.getElementById('btnRetake').style.display = 'none';
-    document.getElementById('formOverlay').style.display = 'block';
-  }
-
-  function stopScanner() {
-    isScanning = false;
-    document.getElementById('scannerFx').style.display = 'none';
-    document.getElementById('btnRetake').style.display = 'inline-block';
-    document.getElementById('formOverlay').style.display = 'none';
-  }
-
   function resetScanner(e) {
     if (e) e.stopPropagation();
-    isScanning = false;
     document.getElementById('photoInput').value = '';
     currentCompressedImage = "";
     document.getElementById('previewWrapper').style.display = 'none';
     document.getElementById('uploadPrompt').style.display = 'block';
     document.getElementById('btnRetake').style.display = 'none';
-    document.getElementById('formOverlay').style.display = 'none';
-  }
-
-  // GEMINI AI API FETCH
-  async function analyzeImageWithGemini(base64Data, mimeType) {
-    const prompt = `Analyze this goods receipt invoice/challan. Extract the information and return ONLY a raw JSON object (no markdown, no quotes around the json).
-{
-  "vendor": "Supplier name",
-  "invoice_no": "DC or Invoice number",
-  "po": "PO number if visible",
-  "notes": "Any handwritten notes, vehicle numbers like TN-XX, or amounts"
-}`;
-
-    const payload = {
-      contents: [{
-        role: "user",
-        parts: [
-          { text: prompt },
-          { inlineData: { mimeType: mimeType, data: base64Data } }
-        ]
-      }],
-      generationConfig: { responseMimeType: "application/json" }
-    };
-
-    try {
-      // UPDATED TO STABLE FLASH MODEL 1.5
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      
-      if (!response.ok) {
-        throw new Error(`API Error: ${response.status} - Check API key and CORS policy (must run on local server)`);
-      }
-
-      const result = await response.json();
-      if (result.candidates && result.candidates[0]?.content?.parts[0]?.text) {
-        const jsonText = result.candidates[0].content.parts[0].text;
-        const data = JSON.parse(jsonText);
-        
-        if(data.vendor) document.getElementById('vendor').value = data.vendor.toUpperCase();
-        if(data.invoice_no) document.getElementById('dcNo').value = data.invoice_no.toUpperCase();
-        if(data.po) document.getElementById('poNo').value = data.po.toUpperCase();
-        if(data.notes) document.getElementById('remarks').value = data.notes.toUpperCase();
-      }
-    } catch (error) {
-      console.error("AI Analysis failed:", error);
-      alert("AI Scan Error: " + error.message);
-    } finally {
-      stopScanner();
-    }
   }
 
   document.addEventListener('input', function(e) {
@@ -427,7 +316,7 @@
     }
   }
 
-  const STORAGE_KEY = 'MAGNUM_SKL_MOBILE_GRN_V3';
+  const STORAGE_KEY = 'MAGNUM_SKL_MOBILE_GRN_V4';
   let logs = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
 
   function resetDate() {

@@ -38,304 +38,128 @@
     }
 
     html, body {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      height: 100%;
-      background: var(--bg);
-      color: var(--text);
-      overflow-x: hidden;
-      touch-action: manipulation;
+      margin: 0; padding: 0; width: 100%; height: 100%;
+      background: var(--bg); color: var(--text);
+      overflow-x: hidden; touch-action: manipulation;
     }
 
     .mobile-frame {
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-      height: 100dvh;
-      width: 100%;
-      padding-top: env(safe-area-inset-top, 0px);
-      padding-bottom: env(safe-area-inset-bottom, 0px);
+      display: flex; flex-direction: column; height: 100vh; height: 100dvh; width: 100%;
+      padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px);
     }
 
     /* Top Sticky Brand Bar */
     .app-header {
-      background: #ffffff;
-      padding: 12px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid var(--border);
-      flex-shrink: 0;
+      background: #ffffff; padding: 12px 16px; display: flex; align-items: center;
+      justify-content: space-between; border-bottom: 1px solid var(--border); flex-shrink: 0;
     }
 
-    .brand-wrap {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
+    .brand-wrap { display: flex; align-items: center; gap: 12px; }
+    .brand-logo { width: 38px; height: 38px; border-radius: 8px; flex-shrink: 0; object-fit: cover; }
+    .brand-text h1 { margin: 0; font-size: 15px; font-weight: 800; text-transform: uppercase; color: #000; }
+    .brand-text p { margin: 2px 0 0 0; font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
 
-    .brand-logo {
-      width: 38px;
-      height: 38px;
-      border-radius: 8px;
-      flex-shrink: 0;
-    }
-
-    .brand-text h1 {
-      margin: 0;
-      font-size: 15px;
-      font-weight: 800;
-      letter-spacing: -0.2px;
-      text-transform: uppercase;
-      color: #000000;
-    }
-
-    .brand-text p {
-      margin: 2px 0 0 0;
-      font-size: 10px;
-      font-weight: 700;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .header-btns {
-      display: flex;
-      gap: 6px;
-    }
-
+    .header-btns { display: flex; gap: 6px; }
     .icon-btn {
-      background: #f1f5f9;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 7px 10px;
-      font-size: 13px;
-      font-weight: 700;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
+      background: #f1f5f9; border: 1px solid var(--border); border-radius: 8px;
+      padding: 7px 10px; font-size: 13px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;
     }
 
     /* Scrollable App Viewport */
-    .app-scroll {
-      flex: 1;
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-      padding: 16px 14px 90px 14px;
-    }
-
+    .app-scroll { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 16px 14px 90px 14px; }
     .view-panel { display: none; }
     .view-panel.active { display: block; }
 
     /* Form Styles */
     .form-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 16px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
-      position: relative;
+      background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+      padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.03); position: relative;
     }
 
-    .field {
-      display: flex;
-      flex-direction: column;
-      margin-bottom: 14px;
-    }
-
-    .field-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 14px;
-    }
-
-    label {
-      font-size: 11px;
-      font-weight: 800;
-      text-transform: uppercase;
-      color: #475569;
-      margin-bottom: 5px;
-      letter-spacing: 0.3px;
-    }
+    .field { display: flex; flex-direction: column; margin-bottom: 14px; }
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+    
+    label { font-size: 11px; font-weight: 800; text-transform: uppercase; color: #475569; margin-bottom: 5px; }
 
     input, select, textarea {
-      font-size: 16px;
-      padding: 12px 14px;
-      border-radius: 8px;
-      border: 1.5px solid var(--border);
-      background: #ffffff;
-      color: var(--text);
-      width: 100%;
-      outline: none;
-      transition: all 0.2s ease;
+      font-size: 16px; padding: 12px 14px; border-radius: 8px;
+      border: 1.5px solid var(--border); background: #ffffff; color: var(--text); width: 100%; outline: none; transition: all 0.2s ease;
     }
-
     input[type="text"], textarea { text-transform: uppercase !important; }
-
-    input:focus, select:focus, textarea:focus {
-      border-color: #2563eb;
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
-    }
+    input:focus, select:focus, textarea:focus { border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15); }
 
     .form-overlay {
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(255,255,255,0.6);
-      z-index: 10;
-      display: none;
-      border-radius: 12px;
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(255,255,255,0.6); z-index: 10; display: none; border-radius: 12px;
     }
 
-    /* AI Photo Scanner Styles (Merged from GateGuard) */
+    /* AI Photo Scanner Styles */
     .upload-box {
-      border: 2px dashed #cbd5e1;
-      border-radius: 8px;
-      padding: 12px;
-      text-align: center;
-      background: #f8fafc;
-      cursor: pointer;
-      position: relative;
-      overflow: hidden;
-      transition: border-color 0.2s;
+      border: 2px dashed #cbd5e1; border-radius: 8px; padding: 12px; text-align: center;
+      background: #f8fafc; cursor: pointer; position: relative; overflow: hidden; transition: border-color 0.2s;
     }
-    
     .upload-box:hover { border-color: #2563eb; background: #eff6ff; }
+    .preview-wrapper { position: relative; width: 100%; display: none; border-radius: 6px; overflow: hidden; margin-top: 8px; background: #000; }
+    .preview-thumb { width: 100%; max-height: 200px; object-fit: contain; display: block; opacity: 0.8; }
+    .scanner-fx { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; }
 
-    .preview-wrapper {
-      position: relative;
-      width: 100%;
-      display: none;
-      border-radius: 6px;
-      overflow: hidden;
-      margin-top: 8px;
-      border: 1px solid #cbd5e1;
-      background: #000;
-    }
-
-    .preview-thumb {
-      width: 100%;
-      max-height: 200px;
-      object-fit: contain;
-      display: block;
-      opacity: 0.8;
-    }
-
-    .scanner-fx {
-      display: none;
-      position: absolute;
-      top: 0; left: 0; width: 100%; height: 100%;
-      z-index: 5;
-    }
-
-    @keyframes scan {
-      0% { top: 0%; opacity: 0; }
-      10% { opacity: 1; }
-      90% { opacity: 1; }
-      100% { top: 98%; opacity: 0; }
-    }
-    
+    @keyframes scan { 0% { top: 0%; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { top: 98%; opacity: 0; } }
     .laser-line {
-      position: absolute;
-      left: 0; width: 100%; height: 3px;
-      background-color: #10b981;
-      box-shadow: 0 0 15px 2px rgba(16, 185, 129, 0.7);
-      animation: scan 2.5s ease-in-out infinite alternate;
+      position: absolute; left: 0; width: 100%; height: 3px; background-color: #10b981;
+      box-shadow: 0 0 15px 2px rgba(16, 185, 129, 0.7); animation: scan 2.5s ease-in-out infinite alternate;
     }
-
     .scanning-overlay {
-      position: absolute;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: linear-gradient(to bottom, rgba(16, 185, 129, 0.05), rgba(16, 185, 129, 0.2));
-      animation: pulse-bg 2.5s ease-in-out infinite alternate;
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background: linear-gradient(to bottom, rgba(16, 185, 129, 0.05), rgba(16, 185, 129, 0.2)); animation: pulse-bg 2.5s ease-in-out infinite alternate;
     }
-
     @keyframes pulse-bg { 0% { opacity: 0.2; } 100% { opacity: 0.6; } }
 
     .ai-pill {
-      position: absolute;
-      top: 10px; left: 50%;
-      transform: translateX(-50%);
-      background: rgba(15, 23, 42, 0.9);
-      color: #34d399;
-      padding: 6px 12px;
-      border-radius: 20px;
-      font-size: 11px;
-      font-weight: 800;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      white-space: nowrap;
-      border: 1px solid #334155;
+      position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+      background: rgba(15, 23, 42, 0.9); color: #34d399; padding: 6px 12px;
+      border-radius: 20px; font-size: 11px; font-weight: 800; display: flex; align-items: center; gap: 6px; white-space: nowrap; border: 1px solid #334155;
     }
 
     .spinner {
-      border: 2px solid rgba(255, 255, 255, 0.2);
-      width: 14px; height: 14px;
-      border-radius: 50%;
-      border-left-color: #34d399;
-      animation: spin 1s linear infinite;
+      border: 2px solid rgba(255, 255, 255, 0.2); width: 14px; height: 14px;
+      border-radius: 50%; border-left-color: #34d399; animation: spin 1s linear infinite;
     }
     @keyframes spin { 100% { transform: rotate(360deg); } }
 
     .submit-btn {
-      width: 100%; background: #000000; color: #ffffff;
-      padding: 14px; font-size: 15px; font-weight: 800;
-      border: none; border-radius: 8px; cursor: pointer;
-      text-transform: uppercase; letter-spacing: 0.5px; margin-top: 6px;
+      width: 100%; background: #000000; color: #ffffff; padding: 14px; font-size: 15px; font-weight: 800;
+      border: none; border-radius: 8px; cursor: pointer; text-transform: uppercase; margin-top: 6px;
     }
     .submit-btn:active { background: #262626; }
 
     /* Register Cards */
     .log-card {
-      background: var(--card); border: 1px solid var(--border);
-      border-radius: 12px; padding: 14px; margin-bottom: 14px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-      display: flex; flex-direction: column; gap: 9px;
-      text-transform: uppercase;
+      background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+      padding: 14px; margin-bottom: 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); display: flex; flex-direction: column; gap: 9px; text-transform: uppercase;
     }
-    /* (Other card styles kept from original) */
     .log-card-header { display: flex; justify-content: space-between; border-bottom: 1px dashed var(--border); padding-bottom: 8px; }
     .grn-title { font-size: 14px; font-weight: 800; color: #000; }
     .log-time { font-size: 11px; color: var(--text-muted); font-weight: 600; }
     .vendor-name { font-size: 15px; font-weight: 700; color: #0f172a; }
-    .card-photo-banner { width: 100%; height: 150px; object-fit: cover; border-radius: 8px; border: 1px solid #e2e8f0; cursor: pointer; }
-    .item-desc { font-size: 13px; color: #334155; background: #f8fafc; padding: 8px 10px; border-radius: 6px; line-height: 1.4; font-weight: 600; }
+    .card-photo-banner { width: 100%; height: 150px; object-fit: cover; border-radius: 8px; border: 1px solid #e2e8f0; }
     .qty-comparison { display: grid; grid-template-columns: 1fr 1fr 1fr; background: #f8fafc; border-radius: 8px; padding: 8px 10px; text-align: center; margin-top: 2px; }
-    .qty-box span { font-size: 10px; text-transform: uppercase; color: var(--text-muted); font-weight: 700; }
+    .qty-box span { font-size: 10px; color: var(--text-muted); font-weight: 700; }
     .qty-box strong { display: block; font-size: 13px; color: #000; margin-top: 2px; }
     .card-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 4px; }
-    .tag { padding: 3px 8px; border-radius: 10px; font-size: 10px; font-weight: 800; }
-    .tag-ok { background: var(--success-bg); color: var(--success); }
-    .tag-short { background: var(--danger-bg); color: var(--danger); }
 
     /* Sticky Bottom Navigation */
     .bottom-nav {
-      position: fixed; bottom: 0; left: 0; width: 100%;
-      background: #ffffff; border-top: 1px solid var(--border);
-      display: grid; grid-template-columns: 1fr 1fr;
-      padding: 8px 12px; padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
-      box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 100;
+      position: fixed; bottom: 0; left: 0; width: 100%; background: #ffffff; border-top: 1px solid var(--border);
+      display: grid; grid-template-columns: 1fr 1fr; padding: 8px 12px; padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px)); box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 100;
     }
-    .nav-tab {
-      background: none; border: none; padding: 10px 0;
-      font-size: 13px; font-weight: 700; color: var(--text-muted);
-      border-radius: 8px; cursor: pointer; display: flex;
-      flex-direction: column; align-items: center; gap: 3px;
-    }
+    .nav-tab { background: none; border: none; padding: 10px 0; font-size: 13px; font-weight: 700; color: var(--text-muted); border-radius: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; }
     .nav-tab.active { color: #000000; background: #f1f5f9; }
 
-    /* Toast Notification (From GateGuard) */
+    /* Toast Notification */
     .toast {
       position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(150%);
-      background: #0f172a; color: white; padding: 12px 20px;
-      border-radius: 8px; font-size: 13px; font-weight: 700;
-      display: flex; align-items: center; gap: 8px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      z-index: 1000;
+      background: #0f172a; color: white; padding: 12px 20px; border-radius: 8px; font-size: 13px; font-weight: 700;
+      display: flex; align-items: center; gap: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 1000;
     }
     .toast.show { transform: translateX(-50%) translateY(0); }
     .toast-icon { background: #10b981; border-radius: 50%; padding: 2px; display: flex; }
@@ -347,22 +171,19 @@
   <!-- Header -->
   <header class="app-header">
     <div class="brand-wrap">
-      <img src="31890.png" alt="Magnum Logo" class="brand-logo" style="object-fit: cover;">
+      <img src="31890.png" alt="Magnum Logo" class="brand-logo">
       <div class="brand-text">
         <h1>SKL FABRIC TEAM</h1>
         <p>AI GRN Scanner</p>
       </div>
     </div>
     <div class="header-btns">
-      <button class="icon-btn btn-install-prompt" id="installBtn" style="display: none;" onclick="triggerInstall()">📲 Install</button>
       <button class="icon-btn" onclick="exportToPDF()">📥 PDF</button>
     </div>
   </header>
 
   <!-- Scroll View -->
   <main class="app-scroll">
-    
-    <!-- View 1: New Inward Entry Form -->
     <div class="view-panel active" id="entryView">
       <div class="form-card">
         <div class="form-overlay" id="formOverlay"></div>
@@ -378,7 +199,6 @@
               </div>
               <input type="file" id="photoInput" accept="image/*" capture="environment" style="display: none;" onchange="handleImage(this)">
               
-              <!-- Preview & Scanner Effects -->
               <div class="preview-wrapper" id="previewWrapper">
                 <img id="formImgPreview" class="preview-thumb">
                 <div class="scanner-fx" id="scannerFx">
@@ -388,7 +208,7 @@
                 </div>
               </div>
             </div>
-            <button type="button" id="btnRetake" onclick="resetScanner(event)" style="display:none; margin-top:8px; background:none; border:1px solid #cbd5e1; padding:6px; border-radius:6px; font-size:11px; font-weight:700; color:#475569;">↺ RETAKE PHOTO</button>
+            <button type="button" id="btnRetake" onclick="resetScanner(event)" style="display:none; margin-top:8px; background:none; border:1px solid #cbd5e1; padding:6px; border-radius:6px; font-size:11px; font-weight:700; color:#475569; width: 100%;">↺ RETAKE PHOTO OR STOP SCAN</button>
           </div>
 
           <hr style="border:0; border-top:1px solid #e2e8f0; margin-bottom:14px;">
@@ -397,70 +217,34 @@
             <label>Inward Date & Time</label>
             <input type="datetime-local" id="inTime" required>
           </div>
-
           <div class="field">
             <label>Mill / Supplier Name <span style="color:#2563eb;">✨</span></label>
             <input type="text" id="vendor" placeholder="E.G. VARDHMAN / ARVIND MILLS" required>
           </div>
-
           <div class="field-row">
-            <div class="field">
-              <label>Style Number</label>
-              <input type="text" id="styleNo" placeholder="E.G. MG-DENIM-09" required>
-            </div>
-            <div class="field">
-              <label>PO Number <span style="color:#2563eb;">✨</span></label>
-              <input type="text" id="poNo" placeholder="PO-1044">
-            </div>
+            <div class="field"><label>Style Number</label><input type="text" id="styleNo" placeholder="E.G. MG-DENIM-09" required></div>
+            <div class="field"><label>PO Number <span style="color:#2563eb;">✨</span></label><input type="text" id="poNo" placeholder="PO-1044"></div>
           </div>
-
           <div class="field-row">
-            <div class="field">
-              <label>DC / Invoice # <span style="color:#2563eb;">✨</span></label>
-              <input type="text" id="dcNo" placeholder="DC-8891" required>
-            </div>
-            <div class="field">
-              <label>Fabric / Clothes Colour</label>
-              <input type="text" id="color" placeholder="NAVY BLUE" required>
-            </div>
+            <div class="field"><label>DC / Invoice # <span style="color:#2563eb;">✨</span></label><input type="text" id="dcNo" placeholder="DC-8891" required></div>
+            <div class="field"><label>Fabric / Colour</label><input type="text" id="color" placeholder="NAVY BLUE" required></div>
           </div>
-
           <div class="field">
             <label>Fabric Construction Details</label>
             <input type="text" id="itemName" placeholder="100% COTTON 30S JERSEY" required>
           </div>
-
           <div class="field-row">
-            <div class="field">
-              <label>Rolls / Pkgs</label>
-              <input type="number" id="packages" placeholder="24" required>
-            </div>
+            <div class="field"><label>Rolls / Pkgs</label><input type="number" id="packages" placeholder="24" required></div>
             <div class="field">
               <label>Unit (UOM)</label>
-              <select id="uom">
-                <option value="KGS">KGS</option>
-                <option value="METERS">METERS</option>
-                <option value="PIECES">PIECES</option>
-              </select>
+              <select id="uom"><option value="KGS">KGS</option><option value="METERS">METERS</option><option value="PIECES">PIECES</option></select>
             </div>
           </div>
-
           <div class="field-row">
-            <div class="field">
-              <label>Challan Qty</label>
-              <input type="number" step="any" id="challanQty" placeholder="Sent" required>
-            </div>
-            <div class="field">
-              <label>Received Qty</label>
-              <input type="number" step="any" id="receivedQty" placeholder="Actual" required>
-            </div>
+            <div class="field"><label>Challan Qty</label><input type="number" step="any" id="challanQty" placeholder="Sent" required></div>
+            <div class="field"><label>Received Qty</label><input type="number" step="any" id="receivedQty" placeholder="Actual" required></div>
           </div>
-
-          <div class="field">
-            <label>Receiver Name</label>
-            <input type="text" id="receiver" placeholder="STAFF NAME" required>
-          </div>
-
+          <div class="field"><label>Receiver Name</label><input type="text" id="receiver" placeholder="STAFF NAME" required></div>
           <div class="field">
             <label>Inspection Notes / Vehicle <span style="color:#2563eb;">✨</span></label>
             <textarea id="remarks" rows="2" placeholder="SHADE VARIATION, TN-09-AB-1234..."></textarea>
@@ -471,11 +255,9 @@
       </div>
     </div>
 
-    <!-- View 2: Notebook Register View -->
+    <!-- View 2: Register -->
     <div class="view-panel" id="registerView">
-      <div class="field" style="margin-bottom: 14px;">
-        <input type="text" id="searchBox" placeholder="🔎 SEARCH STYLE, MILL, PO..." onkeyup="renderCards()">
-      </div>
+      <div class="field" style="margin-bottom: 14px;"><input type="text" id="searchBox" placeholder="🔎 SEARCH STYLE, MILL, PO..." onkeyup="renderCards()"></div>
       <div id="cardsList"></div>
     </div>
   </main>
@@ -497,14 +279,14 @@
 
 <script>
   // ----------------------------------------------------
-  // GEMINI AI CONFIGURATION (Replace with your API Key)
+  // GEMINI AI CONFIGURATION
   // ----------------------------------------------------
-  const GEMINI_API_KEY = "YOUR_API_KEY_HERE"; 
+  const GEMINI_API_KEY = "AQ.Ab8RN6J868YNVTqlrVFK5HwbSX3EKk_8-NZt5CAO-btw6DmMUg"; 
   
   let currentCompressedImage = "";
   let isScanning = false;
 
-  // Handle Image Upload & Client-side Compression
+  // Handle Image Upload & Compression
   function handleImage(input) {
     if (input.files && input.files[0]) {
       const file = input.files[0];
@@ -516,27 +298,21 @@
           const canvas = document.createElement('canvas');
           const ctx = canvas.getContext('2d');
           
-          // Compress to max 800px width/height
           const maxDim = 800;
           let width = img.width, height = img.height;
           
-          if (width > height && width > maxDim) {
-            height *= maxDim / width; width = maxDim;
-          } else if (height > maxDim) {
-            width *= maxDim / height; height = maxDim;
-          }
+          if (width > height && width > maxDim) { height *= maxDim / width; width = maxDim; } 
+          else if (height > maxDim) { width *= maxDim / height; height = maxDim; }
           
           canvas.width = width; canvas.height = height;
           ctx.drawImage(img, 0, 0, width, height);
           
           currentCompressedImage = canvas.toDataURL('image/jpeg', 0.7);
           
-          // UI Updates for Scanning
           document.getElementById('uploadPrompt').style.display = 'none';
           document.getElementById('previewWrapper').style.display = 'block';
           document.getElementById('formImgPreview').src = currentCompressedImage;
           
-          // Start AI Scan
           const base64Data = currentCompressedImage.split(',')[1];
           startScanner();
           analyzeImageWithGemini(base64Data, 'image/jpeg');
@@ -551,7 +327,7 @@
     isScanning = true;
     document.getElementById('scannerFx').style.display = 'block';
     document.getElementById('btnRetake').style.display = 'none';
-    document.getElementById('formOverlay').style.display = 'block'; // Disable form inputs
+    document.getElementById('formOverlay').style.display = 'block';
   }
 
   function stopScanner() {
@@ -563,23 +339,17 @@
 
   function resetScanner(e) {
     if (e) e.stopPropagation();
-    if (isScanning) return;
-    
+    isScanning = false;
     document.getElementById('photoInput').value = '';
     currentCompressedImage = "";
     document.getElementById('previewWrapper').style.display = 'none';
     document.getElementById('uploadPrompt').style.display = 'block';
     document.getElementById('btnRetake').style.display = 'none';
+    document.getElementById('formOverlay').style.display = 'none';
   }
 
-  // GEMINI AI INTEGRATION
+  // GEMINI AI API FETCH
   async function analyzeImageWithGemini(base64Data, mimeType) {
-    if (!GEMINI_API_KEY || GEMINI_API_KEY === "YOUR_API_KEY_HERE") {
-      alert("AI Scan skipped: Please enter your Gemini API Key in the code.");
-      stopScanner();
-      return;
-    }
-
     const prompt = `Analyze this goods receipt invoice/challan. Extract the information and return ONLY a raw JSON object (no markdown, no quotes around the json).
 {
   "vendor": "Supplier name",
@@ -600,18 +370,22 @@
     };
 
     try {
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${GEMINI_API_KEY}`, {
+      // UPDATED TO STABLE FLASH MODEL 1.5
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
       
+      if (!response.ok) {
+        throw new Error(`API Error: ${response.status} - Check API key and CORS policy (must run on local server)`);
+      }
+
       const result = await response.json();
       if (result.candidates && result.candidates[0]?.content?.parts[0]?.text) {
         const jsonText = result.candidates[0].content.parts[0].text;
         const data = JSON.parse(jsonText);
         
-        // Auto-fill fields
         if(data.vendor) document.getElementById('vendor').value = data.vendor.toUpperCase();
         if(data.invoice_no) document.getElementById('dcNo').value = data.invoice_no.toUpperCase();
         if(data.po) document.getElementById('poNo').value = data.po.toUpperCase();
@@ -619,51 +393,40 @@
       }
     } catch (error) {
       console.error("AI Analysis failed:", error);
-      alert("AI could not read the document clearly. Please enter details manually.");
+      alert("AI Scan Error: " + error.message);
     } finally {
       stopScanner();
     }
   }
 
-  // Enforce global caps
   document.addEventListener('input', function(e) {
     if (e.target && (e.target.tagName === 'INPUT' && e.target.type === 'text' || e.target.tagName === 'TEXTAREA')) {
       const start = e.target.selectionStart; const end = e.target.selectionEnd;
-      e.target.value = e.target.value.toUpperCase();
-      e.target.setSelectionRange(start, end);
+      e.target.value = e.target.value.toUpperCase(); e.target.setSelectionRange(start, end);
     }
   });
 
-  // PWA Manifest setup
   const manifest = {
-    name: "SKL Fabric GRN", short_name: "SKL GRN",
-    start_url: window.location.href, display: "standalone",
+    name: "SKL Fabric GRN", short_name: "SKL GRN", start_url: window.location.href, display: "standalone",
     background_color: "#ffffff", theme_color: "#ffffff",
     icons: [{ src: "31890.png", sizes: "192x192 512x512", type: "image/png", purpose: "any maskable" }]
   };
   const manifestBlob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
-  const manifestLink = document.createElement('link');
-  manifestLink.rel = 'manifest'; manifestLink.href = URL.createObjectURL(manifestBlob);
+  const manifestLink = document.createElement('link'); manifestLink.rel = 'manifest'; manifestLink.href = URL.createObjectURL(manifestBlob);
   document.head.appendChild(manifestLink);
 
-  // Tab switching logic
   function switchTab(tab) {
-    const entryView = document.getElementById('entryView');
-    const registerView = document.getElementById('registerView');
-    const tabEntry = document.getElementById('tabEntry');
-    const tabRegister = document.getElementById('tabRegister');
-
+    const entryView = document.getElementById('entryView'); const registerView = document.getElementById('registerView');
+    const tabEntry = document.getElementById('tabEntry'); const tabRegister = document.getElementById('tabRegister');
     if (tab === 'entry') {
       entryView.classList.add('active'); registerView.classList.remove('active');
       tabEntry.classList.add('active'); tabRegister.classList.remove('active');
     } else {
       entryView.classList.remove('active'); registerView.classList.add('active');
-      tabEntry.classList.remove('active'); tabRegister.classList.add('active');
-      renderCards();
+      tabEntry.classList.remove('active'); tabRegister.classList.add('active'); renderCards();
     }
   }
 
-  // Local Storage Data Handling
   const STORAGE_KEY = 'MAGNUM_SKL_MOBILE_GRN_V3';
   let logs = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
 
@@ -675,59 +438,35 @@
 
   function persist() { localStorage.setItem(STORAGE_KEY, JSON.stringify(logs)); }
 
-  // Form Submission
   document.getElementById('entryForm').addEventListener('submit', function(e) {
     e.preventDefault();
     const grnId = "MC-SKL-" + String(logs.length + 1).padStart(3, '0');
-
     const entry = {
-      grn: grnId,
-      time: document.getElementById('inTime').value.replace('T', ' '),
-      vendor: document.getElementById('vendor').value.trim(),
-      styleNo: document.getElementById('styleNo').value.trim(),
-      color: document.getElementById('color').value.trim(),
-      dcNo: document.getElementById('dcNo').value.trim(),
-      poNo: document.getElementById('poNo').value.trim() || 'PENDING',
-      item: document.getElementById('itemName').value.trim(),
-      packages: document.getElementById('packages').value,
-      challanQty: document.getElementById('challanQty').value,
-      receivedQty: document.getElementById('receivedQty').value,
-      uom: document.getElementById('uom').value,
-      receiver: document.getElementById('receiver').value.trim(),
-      remarks: document.getElementById('remarks').value.trim(),
-      photo: currentCompressedImage
+      grn: grnId, time: document.getElementById('inTime').value.replace('T', ' '),
+      vendor: document.getElementById('vendor').value.trim(), styleNo: document.getElementById('styleNo').value.trim(),
+      color: document.getElementById('color').value.trim(), dcNo: document.getElementById('dcNo').value.trim(),
+      poNo: document.getElementById('poNo').value.trim() || 'PENDING', item: document.getElementById('itemName').value.trim(),
+      packages: document.getElementById('packages').value, challanQty: document.getElementById('challanQty').value,
+      receivedQty: document.getElementById('receivedQty').value, uom: document.getElementById('uom').value,
+      receiver: document.getElementById('receiver').value.trim(), remarks: document.getElementById('remarks').value.trim(), photo: currentCompressedImage
     };
-
-    logs.unshift(entry);
-    persist();
+    logs.unshift(entry); persist();
     
-    // Show Toast
-    const toast = document.getElementById('toast');
-    toast.classList.add('show');
+    const toast = document.getElementById('toast'); toast.classList.add('show');
     setTimeout(() => toast.classList.remove('show'), 3000);
-    
-    this.reset();
-    resetScanner();
-    resetDate();
-    switchTab('register');
+    this.reset(); resetScanner(); resetDate(); switchTab('register');
   });
 
-  // Render Register Cards
   function renderCards() {
     const filter = document.getElementById('searchBox').value.toUpperCase();
-    const container = document.getElementById('cardsList');
-    container.innerHTML = '';
-
+    const container = document.getElementById('cardsList'); container.innerHTML = '';
     logs.forEach((item, index) => {
       const match = `${item.grn} ${item.vendor} ${item.styleNo} ${item.poNo}`.toUpperCase();
       if (!match.includes(filter)) return;
       const isShort = Number(item.receivedQty) - Number(item.challanQty) < 0;
-
       container.innerHTML += `
         <div class="log-card">
-          <div class="log-card-header">
-            <span class="grn-title">${item.grn}</span><span class="log-time">${item.time}</span>
-          </div>
+          <div class="log-card-header"><span class="grn-title">${item.grn}</span><span class="log-time">${item.time}</span></div>
           <div class="vendor-name">${item.vendor}</div>
           ${item.photo ? `<img src="${item.photo}" class="card-photo-banner">` : ''}
           <div style="font-size: 11px; margin-top:6px;"><strong>STYLE:</strong> ${item.styleNo} | <strong>PO:</strong> ${item.poNo}</div>
@@ -736,18 +475,13 @@
             <div class="qty-box"><span>RECEIVED</span><strong>${item.receivedQty} ${item.uom}</strong></div>
             <div class="qty-box"><span>STATUS</span><strong style="color:${isShort ? '#dc2626' : '#15803d'}">${isShort ? 'SHORT' : 'OK'}</strong></div>
           </div>
-          <div class="card-footer">
-            <span style="font-size:11px; color:#64748b;">BY: ${item.receiver}</span>
-            <button onclick="deleteEntry(${index})" style="background:none; border:none; color:red; cursor:pointer;">✕</button>
-          </div>
+          <div class="card-footer"><span style="font-size:11px; color:#64748b;">BY: ${item.receiver}</span><button onclick="deleteEntry(${index})" style="background:none; border:none; color:red; cursor:pointer;">✕</button></div>
         </div>
       `;
     });
   }
 
-  function deleteEntry(index) {
-    if (confirm("Delete this GRN record?")) { logs.splice(index, 1); persist(); renderCards(); }
-  }
+  function deleteEntry(index) { if (confirm("Delete this GRN record?")) { logs.splice(index, 1); persist(); renderCards(); } }
 
   function exportToPDF() {
     const { jsPDF } = window.jspdf; const doc = new jsPDF('landscape'); 
@@ -756,8 +490,7 @@
     
     doc.autoTable({
       head: [["GRN Ref", "Date", "Vendor", "Style", "Item", "PO", "Qty Recd", "Photo"]],
-      body: tableRows, startY: 20, styles: { fontSize: 8 }, bodyStyles: { minCellHeight: 25 },
-      columnStyles: { 7: { cellWidth: 30 } },
+      body: tableRows, startY: 20, styles: { fontSize: 8 }, bodyStyles: { minCellHeight: 25 }, columnStyles: { 7: { cellWidth: 30 } },
       didDrawCell: function (data) {
         if (data.column.index === 7 && data.cell.section === 'body' && logs[data.row.index].photo) {
           doc.addImage(logs[data.row.index].photo, 'JPEG', data.cell.x + 2, data.cell.y + 2, 21, 21);

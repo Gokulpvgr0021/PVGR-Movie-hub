@@ -118,12 +118,6 @@
       gap: 4px;
     }
 
-    .btn-install-prompt {
-      background: #000000;
-      color: #ffffff;
-      border-color: #000000;
-    }
-
     /* Scrollable App Viewport */
     .app-scroll {
       flex: 1;
@@ -142,6 +136,7 @@
       border-radius: 12px;
       padding: 16px;
       box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+      position: relative;
     }
 
     .field {
@@ -156,8 +151,6 @@
       gap: 10px;
       margin-bottom: 14px;
     }
-
-    .field-row .field { margin-bottom: 0; }
 
     label {
       font-size: 11px;
@@ -177,19 +170,26 @@
       color: var(--text);
       width: 100%;
       outline: none;
-      transition: border-color 0.15s;
+      transition: all 0.2s ease;
     }
 
-    input[type="text"], textarea, .force-caps {
-      text-transform: uppercase !important;
-    }
+    input[type="text"], textarea { text-transform: uppercase !important; }
 
     input:focus, select:focus, textarea:focus {
-      border-color: #000000;
-      box-shadow: 0 0 0 2px rgba(0,0,0,0.05);
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
     }
 
-    /* Photo Upload Box */
+    .form-overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(255,255,255,0.6);
+      z-index: 10;
+      display: none;
+      border-radius: 12px;
+    }
+
+    /* AI Photo Scanner Styles (Merged from GateGuard) */
     .upload-box {
       border: 2px dashed #cbd5e1;
       border-radius: 8px;
@@ -197,247 +197,148 @@
       text-align: center;
       background: #f8fafc;
       cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.2s;
     }
+    
+    .upload-box:hover { border-color: #2563eb; background: #eff6ff; }
+
+    .preview-wrapper {
+      position: relative;
+      width: 100%;
+      display: none;
+      border-radius: 6px;
+      overflow: hidden;
+      margin-top: 8px;
+      border: 1px solid #cbd5e1;
+      background: #000;
+    }
+
     .preview-thumb {
       width: 100%;
-      max-height: 140px;
-      object-fit: cover;
-      border-radius: 6px;
-      margin-top: 8px;
-      display: none;
-      border: 1px solid #cbd5e1;
+      max-height: 200px;
+      object-fit: contain;
+      display: block;
+      opacity: 0.8;
     }
+
+    .scanner-fx {
+      display: none;
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      z-index: 5;
+    }
+
+    @keyframes scan {
+      0% { top: 0%; opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { top: 98%; opacity: 0; }
+    }
+    
+    .laser-line {
+      position: absolute;
+      left: 0; width: 100%; height: 3px;
+      background-color: #10b981;
+      box-shadow: 0 0 15px 2px rgba(16, 185, 129, 0.7);
+      animation: scan 2.5s ease-in-out infinite alternate;
+    }
+
+    .scanning-overlay {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: linear-gradient(to bottom, rgba(16, 185, 129, 0.05), rgba(16, 185, 129, 0.2));
+      animation: pulse-bg 2.5s ease-in-out infinite alternate;
+    }
+
+    @keyframes pulse-bg { 0% { opacity: 0.2; } 100% { opacity: 0.6; } }
+
+    .ai-pill {
+      position: absolute;
+      top: 10px; left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15, 23, 42, 0.9);
+      color: #34d399;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+      border: 1px solid #334155;
+    }
+
+    .spinner {
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      border-left-color: #34d399;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
 
     .submit-btn {
-      width: 100%;
-      background: #000000;
-      color: #ffffff;
-      padding: 14px;
-      font-size: 15px;
-      font-weight: 800;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-top: 6px;
+      width: 100%; background: #000000; color: #ffffff;
+      padding: 14px; font-size: 15px; font-weight: 800;
+      border: none; border-radius: 8px; cursor: pointer;
+      text-transform: uppercase; letter-spacing: 0.5px; margin-top: 6px;
     }
-
     .submit-btn:active { background: #262626; }
 
     /* Register Cards */
-    .search-bar {
-      margin-bottom: 14px;
-    }
-
     .log-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 14px;
-      margin-bottom: 14px;
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 14px; margin-bottom: 14px;
       box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-      display: flex;
-      flex-direction: column;
-      gap: 9px;
+      display: flex; flex-direction: column; gap: 9px;
       text-transform: uppercase;
     }
-
-    .log-card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px dashed var(--border);
-      padding-bottom: 8px;
-    }
-
-    .grn-title {
-      font-size: 14px;
-      font-weight: 800;
-      color: #000;
-    }
-
-    .log-time {
-      font-size: 11px;
-      color: var(--text-muted);
-      font-weight: 600;
-    }
-
-    .vendor-name {
-      font-size: 15px;
-      font-weight: 700;
-      color: #0f172a;
-    }
-
-    .card-photo-banner {
-      width: 100%;
-      height: 150px;
-      object-fit: cover;
-      border-radius: 8px;
-      border: 1px solid #e2e8f0;
-      cursor: pointer;
-    }
-
-    .item-desc {
-      font-size: 13px;
-      color: #334155;
-      background: #f8fafc;
-      padding: 8px 10px;
-      border-radius: 6px;
-      line-height: 1.4;
-      font-weight: 600;
-    }
-
-    /* Editable PO Section inside Card */
-    .po-edit-bar {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      padding: 6px 8px;
-      border-radius: 6px;
-    }
-
-    .po-label {
-      font-size: 11px;
-      font-weight: 800;
-      color: #475569;
-      white-space: nowrap;
-    }
-
-    .po-input-inline {
-      flex: 1;
-      padding: 6px 8px !important;
-      font-size: 13px !important;
-      font-weight: 700;
-      color: #0f172a;
-      border: 1px solid #cbd5e1 !important;
-      background: #ffffff !important;
-      border-radius: 4px !important;
-      text-transform: uppercase !important;
-    }
-
-    .po-save-btn {
-      background: #000000;
-      color: #ffffff;
-      border: none;
-      padding: 6px 10px;
-      border-radius: 4px;
-      font-size: 11px;
-      font-weight: 700;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-
-    .po-save-btn:active { background: #333333; }
-
-    .meta-pills {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      font-size: 11px;
-    }
-
-    .meta-pill {
-      background: #f1f5f9;
-      padding: 4px 8px;
-      border-radius: 4px;
-      font-weight: 700;
-      color: #475569;
-    }
-
-    .qty-comparison {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      background: #f8fafc;
-      border-radius: 8px;
-      padding: 8px 10px;
-      text-align: center;
-      margin-top: 2px;
-    }
-
+    /* (Other card styles kept from original) */
+    .log-card-header { display: flex; justify-content: space-between; border-bottom: 1px dashed var(--border); padding-bottom: 8px; }
+    .grn-title { font-size: 14px; font-weight: 800; color: #000; }
+    .log-time { font-size: 11px; color: var(--text-muted); font-weight: 600; }
+    .vendor-name { font-size: 15px; font-weight: 700; color: #0f172a; }
+    .card-photo-banner { width: 100%; height: 150px; object-fit: cover; border-radius: 8px; border: 1px solid #e2e8f0; cursor: pointer; }
+    .item-desc { font-size: 13px; color: #334155; background: #f8fafc; padding: 8px 10px; border-radius: 6px; line-height: 1.4; font-weight: 600; }
+    .qty-comparison { display: grid; grid-template-columns: 1fr 1fr 1fr; background: #f8fafc; border-radius: 8px; padding: 8px 10px; text-align: center; margin-top: 2px; }
     .qty-box span { font-size: 10px; text-transform: uppercase; color: var(--text-muted); font-weight: 700; }
     .qty-box strong { display: block; font-size: 13px; color: #000; margin-top: 2px; }
-
-    .card-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-top: 4px;
-    }
-
-    .tag {
-      padding: 3px 8px;
-      border-radius: 10px;
-      font-size: 10px;
-      font-weight: 800;
-      text-transform: uppercase;
-    }
+    .card-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 4px; }
+    .tag { padding: 3px 8px; border-radius: 10px; font-size: 10px; font-weight: 800; }
     .tag-ok { background: var(--success-bg); color: var(--success); }
     .tag-short { background: var(--danger-bg); color: var(--danger); }
 
     /* Sticky Bottom Navigation */
     .bottom-nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      background: #ffffff;
-      border-top: 1px solid var(--border);
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      padding: 8px 12px;
-      padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
-      box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
-      z-index: 100;
+      position: fixed; bottom: 0; left: 0; width: 100%;
+      background: #ffffff; border-top: 1px solid var(--border);
+      display: grid; grid-template-columns: 1fr 1fr;
+      padding: 8px 12px; padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 100;
     }
-
     .nav-tab {
-      background: none;
-      border: none;
-      padding: 10px 0;
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--text-muted);
-      border-radius: 8px;
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 3px;
+      background: none; border: none; padding: 10px 0;
+      font-size: 13px; font-weight: 700; color: var(--text-muted);
+      border-radius: 8px; cursor: pointer; display: flex;
+      flex-direction: column; align-items: center; gap: 3px;
     }
+    .nav-tab.active { color: #000000; background: #f1f5f9; }
 
-    .nav-tab.active {
-      color: #000000;
-      background: #f1f5f9;
+    /* Toast Notification (From GateGuard) */
+    .toast {
+      position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(150%);
+      background: #0f172a; color: white; padding: 12px 20px;
+      border-radius: 8px; font-size: 13px; font-weight: 700;
+      display: flex; align-items: center; gap: 8px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 1000;
     }
-
-    .badge-count {
-      background: #000;
-      color: #fff;
-      font-size: 10px;
-      padding: 1px 6px;
-      border-radius: 10px;
-      margin-left: 4px;
-    }
-
-    /* Fullscreen Image Lightbox Modal */
-    .lightbox {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.9);
-      z-index: 999;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-    }
-    .lightbox img {
-      max-width: 100%;
-      max-height: 90%;
-      border-radius: 8px;
-    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+    .toast-icon { background: #10b981; border-radius: 50%; padding: 2px; display: flex; }
   </style>
 </head>
 <body>
@@ -449,79 +350,90 @@
       <img src="31890.png" alt="Magnum Logo" class="brand-logo" style="object-fit: cover;">
       <div class="brand-text">
         <h1>SKL FABRIC TEAM</h1>
-        <p>Magnum Clothing Stores</p>
+        <p>AI GRN Scanner</p>
       </div>
     </div>
     <div class="header-btns">
-      <button class="icon-btn btn-install-prompt" id="installBtn" style="display: none;" onclick="triggerInstall()">
-        📲 Install
-      </button>
-      <button class="icon-btn" onclick="toggleFullScreen()">
-        ⛶
-      </button>
-      <button class="icon-btn" onclick="exportToPDF()">
-        📥 PDF
-      </button>
+      <button class="icon-btn btn-install-prompt" id="installBtn" style="display: none;" onclick="triggerInstall()">📲 Install</button>
+      <button class="icon-btn" onclick="exportToPDF()">📥 PDF</button>
     </div>
   </header>
 
   <!-- Scroll View -->
   <main class="app-scroll">
+    
     <!-- View 1: New Inward Entry Form -->
     <div class="view-panel active" id="entryView">
       <div class="form-card">
+        <div class="form-overlay" id="formOverlay"></div>
         <form id="entryForm">
+          
+          <!-- AI Photo Upload Box -->
+          <div class="field">
+            <label>Auto-Fill with AI (Snap Invoice/Challan)</label>
+            <div class="upload-box" onclick="document.getElementById('photoInput').click()">
+              <div id="uploadPrompt">
+                <span style="font-size: 24px; display:block; margin-bottom:4px;">📸</span>
+                <span style="font-size: 13px; font-weight:700; color: #475569;">TAP TO SCAN DOCUMENT</span>
+              </div>
+              <input type="file" id="photoInput" accept="image/*" capture="environment" style="display: none;" onchange="handleImage(this)">
+              
+              <!-- Preview & Scanner Effects -->
+              <div class="preview-wrapper" id="previewWrapper">
+                <img id="formImgPreview" class="preview-thumb">
+                <div class="scanner-fx" id="scannerFx">
+                  <div class="laser-line"></div>
+                  <div class="scanning-overlay"></div>
+                  <div class="ai-pill"><div class="spinner"></div> AI Analyzing...</div>
+                </div>
+              </div>
+            </div>
+            <button type="button" id="btnRetake" onclick="resetScanner(event)" style="display:none; margin-top:8px; background:none; border:1px solid #cbd5e1; padding:6px; border-radius:6px; font-size:11px; font-weight:700; color:#475569;">↺ RETAKE PHOTO</button>
+          </div>
+
+          <hr style="border:0; border-top:1px solid #e2e8f0; margin-bottom:14px;">
+
           <div class="field">
             <label>Inward Date & Time</label>
             <input type="datetime-local" id="inTime" required>
           </div>
 
           <div class="field">
-            <label>Mill / Supplier Name</label>
-            <input type="text" id="vendor" placeholder="E.G. VARDHMAN / ARVIND MILLS" autocapitalize="characters" required>
+            <label>Mill / Supplier Name <span style="color:#2563eb;">✨</span></label>
+            <input type="text" id="vendor" placeholder="E.G. VARDHMAN / ARVIND MILLS" required>
           </div>
 
           <div class="field-row">
             <div class="field">
               <label>Style Number</label>
-              <input type="text" id="styleNo" placeholder="E.G. MG-DENIM-09" autocapitalize="characters" required>
+              <input type="text" id="styleNo" placeholder="E.G. MG-DENIM-09" required>
             </div>
             <div class="field">
-              <label>PO Number (Editable Later)</label>
-              <input type="text" id="poNo" placeholder="PO-1044" autocapitalize="characters">
+              <label>PO Number <span style="color:#2563eb;">✨</span></label>
+              <input type="text" id="poNo" placeholder="PO-1044">
             </div>
           </div>
 
           <div class="field-row">
             <div class="field">
-              <label>DC / Invoice #</label>
-              <input type="text" id="dcNo" placeholder="DC-8891" autocapitalize="characters" required>
+              <label>DC / Invoice # <span style="color:#2563eb;">✨</span></label>
+              <input type="text" id="dcNo" placeholder="DC-8891" required>
             </div>
             <div class="field">
               <label>Fabric / Clothes Colour</label>
-              <input type="text" id="color" placeholder="E.G. NAVY BLUE / OLIVE" autocapitalize="characters" required>
+              <input type="text" id="color" placeholder="NAVY BLUE" required>
             </div>
           </div>
 
           <div class="field">
-            <label>Fabric Construction & Style Details</label>
-            <input type="text" id="itemName" placeholder="E.G. 100% COTTON 30S SINGLE JERSEY 160 GSM" autocapitalize="characters" required>
-          </div>
-
-          <!-- Photo Upload / Camera Snap -->
-          <div class="field">
-            <label>Snap / Upload Fabric & Style Photo</label>
-            <div class="upload-box" onclick="document.getElementById('photoInput').click()">
-              <span id="uploadPrompt" style="font-size: 13px; font-weight:700; color: #475569;">📷 TAP TO SNAP OR PICK SWATCH PHOTO</span>
-              <input type="file" id="photoInput" accept="image/*" capture="environment" style="display: none;" onchange="handleImage(this)">
-              <img id="formImgPreview" class="preview-thumb">
-            </div>
+            <label>Fabric Construction Details</label>
+            <input type="text" id="itemName" placeholder="100% COTTON 30S JERSEY" required>
           </div>
 
           <div class="field-row">
             <div class="field">
               <label>Rolls / Pkgs</label>
-              <input type="number" id="packages" placeholder="E.G. 24" required>
+              <input type="number" id="packages" placeholder="24" required>
             </div>
             <div class="field">
               <label>Unit (UOM)</label>
@@ -529,7 +441,6 @@
                 <option value="KGS">KGS</option>
                 <option value="METERS">METERS</option>
                 <option value="PIECES">PIECES</option>
-                <option value="CONES">CONES</option>
               </select>
             </div>
           </div>
@@ -547,23 +458,23 @@
 
           <div class="field">
             <label>Receiver Name</label>
-            <input type="text" id="receiver" placeholder="STAFF NAME" autocapitalize="characters" required>
+            <input type="text" id="receiver" placeholder="STAFF NAME" required>
           </div>
 
           <div class="field">
-            <label>Inspection Notes / Remarks</label>
-            <textarea id="remarks" rows="2" placeholder="SHADE VARIATION, SEAL CHECKS, REMARKS..." autocapitalize="characters"></textarea>
+            <label>Inspection Notes / Vehicle <span style="color:#2563eb;">✨</span></label>
+            <textarea id="remarks" rows="2" placeholder="SHADE VARIATION, TN-09-AB-1234..."></textarea>
           </div>
 
-          <button type="submit" class="submit-btn">+ Save GRN Entry</button>
+          <button type="submit" class="submit-btn" id="btnSubmit">+ Save GRN Entry</button>
         </form>
       </div>
     </div>
 
-    <!-- View 2: Notebook Register View with Editable PO & Photos -->
+    <!-- View 2: Notebook Register View -->
     <div class="view-panel" id="registerView">
-      <div class="search-bar">
-        <input type="text" id="searchBox" placeholder="🔎 SEARCH STYLE #, COLOR, MILL, PO..." autocapitalize="characters" onkeyup="renderCards()">
+      <div class="field" style="margin-bottom: 14px;">
+        <input type="text" id="searchBox" placeholder="🔎 SEARCH STYLE, MILL, PO..." onkeyup="renderCards()">
       </div>
       <div id="cardsList"></div>
     </div>
@@ -571,22 +482,27 @@
 
   <!-- Sticky Bottom Tabs -->
   <nav class="bottom-nav">
-    <button class="nav-tab active" id="tabEntry" onclick="switchTab('entry')">
-      ✍️ Inward Entry
-    </button>
-    <button class="nav-tab" id="tabRegister" onclick="switchTab('register')">
-      📋 Daily Log <span class="badge-count" id="logCount">0</span>
-    </button>
+    <button class="nav-tab active" id="tabEntry" onclick="switchTab('entry')">✍️ Inward Entry</button>
+    <button class="nav-tab" id="tabRegister" onclick="switchTab('register')">📋 Daily Log</button>
   </nav>
 </div>
 
-<!-- Modal Lightbox for Fullscreen Image View -->
-<div class="lightbox" id="imgModal" onclick="this.style.display='none'">
-  <img id="modalImg" src="">
+<!-- Success Toast -->
+<div class="toast" id="toast">
+  <div class="toast-icon">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+  </div>
+  Entry Logged Successfully
 </div>
 
 <script>
+  // ----------------------------------------------------
+  // GEMINI AI CONFIGURATION (Replace with your API Key)
+  // ----------------------------------------------------
+  const GEMINI_API_KEY = "YOUR_API_KEY_HERE"; 
+  
   let currentCompressedImage = "";
+  let isScanning = false;
 
   // Handle Image Upload & Client-side Compression
   function handleImage(input) {
@@ -600,29 +516,30 @@
           const canvas = document.createElement('canvas');
           const ctx = canvas.getContext('2d');
           
-          // Max dimension 800px to ensure tiny storage footprint
+          // Compress to max 800px width/height
           const maxDim = 800;
-          let width = img.width;
-          let height = img.height;
+          let width = img.width, height = img.height;
           
           if (width > height && width > maxDim) {
-            height *= maxDim / width;
-            width = maxDim;
+            height *= maxDim / width; width = maxDim;
           } else if (height > maxDim) {
-            width *= maxDim / height;
-            height = maxDim;
+            width *= maxDim / height; height = maxDim;
           }
           
-          canvas.width = width;
-          canvas.height = height;
+          canvas.width = width; canvas.height = height;
           ctx.drawImage(img, 0, 0, width, height);
           
-          // Compress to JPEG format (0.7 quality)
           currentCompressedImage = canvas.toDataURL('image/jpeg', 0.7);
-          const preview = document.getElementById('formImgPreview');
-          preview.src = currentCompressedImage;
-          preview.style.display = 'block';
-          document.getElementById('uploadPrompt').innerText = "✓ PHOTO LOADED (TAP TO REPLACE)";
+          
+          // UI Updates for Scanning
+          document.getElementById('uploadPrompt').style.display = 'none';
+          document.getElementById('previewWrapper').style.display = 'block';
+          document.getElementById('formImgPreview').src = currentCompressedImage;
+          
+          // Start AI Scan
+          const base64Data = currentCompressedImage.split(',')[1];
+          startScanner();
+          analyzeImageWithGemini(base64Data, 'image/jpeg');
         };
         img.src = e.target.result;
       };
@@ -630,85 +547,106 @@
     }
   }
 
-  function openLightbox(src) {
-    document.getElementById('modalImg').src = src;
-    document.getElementById('imgModal').style.display = 'flex';
+  function startScanner() {
+    isScanning = true;
+    document.getElementById('scannerFx').style.display = 'block';
+    document.getElementById('btnRetake').style.display = 'none';
+    document.getElementById('formOverlay').style.display = 'block'; // Disable form inputs
   }
 
-  // Enforce Caps Lock globally on all text inputs
+  function stopScanner() {
+    isScanning = false;
+    document.getElementById('scannerFx').style.display = 'none';
+    document.getElementById('btnRetake').style.display = 'inline-block';
+    document.getElementById('formOverlay').style.display = 'none';
+  }
+
+  function resetScanner(e) {
+    if (e) e.stopPropagation();
+    if (isScanning) return;
+    
+    document.getElementById('photoInput').value = '';
+    currentCompressedImage = "";
+    document.getElementById('previewWrapper').style.display = 'none';
+    document.getElementById('uploadPrompt').style.display = 'block';
+    document.getElementById('btnRetake').style.display = 'none';
+  }
+
+  // GEMINI AI INTEGRATION
+  async function analyzeImageWithGemini(base64Data, mimeType) {
+    if (!GEMINI_API_KEY || GEMINI_API_KEY === "YOUR_API_KEY_HERE") {
+      alert("AI Scan skipped: Please enter your Gemini API Key in the code.");
+      stopScanner();
+      return;
+    }
+
+    const prompt = `Analyze this goods receipt invoice/challan. Extract the information and return ONLY a raw JSON object (no markdown, no quotes around the json).
+{
+  "vendor": "Supplier name",
+  "invoice_no": "DC or Invoice number",
+  "po": "PO number if visible",
+  "notes": "Any handwritten notes, vehicle numbers like TN-XX, or amounts"
+}`;
+
+    const payload = {
+      contents: [{
+        role: "user",
+        parts: [
+          { text: prompt },
+          { inlineData: { mimeType: mimeType, data: base64Data } }
+        ]
+      }],
+      generationConfig: { responseMimeType: "application/json" }
+    };
+
+    try {
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${GEMINI_API_KEY}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      
+      const result = await response.json();
+      if (result.candidates && result.candidates[0]?.content?.parts[0]?.text) {
+        const jsonText = result.candidates[0].content.parts[0].text;
+        const data = JSON.parse(jsonText);
+        
+        // Auto-fill fields
+        if(data.vendor) document.getElementById('vendor').value = data.vendor.toUpperCase();
+        if(data.invoice_no) document.getElementById('dcNo').value = data.invoice_no.toUpperCase();
+        if(data.po) document.getElementById('poNo').value = data.po.toUpperCase();
+        if(data.notes) document.getElementById('remarks').value = data.notes.toUpperCase();
+      }
+    } catch (error) {
+      console.error("AI Analysis failed:", error);
+      alert("AI could not read the document clearly. Please enter details manually.");
+    } finally {
+      stopScanner();
+    }
+  }
+
+  // Enforce global caps
   document.addEventListener('input', function(e) {
     if (e.target && (e.target.tagName === 'INPUT' && e.target.type === 'text' || e.target.tagName === 'TEXTAREA')) {
-      const start = e.target.selectionStart;
-      const end = e.target.selectionEnd;
+      const start = e.target.selectionStart; const end = e.target.selectionEnd;
       e.target.value = e.target.value.toUpperCase();
       e.target.setSelectionRange(start, end);
     }
   });
 
+  // PWA Manifest setup
   const manifest = {
-    name: "SKL Fabric GRN",
-    short_name: "SKL GRN",
-    start_url: window.location.href,
-    display: "standalone",
-    orientation: "portrait",
-    background_color: "#ffffff",
-    theme_color: "#ffffff",
-    icons: [
-      {
-        src: "31890.png",
-        sizes: "192x192 512x512",
-        type: "image/png",
-        purpose: "any maskable"
-      }
-    ]
+    name: "SKL Fabric GRN", short_name: "SKL GRN",
+    start_url: window.location.href, display: "standalone",
+    background_color: "#ffffff", theme_color: "#ffffff",
+    icons: [{ src: "31890.png", sizes: "192x192 512x512", type: "image/png", purpose: "any maskable" }]
   };
-  
   const manifestBlob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
   const manifestLink = document.createElement('link');
-  manifestLink.rel = 'manifest';
-  manifestLink.href = URL.createObjectURL(manifestBlob);
+  manifestLink.rel = 'manifest'; manifestLink.href = URL.createObjectURL(manifestBlob);
   document.head.appendChild(manifestLink);
 
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      const swCode = `self.addEventListener('fetch', e => e.respondWith(fetch(e.request).catch(() => new Response('Offline'))));`;
-      const swBlob = new Blob([swCode], { type: 'application/javascript' });
-      navigator.serviceWorker.register(URL.createObjectURL(swBlob)).catch(() => {});
-    });
-  }
-
-  let deferredPrompt;
-  const installBtn = document.getElementById('installBtn');
-
-  window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-    installBtn.style.display = 'inline-flex';
-  });
-
-  function triggerInstall() {
-    if (deferredPrompt) {
-      deferredPrompt.prompt();
-      deferredPrompt.userChoice.then((res) => {
-        if (res.outcome === 'accepted') installBtn.style.display = 'none';
-        deferredPrompt = null;
-      });
-    } else {
-      alert("To Download to your Phone:\n• Android: Tap Chrome menu (⋮) > 'Install App' / 'Add to Home screen'\n• iPhone: Tap Share > 'Add to Home Screen'");
-    }
-  }
-
-  function toggleFullScreen() {
-    const el = document.documentElement;
-    if (!document.fullscreenElement && !document.webkitFullscreenElement) {
-      if (el.requestFullscreen) el.requestFullscreen().catch(() => {});
-      else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
-    } else {
-      if (document.exitFullscreen) document.exitFullscreen();
-      else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
-    }
-  }
-
+  // Tab switching logic
   function switchTab(tab) {
     const entryView = document.getElementById('entryView');
     const registerView = document.getElementById('registerView');
@@ -716,137 +654,28 @@
     const tabRegister = document.getElementById('tabRegister');
 
     if (tab === 'entry') {
-      entryView.classList.add('active');
-      registerView.classList.remove('active');
-      tabEntry.classList.add('active');
-      tabRegister.classList.remove('active');
+      entryView.classList.add('active'); registerView.classList.remove('active');
+      tabEntry.classList.add('active'); tabRegister.classList.remove('active');
     } else {
-      entryView.classList.remove('active');
-      registerView.classList.add('active');
-      tabEntry.classList.remove('active');
-      tabRegister.classList.add('active');
+      entryView.classList.remove('active'); registerView.classList.add('active');
+      tabEntry.classList.remove('active'); tabRegister.classList.add('active');
       renderCards();
     }
   }
 
-  const STORAGE_KEY = 'MAGNUM_SKL_MOBILE_GRN_V2';
-  let logs = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [
-    {
-      grn: "MC-SKL-001",
-      time: "2026-09-09 11:30",
-      vendor: "VARDHMAN TEXTILES LTD",
-      styleNo: "MG-DENIM-01",
-      color: "NAVY BLUE",
-      dcNo: "DC-7721",
-      poNo: "PO-SKL-99",
-      item: "100% COTTON 30S SINGLE JERSEY 160 GSM",
-      packages: 32,
-      challanQty: 1200,
-      receivedQty: 1200,
-      uom: "KGS",
-      receiver: "MURUGAN",
-      remarks: "SHADE INSPECTION VERIFIED",
-      photo: ""
-    }
-  ];
+  // Local Storage Data Handling
+  const STORAGE_KEY = 'MAGNUM_SKL_MOBILE_GRN_V3';
+  let logs = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
 
   function resetDate() {
-    const now = new Date();
-    now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+    const now = new Date(); now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
     document.getElementById('inTime').value = now.toISOString().slice(0, 16);
   }
   resetDate();
 
-  function persist() {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(logs));
-    document.getElementById('logCount').innerText = logs.length;
-  }
+  function persist() { localStorage.setItem(STORAGE_KEY, JSON.stringify(logs)); }
 
-  function updatePO(index) {
-    const input = document.getElementById(`po-input-${index}`);
-    const updatedVal = input.value.trim().toUpperCase();
-    logs[index].poNo = updatedVal || 'N/A';
-    persist();
-    
-    const btn = document.getElementById(`po-btn-${index}`);
-    const originalText = btn.innerText;
-    btn.innerText = "✓ SAVED";
-    btn.style.background = "#15803d";
-    setTimeout(() => {
-      btn.innerText = originalText;
-      btn.style.background = "#000000";
-    }, 1200);
-  }
-
-  function renderCards() {
-    const filter = document.getElementById('searchBox').value.toUpperCase();
-    const container = document.getElementById('cardsList');
-    container.innerHTML = '';
-
-    logs.forEach((item, index) => {
-      const match = `${item.grn} ${item.vendor} ${item.styleNo} ${item.color} ${item.dcNo} ${item.poNo} ${item.item}`.toUpperCase();
-      if (!match.includes(filter)) return;
-
-      const variance = Number(item.receivedQty) - Number(item.challanQty);
-      const isShort = variance < 0;
-
-      const card = document.createElement('div');
-      card.className = 'log-card';
-      card.innerHTML = `
-        <div class="log-card-header">
-          <span class="grn-title">${item.grn}</span>
-          <span class="log-time">${item.time}</span>
-        </div>
-
-        <div class="vendor-name">${item.vendor}</div>
-
-        ${item.photo ? `<img src="${item.photo}" class="card-photo-banner" onclick="openLightbox('${item.photo}')">` : ''}
-
-        <div class="meta-pills">
-          <span class="meta-pill" style="background:#000; color:#fff;">STYLE: ${item.styleNo}</span>
-          <span class="meta-pill" style="background:#e0f2fe; color:#0369a1;">COLOR: ${item.color}</span>
-          <span class="meta-pill">DC: ${item.dcNo}</span>
-          <span class="meta-pill">📦 ${item.packages} ROLLS</span>
-        </div>
-
-        <div class="item-desc">${item.item}</div>
-
-        <!-- Editable PO Bar -->
-        <div class="po-edit-bar">
-          <span class="po-label">PO #:</span>
-          <input type="text" id="po-input-${index}" class="po-input-inline" value="${item.poNo || ''}" placeholder="ENTER / EDIT PO" autocapitalize="characters">
-          <button type="button" id="po-btn-${index}" class="po-save-btn" onclick="updatePO(${index})">💾 SAVE PO</button>
-        </div>
-
-        <div class="qty-comparison">
-          <div class="qty-box">
-            <span>CHALLAN</span>
-            <strong>${item.challanQty} ${item.uom}</strong>
-          </div>
-          <div class="qty-box">
-            <span>RECEIVED</span>
-            <strong>${item.receivedQty} ${item.uom}</strong>
-          </div>
-          <div class="qty-box">
-            <span>VARIANCE</span>
-            <strong style="color:${isShort ? 'var(--danger)' : 'var(--success)'}">
-              ${variance > 0 ? '+' + variance : variance}
-            </strong>
-          </div>
-        </div>
-
-        <div class="card-footer">
-          <span class="tag ${isShort ? 'tag-short' : 'tag-ok'}">${isShort ? 'SHORTAGE' : 'COMPLETE'}</span>
-          <div style="display:flex; align-items:center; gap: 10px;">
-            <span style="font-size:11px; color:#64748b;">BY: ${item.receiver}</span>
-            <button onclick="deleteEntry(${index})" style="background:none; border:none; color:var(--danger); font-size:16px; cursor:pointer; padding:4px;">✕</button>
-          </div>
-        </div>
-      `;
-      container.appendChild(card);
-    });
-  }
-
+  // Form Submission
   document.getElementById('entryForm').addEventListener('submit', function(e) {
     e.preventDefault();
     const grnId = "MC-SKL-" + String(logs.length + 1).padStart(3, '0');
@@ -854,101 +683,89 @@
     const entry = {
       grn: grnId,
       time: document.getElementById('inTime').value.replace('T', ' '),
-      vendor: document.getElementById('vendor').value.trim().toUpperCase(),
-      styleNo: document.getElementById('styleNo').value.trim().toUpperCase(),
-      color: document.getElementById('color').value.trim().toUpperCase(),
-      dcNo: document.getElementById('dcNo').value.trim().toUpperCase(),
-      poNo: document.getElementById('poNo').value.trim().toUpperCase() || 'PENDING',
-      item: document.getElementById('itemName').value.trim().toUpperCase(),
+      vendor: document.getElementById('vendor').value.trim(),
+      styleNo: document.getElementById('styleNo').value.trim(),
+      color: document.getElementById('color').value.trim(),
+      dcNo: document.getElementById('dcNo').value.trim(),
+      poNo: document.getElementById('poNo').value.trim() || 'PENDING',
+      item: document.getElementById('itemName').value.trim(),
       packages: document.getElementById('packages').value,
       challanQty: document.getElementById('challanQty').value,
       receivedQty: document.getElementById('receivedQty').value,
       uom: document.getElementById('uom').value,
-      receiver: document.getElementById('receiver').value.trim().toUpperCase(),
-      remarks: document.getElementById('remarks').value.trim().toUpperCase(),
+      receiver: document.getElementById('receiver').value.trim(),
+      remarks: document.getElementById('remarks').value.trim(),
       photo: currentCompressedImage
     };
 
     logs.unshift(entry);
     persist();
     
-    // Reset Form
+    // Show Toast
+    const toast = document.getElementById('toast');
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3000);
+    
     this.reset();
-    currentCompressedImage = "";
-    document.getElementById('formImgPreview').style.display = 'none';
-    document.getElementById('uploadPrompt').innerText = "📷 TAP TO SNAP OR PICK SWATCH PHOTO";
+    resetScanner();
     resetDate();
     switchTab('register');
   });
 
-  function deleteEntry(index) {
-    if (confirm("Delete this GRN record?")) {
-      logs.splice(index, 1);
-      persist();
-      renderCards();
-    }
+  // Render Register Cards
+  function renderCards() {
+    const filter = document.getElementById('searchBox').value.toUpperCase();
+    const container = document.getElementById('cardsList');
+    container.innerHTML = '';
+
+    logs.forEach((item, index) => {
+      const match = `${item.grn} ${item.vendor} ${item.styleNo} ${item.poNo}`.toUpperCase();
+      if (!match.includes(filter)) return;
+      const isShort = Number(item.receivedQty) - Number(item.challanQty) < 0;
+
+      container.innerHTML += `
+        <div class="log-card">
+          <div class="log-card-header">
+            <span class="grn-title">${item.grn}</span><span class="log-time">${item.time}</span>
+          </div>
+          <div class="vendor-name">${item.vendor}</div>
+          ${item.photo ? `<img src="${item.photo}" class="card-photo-banner">` : ''}
+          <div style="font-size: 11px; margin-top:6px;"><strong>STYLE:</strong> ${item.styleNo} | <strong>PO:</strong> ${item.poNo}</div>
+          <div class="qty-comparison">
+            <div class="qty-box"><span>CHALLAN</span><strong>${item.challanQty} ${item.uom}</strong></div>
+            <div class="qty-box"><span>RECEIVED</span><strong>${item.receivedQty} ${item.uom}</strong></div>
+            <div class="qty-box"><span>STATUS</span><strong style="color:${isShort ? '#dc2626' : '#15803d'}">${isShort ? 'SHORT' : 'OK'}</strong></div>
+          </div>
+          <div class="card-footer">
+            <span style="font-size:11px; color:#64748b;">BY: ${item.receiver}</span>
+            <button onclick="deleteEntry(${index})" style="background:none; border:none; color:red; cursor:pointer;">✕</button>
+          </div>
+        </div>
+      `;
+    });
   }
 
-  // --- NEW PDF EXPORT FUNCTION ---
+  function deleteEntry(index) {
+    if (confirm("Delete this GRN record?")) { logs.splice(index, 1); persist(); renderCards(); }
+  }
+
   function exportToPDF() {
-    const { jsPDF } = window.jspdf;
+    const { jsPDF } = window.jspdf; const doc = new jsPDF('landscape'); 
+    doc.setFontSize(16); doc.text("SKL Fabric GRN Report", 14, 15);
+    const tableRows = logs.map(item => [item.grn, item.time, item.vendor, item.styleNo, item.item, item.poNo, `${item.receivedQty} ${item.uom}`, ""]);
     
-    // Generate landscape PDF to fit more columns
-    const doc = new jsPDF('landscape'); 
-    
-    doc.setFontSize(16);
-    doc.text("SKL Fabric GRN Report - Magnum Clothing", 14, 15);
-    
-    // Define Table Columns
-    const tableColumn = ["GRN Ref", "Date & Time", "Vendor", "Style / Color", "Item / Construction", "PO No", "Qty Recd", "Photo"];
-    const tableRows = [];
-
-    // Map logs data to table format
-    logs.forEach(item => {
-      const rowData = [
-        item.grn,
-        item.time,
-        item.vendor,
-        `${item.styleNo}\n${item.color}`, // Combine style & color
-        item.item,
-        item.poNo,
-        `${item.receivedQty} ${item.uom}`,
-        "" // Leave photo column empty for the custom hook
-      ];
-      tableRows.push(rowData);
-    });
-
-    // Render Table using AutoTable plugin
     doc.autoTable({
-      head: [tableColumn],
-      body: tableRows,
-      startY: 20,
-      styles: { fontSize: 8, cellPadding: 3, valign: 'middle' },
-      bodyStyles: { minCellHeight: 25 }, // Create vertical space for images
-      columnStyles: {
-        7: { cellWidth: 30 } // Fix width for the photo column
-      },
+      head: [["GRN Ref", "Date", "Vendor", "Style", "Item", "PO", "Qty Recd", "Photo"]],
+      body: tableRows, startY: 20, styles: { fontSize: 8 }, bodyStyles: { minCellHeight: 25 },
+      columnStyles: { 7: { cellWidth: 30 } },
       didDrawCell: function (data) {
-        // Intercept cell drawing to inject images manually
-        if (data.column.index === 7 && data.cell.section === 'body') {
-          const imgData = logs[data.row.index].photo;
-          if (imgData) {
-            // Draw image exactly inside the bounds of the cell
-            doc.addImage(imgData, 'JPEG', data.cell.x + 2, data.cell.y + 2, 21, 21);
-          } else {
-            doc.text("N/A", data.cell.x + 2, data.cell.y + 12);
-          }
+        if (data.column.index === 7 && data.cell.section === 'body' && logs[data.row.index].photo) {
+          doc.addImage(logs[data.row.index].photo, 'JPEG', data.cell.x + 2, data.cell.y + 2, 21, 21);
         }
       }
     });
-
-    // Save Download
-    const filename = `SKL_Fabric_GRN_${new Date().toISOString().slice(0,10)}.pdf`;
-    doc.save(filename);
+    doc.save(`SKL_GRN_${new Date().toISOString().slice(0,10)}.pdf`);
   }
-
-  document.getElementById('logCount').innerText = logs.length;
-  renderCards();
 </script>
 
 </body>

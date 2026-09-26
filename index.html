@@ -3,117 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Automatic Pcs Calculator</title>
+    <title>Fabric Roll Pcs Generator</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
             padding: 20px;
-            max-width: 600px;
-            margin: 0 auto;
+            margin: 0;
+            display: flex;
+            justify-content: center;
         }
-        .container {
+        .dashboard {
             background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 600px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e4e6eb;
         }
         h2 {
-            text-align: center;
-            color: #333;
-            margin-top: 0;
+            margin: 0;
+            color: #1c1e21;
+            font-size: 24px;
         }
-        p.instructions {
-            text-align: center;
-            color: #666;
-            font-size: 14px;
-            margin-bottom: 15px;
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .input-group {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            font-weight: 600;
+            color: #65676b;
+            font-size: 13px;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+        input {
+            padding: 10px;
+            border: 1px solid #ccd0d5;
+            border-radius: 6px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        input:focus {
+            border-color: #1877f2;
+        }
+        .highlight-input {
+            border: 2px solid #1877f2;
+            background-color: #f0f8ff;
         }
         textarea {
             width: 100%;
-            height: 300px;
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+            height: 350px;
+            padding: 15px;
+            border: 1px solid #ccd0d5;
+            border-radius: 6px;
             box-sizing: border-box;
             resize: vertical;
-            font-family: monospace;
+            font-family: 'Courier New', Courier, monospace;
             font-size: 15px;
+            line-height: 1.5;
+            background-color: #fafafa;
         }
-        .counter-box {
-            margin-top: 20px;
-            padding: 15px;
-            background-color: #e9ecef;
-            border-radius: 6px;
+        .footer {
             text-align: center;
-            font-size: 22px;
+            margin-top: 20px;
+            color: #8a8d91;
+            font-size: 12px;
             font-weight: bold;
-            color: #0056b3;
-            border: 2px solid #cce5ff;
-        }
-        button {
-            margin-top: 15px;
-            padding: 12px 15px;
-            background-color: #dc3545;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            width: 100%;
-            font-size: 16px;
-            font-weight: bold;
-        }
-        button:hover {
-            background-color: #c82333;
+            letter-spacing: 0.5px;
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h2>Automatic Pcs Calculator</h2>
-    <p class="instructions">Type, paste, or scan your piece numbers below. The total count updates automatically.</p>
+<div class="dashboard">
+    <div class="header">
+        <h2>Continuous Pcs Generator</h2>
+    </div>
     
-    <textarea id="pcsInput" placeholder="Enter pcs numbers here... (one per line or separated by commas)"></textarea>
-    
-    <div class="counter-box">
-        Total Pieces Entered: <span id="totalCount">0</span>
+    <div class="controls">
+        <div class="input-group">
+            <label for="prefix">Prefix (Optional)</label>
+            <input type="text" id="prefix" placeholder="e.g., Roll-">
+        </div>
+        <div class="input-group">
+            <label for="startNum">Start From</label>
+            <input type="number" id="startNum" value="1" min="1">
+        </div>
+        <div class="input-group">
+            <label for="totalRolls">Total Rolls</label>
+            <input type="number" id="totalRolls" class="highlight-input" placeholder="Enter qty" min="1">
+        </div>
     </div>
 
-    <button onclick="clearList()">Clear List</button>
+    <textarea id="outputList" placeholder="Your continuous pieces will generate here automatically..." readonly></textarea>
+    
+    <div class="footer">
+        MAGNUM CLOTHING SKL WAREHOUSE - FABRIC TEAM <br>
+        MADE BY GOKUL PVGR
+    </div>
 </div>
 
 <script>
-    const pcsInput = document.getElementById('pcsInput');
-    const totalCount = document.getElementById('totalCount');
+    // Grab the inputs from the HTML
+    const prefixInput = document.getElementById('prefix');
+    const startNumInput = document.getElementById('startNum');
+    const totalRollsInput = document.getElementById('totalRolls');
+    const outputList = document.getElementById('outputList');
 
-    // Automatically calculate whenever the user types, pastes, or deletes text
-    pcsInput.addEventListener('input', calculatePcs);
+    // Add event listeners so it calculates the exact moment you type
+    prefixInput.addEventListener('input', generatePcs);
+    startNumInput.addEventListener('input', generatePcs);
+    totalRollsInput.addEventListener('input', generatePcs);
 
-    function calculatePcs() {
-        // Get the text from the text area
-        const text = pcsInput.value;
+    function generatePcs() {
+        const prefix = prefixInput.value;
+        const startNum = parseInt(startNumInput.value) || 1;
+        const totalRolls = parseInt(totalRollsInput.value) || 0;
         
-        // Split the text by either new lines or commas
-        const items = text.split(/[\n,]+/);
-        
-        // Count only the items that are not blank/empty
-        let count = 0;
-        for (let i = 0; i < items.length; i++) {
-            if (items[i].trim() !== '') {
-                count++;
-            }
+        // If the total rolls input is empty or zero, clear the text box
+        if (totalRolls <= 0) {
+            outputList.value = '';
+            return;
+        }
+
+        // Generate the list based on the number of rolls
+        let result = [];
+        for (let i = 0; i < totalRolls; i++) {
+            const currentPcsNumber = startNum + i;
+            result.push(prefix + currentPcsNumber);
         }
         
-        // Update the big blue number on the screen
-        totalCount.innerText = count;
-    }
-
-    // Function to clear everything for the next batch
-    function clearList() {
-        pcsInput.value = '';
-        totalCount.innerText = '0';
-        pcsInput.focus();
+        // Output the final list into the text area
+        outputList.value = result.join('\n');
     }
 </script>
 

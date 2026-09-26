@@ -76,6 +76,25 @@
             font-size: 15px;
             line-height: 1.5;
             background-color: #fafafa;
+            margin-bottom: 15px;
+        }
+        .copy-btn {
+            width: 100%;
+            background-color: #1877f2;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .copy-btn:hover {
+            background-color: #166fe5;
+        }
+        .copy-btn.success {
+            background-color: #31a24c;
         }
         .footer {
             text-align: center;
@@ -111,6 +130,8 @@
 
     <textarea id="outputList" placeholder="Your continuous pieces will generate here automatically..." readonly></textarea>
     
+    <button id="copyBtn" class="copy-btn">Copy to Clipboard</button>
+    
     <div class="footer">
         MAGNUM CLOTHING SKL WAREHOUSE - FABRIC TEAM <br>
         MADE BY GOKUL PVGR
@@ -118,13 +139,12 @@
 </div>
 
 <script>
-    // Grab the inputs from the HTML
     const prefixInput = document.getElementById('prefix');
     const startNumInput = document.getElementById('startNum');
     const totalRollsInput = document.getElementById('totalRolls');
     const outputList = document.getElementById('outputList');
+    const copyBtn = document.getElementById('copyBtn');
 
-    // Add event listeners so it calculates the exact moment you type
     prefixInput.addEventListener('input', generatePcs);
     startNumInput.addEventListener('input', generatePcs);
     totalRollsInput.addEventListener('input', generatePcs);
@@ -134,22 +154,37 @@
         const startNum = parseInt(startNumInput.value) || 1;
         const totalRolls = parseInt(totalRollsInput.value) || 0;
         
-        // If the total rolls input is empty or zero, clear the text box
         if (totalRolls <= 0) {
             outputList.value = '';
             return;
         }
 
-        // Generate the list based on the number of rolls
         let result = [];
         for (let i = 0; i < totalRolls; i++) {
             const currentPcsNumber = startNum + i;
             result.push(prefix + currentPcsNumber);
         }
         
-        // Output the final list into the text area
         outputList.value = result.join('\n');
     }
+
+    // Clipboard Copy Functionality
+    copyBtn.addEventListener('click', () => {
+        if (!outputList.value) return;
+        
+        navigator.clipboard.writeText(outputList.value).then(() => {
+            const originalText = copyBtn.innerText;
+            copyBtn.innerText = '✓ Copied!';
+            copyBtn.classList.add('success');
+            
+            setTimeout(() => {
+                copyBtn.innerText = originalText;
+                copyBtn.classList.remove('success');
+            }, 2000);
+        }).catch(err => {
+            console.error('Failed to copy text: ', err);
+        });
+    });
 </script>
 
 </body>

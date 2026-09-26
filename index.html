@@ -1,190 +1,496 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fabric Roll Pcs Generator</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f2f5;
-            padding: 20px;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-        }
-        .dashboard {
-            background-color: white;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            width: 100%;
-            max-width: 600px;
-        }
-        .header {
-            text-align: center;
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #e4e6eb;
-        }
-        h2 {
-            margin: 0;
-            color: #1c1e21;
-            font-size: 24px;
-        }
-        .controls {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-        .input-group {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-        label {
-            font-weight: 600;
-            color: #65676b;
-            font-size: 13px;
-            margin-bottom: 6px;
-            text-transform: uppercase;
-        }
-        input {
-            padding: 10px;
-            border: 1px solid #ccd0d5;
-            border-radius: 6px;
-            font-size: 16px;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-        input:focus {
-            border-color: #1877f2;
-        }
-        .highlight-input {
-            border: 2px solid #1877f2;
-            background-color: #f0f8ff;
-        }
-        textarea {
-            width: 100%;
-            height: 350px;
-            padding: 15px;
-            border: 1px solid #ccd0d5;
-            border-radius: 6px;
-            box-sizing: border-box;
-            resize: vertical;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 15px;
-            line-height: 1.5;
-            background-color: #fafafa;
-            margin-bottom: 15px;
-        }
-        .copy-btn {
-            width: 100%;
-            background-color: #1877f2;
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 6px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-        .copy-btn:hover {
-            background-color: #166fe5;
-        }
-        .copy-btn.success {
-            background-color: #31a24c;
-        }
-        .footer {
-            text-align: center;
-            margin-top: 20px;
-            color: #8a8d91;
-            font-size: 12px;
-            font-weight: bold;
-            letter-spacing: 0.5px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>SKL Fabric GRN - Magnum Clothing</title>
+
+  <!-- PWA Fullscreen & Mobile Standalone Tags -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="SKL Fabric">
+  <meta name="theme-color" content="#ffffff">
+
+  <!-- PDF Generation Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+
+  <style>
+    :root {
+      --primary: #000000;
+      --accent: #2563eb;
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --border: #e2e8f0;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --success: #15803d;
+      --danger: #dc2626;
+      --danger-bg: #fee2e2;
+      --success-bg: #dcfce7;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    html, body {
+      margin: 0; padding: 0; width: 100%; height: 100%;
+      background: var(--bg); color: var(--text);
+      overflow-x: hidden; touch-action: manipulation;
+    }
+
+    .mobile-frame {
+      display: flex; flex-direction: column; height: 100vh; height: 100dvh; width: 100%;
+      padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    /* Top Sticky Brand Bar */
+    .app-header {
+      background: #ffffff; padding: 12px 16px; display: flex; align-items: center;
+      justify-content: space-between; border-bottom: 1px solid var(--border); flex-shrink: 0;
+    }
+
+    .brand-wrap { display: flex; align-items: center; gap: 12px; }
+    .brand-logo { width: 38px; height: 38px; border-radius: 8px; flex-shrink: 0; object-fit: cover; }
+    .brand-text h1 { margin: 0; font-size: 15px; font-weight: 800; text-transform: uppercase; color: #000; }
+    .brand-text p { margin: 2px 0 0 0; font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
+
+    .header-btns { display: flex; gap: 6px; }
+    .icon-btn {
+      background: #f1f5f9; border: 1px solid var(--border); border-radius: 8px;
+      padding: 7px 10px; font-size: 13px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;
+    }
+
+    /* Scrollable App Viewport */
+    .app-scroll { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 16px 14px 90px 14px; }
+    .view-panel { display: none; }
+    .view-panel.active { display: block; }
+
+    /* Form Styles */
+    .form-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+      padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.03); position: relative;
+    }
+
+    .form-card-header {
+      font-size: 14px; font-weight: 800; text-transform: uppercase; 
+      margin-bottom: 15px; border-bottom: 1px solid var(--border); padding-bottom: 10px;
+    }
+
+    .field { display: flex; flex-direction: column; margin-bottom: 14px; }
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+    
+    label { font-size: 11px; font-weight: 800; text-transform: uppercase; color: #475569; margin-bottom: 5px; }
+
+    input, select, textarea {
+      font-size: 16px; padding: 12px 14px; border-radius: 8px;
+      border: 1.5px solid var(--border); background: #ffffff; color: var(--text); width: 100%; outline: none; transition: all 0.2s ease;
+    }
+    input[type="text"], textarea { text-transform: uppercase !important; }
+    input:focus, select:focus, textarea:focus { border-color: #000; box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05); }
+
+    /* Standard Photo Scanner Styles (No AI) */
+    .upload-box {
+      border: 2px dashed #cbd5e1; border-radius: 8px; padding: 12px; text-align: center;
+      background: #f8fafc; cursor: pointer; position: relative; overflow: hidden; transition: border-color 0.2s;
+    }
+    .upload-box:hover { border-color: #000; background: #f1f5f9; }
+    .preview-wrapper { position: relative; width: 100%; display: none; border-radius: 6px; overflow: hidden; margin-top: 8px; background: #000; }
+    .preview-thumb { width: 100%; max-height: 200px; object-fit: contain; display: block; }
+
+    .submit-btn {
+      width: 100%; background: #000000; color: #ffffff; padding: 14px; font-size: 15px; font-weight: 800;
+      border: none; border-radius: 8px; cursor: pointer; text-transform: uppercase; margin-top: 6px; transition: background 0.2s;
+    }
+    .submit-btn:active { background: #262626; }
+    .submit-btn.success { background: var(--success); }
+
+    /* Register Cards */
+    .log-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+      padding: 14px; margin-bottom: 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); display: flex; flex-direction: column; gap: 9px; text-transform: uppercase;
+    }
+    .log-card-header { display: flex; justify-content: space-between; border-bottom: 1px dashed var(--border); padding-bottom: 8px; }
+    .grn-title { font-size: 14px; font-weight: 800; color: #000; }
+    .log-time { font-size: 11px; color: var(--text-muted); font-weight: 600; }
+    .vendor-name { font-size: 15px; font-weight: 700; color: #0f172a; }
+    .card-photo-banner { width: 100%; height: 150px; object-fit: cover; border-radius: 8px; border: 1px solid #e2e8f0; }
+    .qty-comparison { display: grid; grid-template-columns: 1fr 1fr 1fr; background: #f8fafc; border-radius: 8px; padding: 8px 10px; text-align: center; margin-top: 2px; }
+    .qty-box span { font-size: 10px; color: var(--text-muted); font-weight: 700; }
+    .qty-box strong { display: block; font-size: 13px; color: #000; margin-top: 2px; }
+    .card-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 4px; }
+
+    /* Sticky Bottom Navigation (Updated to 3 Tabs) */
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 0; width: 100%; background: #ffffff; border-top: 1px solid var(--border);
+      display: grid; grid-template-columns: repeat(3, 1fr); padding: 8px 12px; padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px)); box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 100;
+    }
+    .nav-tab { background: none; border: none; padding: 10px 0; font-size: 12px; font-weight: 700; color: var(--text-muted); border-radius: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .nav-tab.active { color: #000000; background: #f1f5f9; }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(150%);
+      background: #0f172a; color: white; padding: 12px 20px; border-radius: 8px; font-size: 13px; font-weight: 700;
+      display: flex; align-items: center; gap: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 1000;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+    .toast-icon { background: #10b981; border-radius: 50%; padding: 2px; display: flex; }
+  </style>
 </head>
 <body>
 
-<div class="dashboard">
-    <div class="header">
-        <h2>Continuous Pcs Generator</h2>
+<div class="mobile-frame">
+  <!-- Header -->
+  <header class="app-header">
+    <div class="brand-wrap">
+      <img src="31890.png" alt="Magnum Logo" class="brand-logo">
+      <div class="brand-text">
+        <h1>SKL FABRIC TEAM</h1>
+        <p>GRN Register</p>
+      </div>
     </div>
+    <div class="header-btns">
+      <button class="icon-btn" onclick="exportToPDF()">📥 PDF</button>
+    </div>
+  </header>
+
+  <!-- Scroll View -->
+  <main class="app-scroll">
     
-    <div class="controls">
-        <div class="input-group">
-            <label for="prefix">Prefix (Optional)</label>
-            <input type="text" id="prefix" placeholder="e.g., Roll-">
-        </div>
-        <div class="input-group">
-            <label for="startNum">Start From</label>
-            <input type="number" id="startNum" value="1" min="1">
-        </div>
-        <div class="input-group">
-            <label for="totalRolls">Total Rolls</label>
-            <input type="number" id="totalRolls" class="highlight-input" placeholder="Enter qty" min="1">
-        </div>
+    <!-- View 1: New Inward Entry Form -->
+    <div class="view-panel active" id="entryView">
+      <div class="form-card">
+        <form id="entryForm">
+          <!-- Manual Photo Upload Box -->
+          <div class="field">
+            <label>Snap / Upload Document (Optional)</label>
+            <div class="upload-box" onclick="document.getElementById('photoInput').click()">
+              <div id="uploadPrompt">
+                <span style="font-size: 24px; display:block; margin-bottom:4px;">📸</span>
+                <span style="font-size: 13px; font-weight:700; color: #475569;">TAP TO SNAP PHOTO</span>
+              </div>
+              <input type="file" id="photoInput" accept="image/*" capture="environment" style="display: none;" onchange="handleImage(this)">
+              
+              <div class="preview-wrapper" id="previewWrapper">
+                <img id="formImgPreview" class="preview-thumb">
+              </div>
+            </div>
+            <button type="button" id="btnRetake" onclick="resetScanner(event)" style="display:none; margin-top:8px; background:none; border:1px solid #cbd5e1; padding:6px; border-radius:6px; font-size:11px; font-weight:700; color:#475569; width: 100%;">↺ RETAKE PHOTO</button>
+          </div>
+
+          <hr style="border:0; border-top:1px solid #e2e8f0; margin-bottom:14px;">
+
+          <div class="field">
+            <label>Inward Date & Time</label>
+            <input type="datetime-local" id="inTime" required>
+          </div>
+          <div class="field">
+            <label>Mill / Supplier Name</label>
+            <input type="text" id="vendor" placeholder="E.G. VARDHMAN / ARVIND MILLS" required>
+          </div>
+          <div class="field-row">
+            <div class="field"><label>Style Number</label><input type="text" id="styleNo" placeholder="E.G. MG-DENIM-09" required></div>
+            <div class="field"><label>PO Number</label><input type="text" id="poNo" placeholder="PO-1044"></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label>DC / Invoice #</label><input type="text" id="dcNo" placeholder="DC-8891" required></div>
+            <div class="field"><label>Fabric / Colour</label><input type="text" id="color" placeholder="NAVY BLUE" required></div>
+          </div>
+          <div class="field">
+            <label>Fabric Construction Details</label>
+            <input type="text" id="itemName" placeholder="100% COTTON 30S JERSEY" required>
+          </div>
+          <div class="field-row">
+            <div class="field"><label>Rolls / Pkgs</label><input type="number" id="packages" placeholder="24" required></div>
+            <div class="field">
+              <label>Unit (UOM)</label>
+              <select id="uom"><option value="KGS">KGS</option><option value="METERS">METERS</option><option value="PIECES">PIECES</option></select>
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label>Challan Qty</label><input type="number" step="any" id="challanQty" placeholder="Sent" required></div>
+            <div class="field"><label>Received Qty</label><input type="number" step="any" id="receivedQty" placeholder="Actual" required></div>
+          </div>
+          <div class="field"><label>Receiver Name</label><input type="text" id="receiver" placeholder="STAFF NAME" required></div>
+          <div class="field">
+            <label>Inspection Notes / Vehicle</label>
+            <textarea id="remarks" rows="2" placeholder="SHADE VARIATION, TN-09-AB-1234..."></textarea>
+          </div>
+
+          <button type="submit" class="submit-btn" id="btnSubmit">+ Save GRN Entry</button>
+        </form>
+      </div>
     </div>
 
-    <textarea id="outputList" placeholder="Your continuous pieces will generate here automatically..." readonly></textarea>
-    
-    <button id="copyBtn" class="copy-btn">Copy to Clipboard</button>
-    
-    <div class="footer">
-        MAGNUM CLOTHING SKL WAREHOUSE - FABRIC TEAM <br>
-        MADE BY GOKUL PVGR
+    <!-- View 2: Register -->
+    <div class="view-panel" id="registerView">
+      <div class="field" style="margin-bottom: 14px;"><input type="text" id="searchBox" placeholder="🔎 SEARCH STYLE, MILL, PO..." onkeyup="renderCards()"></div>
+      <div id="cardsList"></div>
     </div>
+
+    <!-- View 3: Continuous Pieces Generator -->
+    <div class="view-panel" id="generatorView">
+      <div class="form-card">
+        <div class="form-card-header">Roll Pcs Generator</div>
+        
+        <div class="field-row">
+          <div class="field">
+            <label for="prefix">Prefix (Opt)</label>
+            <input type="text" id="prefix" placeholder="Roll-">
+          </div>
+          <div class="field">
+            <label for="startNum">Start Num</label>
+            <input type="number" id="startNum" value="1" min="1">
+          </div>
+        </div>
+        
+        <div class="field">
+          <label for="totalRolls">Total Rolls</label>
+          <input type="number" id="totalRolls" placeholder="Enter qty" min="1">
+        </div>
+
+        <div class="field">
+          <textarea id="outputList" placeholder="Continuous pieces will generate here automatically..." readonly style="height: 250px; font-family: monospace; font-size: 14px; background: #f8fafc;"></textarea>
+        </div>
+        
+        <button id="copyBtn" class="submit-btn">Copy to Clipboard</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- Sticky Bottom Tabs -->
+  <nav class="bottom-nav">
+    <button class="nav-tab active" id="tabEntry" onclick="switchTab('entry')"><span>✍️</span> Inward</button>
+    <button class="nav-tab" id="tabRegister" onclick="switchTab('register')"><span>📋</span> Log</button>
+    <button class="nav-tab" id="tabGenerator" onclick="switchTab('generator')"><span>🏷️</span> Gen Pcs</button>
+  </nav>
+</div>
+
+<!-- Success Toast -->
+<div class="toast" id="toast">
+  <div class="toast-icon">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+  </div>
+  Action Successful
 </div>
 
 <script>
-    const prefixInput = document.getElementById('prefix');
-    const startNumInput = document.getElementById('startNum');
-    const totalRollsInput = document.getElementById('totalRolls');
-    const outputList = document.getElementById('outputList');
-    const copyBtn = document.getElementById('copyBtn');
+  let currentCompressedImage = "";
 
-    prefixInput.addEventListener('input', generatePcs);
-    startNumInput.addEventListener('input', generatePcs);
-    totalRollsInput.addEventListener('input', generatePcs);
-
-    function generatePcs() {
-        const prefix = prefixInput.value;
-        const startNum = parseInt(startNumInput.value) || 1;
-        const totalRolls = parseInt(totalRollsInput.value) || 0;
-        
-        if (totalRolls <= 0) {
-            outputList.value = '';
-            return;
-        }
-
-        let result = [];
-        for (let i = 0; i < totalRolls; i++) {
-            const currentPcsNumber = startNum + i;
-            result.push(prefix + currentPcsNumber);
-        }
-        
-        outputList.value = result.join('\n');
+  // Handle Image Upload & Compression
+  function handleImage(input) {
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+      const reader = new FileReader();
+      
+      reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          
+          const maxDim = 800;
+          let width = img.width, height = img.height;
+          
+          if (width > height && width > maxDim) { height *= maxDim / width; width = maxDim; } 
+          else if (height > maxDim) { width *= maxDim / height; height = maxDim; }
+          
+          canvas.width = width; canvas.height = height;
+          ctx.drawImage(img, 0, 0, width, height);
+          
+          currentCompressedImage = canvas.toDataURL('image/jpeg', 0.7);
+          
+          document.getElementById('uploadPrompt').style.display = 'none';
+          document.getElementById('previewWrapper').style.display = 'block';
+          document.getElementById('formImgPreview').src = currentCompressedImage;
+          document.getElementById('btnRetake').style.display = 'inline-block';
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
     }
+  }
 
-    // Clipboard Copy Functionality
-    copyBtn.addEventListener('click', () => {
-        if (!outputList.value) return;
-        
-        navigator.clipboard.writeText(outputList.value).then(() => {
-            const originalText = copyBtn.innerText;
-            copyBtn.innerText = '✓ Copied!';
-            copyBtn.classList.add('success');
-            
-            setTimeout(() => {
-                copyBtn.innerText = originalText;
-                copyBtn.classList.remove('success');
-            }, 2000);
-        }).catch(err => {
-            console.error('Failed to copy text: ', err);
-        });
+  function resetScanner(e) {
+    if (e) e.stopPropagation();
+    document.getElementById('photoInput').value = '';
+    currentCompressedImage = "";
+    document.getElementById('previewWrapper').style.display = 'none';
+    document.getElementById('uploadPrompt').style.display = 'block';
+    document.getElementById('btnRetake').style.display = 'none';
+  }
+
+  // Enforce global uppercase (except for output list)
+  document.addEventListener('input', function(e) {
+    if (e.target && (e.target.tagName === 'INPUT' && e.target.type === 'text' || e.target.tagName === 'TEXTAREA') && e.target.id !== 'outputList') {
+      const start = e.target.selectionStart; const end = e.target.selectionEnd;
+      e.target.value = e.target.value.toUpperCase(); e.target.setSelectionRange(start, end);
+    }
+  });
+
+  const manifest = {
+    name: "SKL Fabric GRN", short_name: "SKL GRN", start_url: window.location.href, display: "standalone",
+    background_color: "#ffffff", theme_color: "#ffffff",
+    icons: [{ src: "31890.png", sizes: "192x192 512x512", type: "image/png", purpose: "any maskable" }]
+  };
+  const manifestBlob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
+  const manifestLink = document.createElement('link'); manifestLink.rel = 'manifest'; manifestLink.href = URL.createObjectURL(manifestBlob);
+  document.head.appendChild(manifestLink);
+
+  // Advanced Tab Switcher
+  function switchTab(tab) {
+    // Hide all views and deactivate all tabs
+    document.querySelectorAll('.view-panel').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
+
+    // Show target view
+    if (tab === 'entry') {
+      document.getElementById('entryView').classList.add('active');
+      document.getElementById('tabEntry').classList.add('active');
+    } else if (tab === 'register') {
+      document.getElementById('registerView').classList.add('active');
+      document.getElementById('tabRegister').classList.add('active');
+      renderCards();
+    } else if (tab === 'generator') {
+      document.getElementById('generatorView').classList.add('active');
+      document.getElementById('tabGenerator').classList.add('active');
+    }
+  }
+
+  const STORAGE_KEY = 'MAGNUM_SKL_MOBILE_GRN_V5';
+  let logs = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+
+  function resetDate() {
+    const now = new Date(); now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+    document.getElementById('inTime').value = now.toISOString().slice(0, 16);
+  }
+  resetDate();
+
+  function persist() { localStorage.setItem(STORAGE_KEY, JSON.stringify(logs)); }
+
+  function showToast(message) {
+    const toast = document.getElementById('toast');
+    toast.lastChild.textContent = " " + message;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3000);
+  }
+
+  // Submit GRN Form
+  document.getElementById('entryForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const grnId = "MC-SKL-" + String(logs.length + 1).padStart(3, '0');
+    const entry = {
+      grn: grnId, time: document.getElementById('inTime').value.replace('T', ' '),
+      vendor: document.getElementById('vendor').value.trim(), styleNo: document.getElementById('styleNo').value.trim(),
+      color: document.getElementById('color').value.trim(), dcNo: document.getElementById('dcNo').value.trim(),
+      poNo: document.getElementById('poNo').value.trim() || 'PENDING', item: document.getElementById('itemName').value.trim(),
+      packages: document.getElementById('packages').value, challanQty: document.getElementById('challanQty').value,
+      receivedQty: document.getElementById('receivedQty').value, uom: document.getElementById('uom').value,
+      receiver: document.getElementById('receiver').value.trim(), remarks: document.getElementById('remarks').value.trim(), photo: currentCompressedImage
+    };
+    logs.unshift(entry); persist();
+    
+    showToast("Entry Logged Successfully");
+    this.reset(); resetScanner(); resetDate(); switchTab('register');
+  });
+
+  // Render Log Cards
+  function renderCards() {
+    const filter = document.getElementById('searchBox').value.toUpperCase();
+    const container = document.getElementById('cardsList'); container.innerHTML = '';
+    logs.forEach((item, index) => {
+      const match = `${item.grn} ${item.vendor} ${item.styleNo} ${item.poNo}`.toUpperCase();
+      if (!match.includes(filter)) return;
+      const isShort = Number(item.receivedQty) - Number(item.challanQty) < 0;
+      container.innerHTML += `
+        <div class="log-card">
+          <div class="log-card-header"><span class="grn-title">${item.grn}</span><span class="log-time">${item.time}</span></div>
+          <div class="vendor-name">${item.vendor}</div>
+          ${item.photo ? `<img src="${item.photo}" class="card-photo-banner">` : ''}
+          <div style="font-size: 11px; margin-top:6px;"><strong>STYLE:</strong> ${item.styleNo} | <strong>PO:</strong> ${item.poNo}</div>
+          <div class="qty-comparison">
+            <div class="qty-box"><span>CHALLAN</span><strong>${item.challanQty} ${item.uom}</strong></div>
+            <div class="qty-box"><span>RECEIVED</span><strong>${item.receivedQty} ${item.uom}</strong></div>
+            <div class="qty-box"><span>STATUS</span><strong style="color:${isShort ? '#dc2626' : '#15803d'}">${isShort ? 'SHORT' : 'OK'}</strong></div>
+          </div>
+          <div class="card-footer"><span style="font-size:11px; color:#64748b;">BY: ${item.receiver}</span><button onclick="deleteEntry(${index})" style="background:none; border:none; color:red; cursor:pointer;">✕</button></div>
+        </div>
+      `;
     });
+  }
+
+  function deleteEntry(index) { if (confirm("Delete this GRN record?")) { logs.splice(index, 1); persist(); renderCards(); } }
+
+  // PDF Export
+  function exportToPDF() {
+    const { jsPDF } = window.jspdf; const doc = new jsPDF('landscape'); 
+    doc.setFontSize(16); doc.text("SKL Fabric GRN Report", 14, 15);
+    const tableRows = logs.map(item => [item.grn, item.time, item.vendor, item.styleNo, item.item, item.poNo, `${item.receivedQty} ${item.uom}`, ""]);
+    
+    doc.autoTable({
+      head: [["GRN Ref", "Date", "Vendor", "Style", "Item", "PO", "Qty Recd", "Photo"]],
+      body: tableRows, startY: 20, styles: { fontSize: 8 }, bodyStyles: { minCellHeight: 25 }, columnStyles: { 7: { cellWidth: 30 } },
+      didDrawCell: function (data) {
+        if (data.column.index === 7 && data.cell.section === 'body' && logs[data.row.index].photo) {
+          doc.addImage(logs[data.row.index].photo, 'JPEG', data.cell.x + 2, data.cell.y + 2, 21, 21);
+        }
+      }
+    });
+    doc.save(`SKL_GRN_${new Date().toISOString().slice(0,10)}.pdf`);
+  }
+
+  // --- CONTINUOUS PCS GENERATOR LOGIC ---
+  const prefixInput = document.getElementById('prefix');
+  const startNumInput = document.getElementById('startNum');
+  const totalRollsInput = document.getElementById('totalRolls');
+  const outputList = document.getElementById('outputList');
+  const copyBtn = document.getElementById('copyBtn');
+
+  prefixInput.addEventListener('input', generatePcs);
+  startNumInput.addEventListener('input', generatePcs);
+  totalRollsInput.addEventListener('input', generatePcs);
+
+  function generatePcs() {
+      const prefix = prefixInput.value;
+      const startNum = parseInt(startNumInput.value) || 1;
+      const totalRolls = parseInt(totalRollsInput.value) || 0;
+      
+      if (totalRolls <= 0) {
+          outputList.value = '';
+          return;
+      }
+
+      let result = [];
+      for (let i = 0; i < totalRolls; i++) {
+          const currentPcsNumber = startNum + i;
+          result.push(prefix + currentPcsNumber);
+      }
+      
+      outputList.value = result.join('\n');
+  }
+
+  copyBtn.addEventListener('click', () => {
+      if (!outputList.value) return;
+      
+      navigator.clipboard.writeText(outputList.value).then(() => {
+          const originalText = copyBtn.innerText;
+          copyBtn.innerText = '✓ COPIED!';
+          copyBtn.classList.add('success');
+          showToast("List Copied to Clipboard");
+          
+          setTimeout(() => {
+              copyBtn.innerText = originalText;
+              copyBtn.classList.remove('success');
+          }, 2000);
+      }).catch(err => {
+          console.error('Failed to copy text: ', err);
+      });
+  });
 </script>
 
 </body>

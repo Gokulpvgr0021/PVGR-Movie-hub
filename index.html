@@ -27,7 +27,6 @@
       --text-muted: #64748b;
       --success: #15803d;
       --danger: #dc2626;
-      --danger-bg: #fee2e2;
       --success-bg: #dcfce7;
     }
 
@@ -168,17 +167,6 @@
     }
     .toast.show { transform: translateX(-50%) translateY(0); }
     .toast-icon { background: #10b981; border-radius: 50%; padding: 2px; display: flex; }
-
-    /* Modal Styles */
-    .modal-backdrop {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(15, 23, 42, 0.6); backdrop-blur: 2px; z-index: 2000;
-      display: none; align-items: center; justify-content: center; padding: 16px;
-    }
-    .modal-dialog {
-      background: #ffffff; border-radius: 12px; max-width: 440px; width: 100%;
-      padding: 20px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-    }
   </style>
 </head>
 <body>
@@ -194,7 +182,6 @@
       </div>
     </div>
     <div class="header-btns">
-      <button class="icon-btn" onclick="openKeyModal()">⚙️ Key</button>
       <button class="icon-btn" onclick="exportToPDF()">📥 PDF</button>
     </div>
   </header>
@@ -210,7 +197,7 @@
           
           <!-- AI Photo Upload Box -->
           <div class="field">
-            <label>Scan Invoice / DC (Auto-Fill Form)</label>
+            <label>Scan Invoice / DC (OpenAI GPT-4o)</label>
             <div class="upload-box" onclick="document.getElementById('photoInput').click()">
               <div id="uploadPrompt">
                 <span style="font-size: 26px; display:block; margin-bottom:4px;">📄</span>
@@ -224,7 +211,7 @@
                 <div class="scanner-fx" id="scannerFx">
                   <div class="laser-line"></div>
                   <div class="scanning-overlay"></div>
-                  <div class="ai-pill"><div class="spinner"></div> Reading Invoice with AI...</div>
+                  <div class="ai-pill"><div class="spinner"></div> Reading Invoice via OpenAI...</div>
                 </div>
               </div>
             </div>
@@ -319,24 +306,6 @@
   </nav>
 </div>
 
-<!-- API Key Configuration Modal -->
-<div class="modal-backdrop" id="keyModal">
-  <div class="modal-dialog">
-    <h3 style="margin: 0 0 10px 0; font-size: 16px; font-weight: 800; text-transform: uppercase;">Gemini API Configuration</h3>
-    <p style="font-size: 12px; color: #64748b; line-height: 1.4; margin-bottom: 12px;">
-      Paste your Google Gemini API key from <strong>aistudio.google.com</strong>. Keys start with <code>AIzaSy...</code>. It is saved only in your device's browser.
-    </p>
-    <div class="field">
-      <label>Google Gemini API Key</label>
-      <input type="text" id="apiKeyInput" placeholder="AIzaSy..." style="text-transform: none !important; font-size: 14px;">
-    </div>
-    <div style="display: flex; gap: 8px; margin-top: 14px;">
-      <button type="button" class="submit-btn" onclick="saveApiKey()" style="margin: 0; padding: 10px;">Save Key</button>
-      <button type="button" class="icon-btn" onclick="closeKeyModal()" style="padding: 10px 16px;">Close</button>
-    </div>
-  </div>
-</div>
-
 <!-- Success Toast -->
 <div class="toast" id="toast">
   <div class="toast-icon">
@@ -346,34 +315,13 @@
 </div>
 
 <script>
-  const API_STORAGE_KEY = 'MAGNUM_SKL_GEMINI_API_KEY';
+  // ---------------------------------------------------------------------
+  // OPENAI API CONFIGURATION
+  // ---------------------------------------------------------------------
+  const OPENAI_API_KEY = "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"; 
+  
   let currentCompressedImage = "";
   let isScanning = false;
-
-  function getStoredKey() {
-    return localStorage.getItem(API_STORAGE_KEY) || "";
-  }
-
-  function openKeyModal() {
-    document.getElementById('apiKeyInput').value = getStoredKey();
-    document.getElementById('keyModal').style.display = 'flex';
-  }
-
-  function closeKeyModal() {
-    document.getElementById('keyModal').style.display = 'none';
-  }
-
-  function saveApiKey() {
-    const key = document.getElementById('apiKeyInput').value.trim();
-    if (!key) {
-      localStorage.removeItem(API_STORAGE_KEY);
-      showToast("API Key Removed");
-    } else {
-      localStorage.setItem(API_STORAGE_KEY, key);
-      showToast("API Key Saved Successfully");
-    }
-    closeKeyModal();
-  }
 
   // Handle Image Upload & Client-side Canvas Compression
   function handleImage(input) {
@@ -387,7 +335,7 @@
           const canvas = document.createElement('canvas');
           const ctx = canvas.getContext('2d');
           
-          const maxDim = 1000;
+          const maxDim = 800;
           let width = img.width, height = img.height;
           
           if (width > height && width > maxDim) { height *= maxDim / width; width = maxDim; } 
@@ -396,7 +344,8 @@
           canvas.width = width; canvas.height = height;
           ctx.drawImage(img, 0, 0, width, height);
           
-          currentCompressedImage = canvas.toDataURL('image/jpeg', 0.8);
+          // OpenAI prefers base64 JPEGs
+          currentCompressedImage = canvas.toDataURL('image/jpeg', 0.7);
           
           document.getElementById('uploadPrompt').style.display = 'none';
           document.getElementById('previewWrapper').style.display = 'block';
@@ -404,7 +353,7 @@
           
           const base64Data = currentCompressedImage.split(',')[1];
           startScanner();
-          analyzeInvoiceWithGemini(base64Data, 'image/jpeg');
+          analyzeInvoiceWithOpenAI(base64Data, 'image/jpeg');
         };
         img.src = e.target.result;
       };
@@ -437,67 +386,60 @@
     document.getElementById('formOverlay').style.display = 'none';
   }
 
-  // Gemini Vision Invoice Parsing
-  async function analyzeInvoiceWithGemini(base64Data, mimeType) {
-    const apiKey = getStoredKey();
-    if (!apiKey) {
-      stopScanner();
-      openKeyModal();
-      alert("Please save your Google Gemini API key to enable automatic scanning.");
-      return;
-    }
-
-    const prompt = `You are a warehouse document assistant for textile deliveries. Analyze this Delivery Challan / Invoice / Gate Pass image.
-Extract the fields below into a strict, valid JSON format. If a field is not detected, use null or an empty string.
-
-{
-  "vendor": "Supplier or Mill name (e.g. Vardhman, Arvind, etc.)",
-  "invoice_no": "DC Number or Invoice Number",
-  "po": "PO or Purchase Order Number",
-  "style": "Style Number, Quality code, or Lot reference",
-  "color": "Fabric shade or color name",
-  "item": "Fabric construction description (composition, yarn count, weave, GSM)",
-  "packages": 0,
-  "challanQty": 0.0,
-  "uom": "KGS, METERS, or PIECES",
-  "notes": "Vehicle numbers (e.g. TN-XX), driver remarks, or handwritten annotations"
-}
-Output only raw JSON. Do not wrap in markdown tags or backticks.`;
+  // ---------------------------------------------------------------------
+  // OPENAI GPT-4o VISION API CALL
+  // ---------------------------------------------------------------------
+  async function analyzeInvoiceWithOpenAI(base64Data, mimeType) {
+    const prompt = `You are a warehouse data extractor. Analyze this delivery challan image and extract the following data into a strict JSON format. If a field is not found, return an empty string. Return ONLY the raw JSON object.
+    {
+      "vendor": "Supplier or Mill name (e.g. Vardhman, Arvind)",
+      "invoice_no": "DC Number or Invoice Number",
+      "po": "PO or Purchase Order Number",
+      "style": "Style Number, Quality code, or Lot reference",
+      "color": "Fabric shade or color name",
+      "item": "Fabric construction description (composition, yarn count, GSM)",
+      "packages": 0,
+      "challanQty": 0.0,
+      "uom": "KGS, METERS, or PIECES",
+      "notes": "Vehicle numbers (e.g. TN-XX), driver remarks, or annotations"
+    }`;
 
     const payload = {
-      contents: [{
-        role: "user",
-        parts: [
-          { text: prompt },
-          { inlineData: { mimeType: mimeType, data: base64Data } }
-        ]
-      }],
-      generationConfig: { 
-        responseMimeType: "application/json",
-        temperature: 0.1
-      }
+      model: "gpt-4o-mini", // Fast and capable for vision tasks
+      messages: [
+        {
+          role: "user",
+          content: [
+            { type: "text", text: prompt },
+            { type: "image_url", image_url: { url: `data:${mimeType};base64,${base64Data}` } }
+          ]
+        }
+      ],
+      response_format: { type: "json_object" },
+      temperature: 0.1
     };
 
     try {
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${OPENAI_API_KEY}`
+        },
         body: JSON.stringify(payload)
       });
       
       if (!response.ok) {
         const err = await response.json().catch(() => ({}));
-        throw new Error(err.error?.message || `HTTP ${response.status}`);
+        throw new Error(err.error?.message || `HTTP ${response.status}. NOTE: OpenAI strictly enforces CORS. You must run this on a local server, not file:///`);
       }
 
       const result = await response.json();
-      const rawText = result.candidates?.[0]?.content?.parts?.[0]?.text;
+      const rawText = result.choices?.[0]?.message?.content;
       
       if (!rawText) throw new Error("No data returned by model.");
 
-      // Clean any potential markdown wrapper
-      const cleaned = rawText.replace(/```json/gi, '').replace(/```/g, '').trim();
-      const data = JSON.parse(cleaned);
+      const data = JSON.parse(rawText);
       
       // Auto-populate fields
       if (data.vendor) document.getElementById('vendor').value = data.vendor.toUpperCase();
@@ -509,7 +451,7 @@ Output only raw JSON. Do not wrap in markdown tags or backticks.`;
       if (data.packages) document.getElementById('packages').value = data.packages;
       if (data.challanQty) {
         document.getElementById('challanQty').value = data.challanQty;
-        document.getElementById('receivedQty').value = data.challanQty; // Default received to sent for speed
+        document.getElementById('receivedQty').value = data.challanQty; 
       }
       if (data.uom) {
         const uomSelect = document.getElementById('uom');
@@ -520,10 +462,10 @@ Output only raw JSON. Do not wrap in markdown tags or backticks.`;
       }
       if (data.notes) document.getElementById('remarks').value = data.notes.toUpperCase();
       
-      showToast("Invoice Data Auto-Filled ✨");
+      showToast("OpenAI Auto-Fill Complete ✨");
     } catch (error) {
-      console.error("AI Analysis failed:", error);
-      alert(`AI Auto-Fill Error: ${error.message}\n\nPlease check your API key via the ⚙️ Key button, or enter details manually.`);
+      console.error("OpenAI Analysis failed:", error);
+      alert(`OpenAI Auto-Fill Error: \n\n${error.message}`);
     } finally {
       stopScanner();
     }
@@ -531,7 +473,7 @@ Output only raw JSON. Do not wrap in markdown tags or backticks.`;
 
   // Enforce uppercase globally
   document.addEventListener('input', function(e) {
-    if (e.target && (e.target.tagName === 'INPUT' && e.target.type === 'text' || e.target.tagName === 'TEXTAREA') && e.target.id !== 'outputList' && e.target.id !== 'apiKeyInput') {
+    if (e.target && (e.target.tagName === 'INPUT' && e.target.type === 'text' || e.target.tagName === 'TEXTAREA') && e.target.id !== 'outputList') {
       const start = e.target.selectionStart; const end = e.target.selectionEnd;
       e.target.value = e.target.value.toUpperCase(); e.target.setSelectionRange(start, end);
     }

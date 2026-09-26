@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Warehouse Pcs Number Generator</title>
+    <title>Automatic Pcs Calculator</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f9;
             padding: 20px;
-            max-width: 500px;
+            max-width: 600px;
             margin: 0 auto;
         }
         .container {
@@ -21,83 +21,99 @@
         h2 {
             text-align: center;
             color: #333;
+            margin-top: 0;
         }
-        label {
-            display: block;
-            margin-top: 10px;
-            font-weight: bold;
-        }
-        input {
-            width: 100%;
-            padding: 8px;
-            margin-top: 5px;
+        p.instructions {
+            text-align: center;
+            color: #666;
+            font-size: 14px;
             margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-        button {
-            width: 100%;
-            padding: 10px;
-            background-color: #0056b3;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #004494;
         }
         textarea {
             width: 100%;
-            height: 200px;
-            margin-top: 15px;
-            padding: 10px;
+            height: 300px;
+            padding: 12px;
             border: 1px solid #ccc;
             border-radius: 4px;
             box-sizing: border-box;
             resize: vertical;
+            font-family: monospace;
+            font-size: 15px;
+        }
+        .counter-box {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e9ecef;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+            color: #0056b3;
+            border: 2px solid #cce5ff;
+        }
+        button {
+            margin-top: 15px;
+            padding: 12px 15px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        button:hover {
+            background-color: #c82333;
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>Pcs Number Generator</h2>
+    <h2>Automatic Pcs Calculator</h2>
+    <p class="instructions">Type, paste, or scan your piece numbers below. The total count updates automatically.</p>
     
-    <label for="prefix">Prefix (Optional, e.g., PCS-):</label>
-    <input type="text" id="prefix" placeholder="e.g., PCS-">
+    <textarea id="pcsInput" placeholder="Enter pcs numbers here... (one per line or separated by commas)"></textarea>
+    
+    <div class="counter-box">
+        Total Pieces Entered: <span id="totalCount">0</span>
+    </div>
 
-    <label for="startNum">Starting Number:</label>
-    <input type="number" id="startNum" value="1" min="1">
-
-    <label for="endNum">Ending Number:</label>
-    <input type="number" id="endNum" value="100" min="1">
-
-    <button onclick="generateNumbers()">Generate List</button>
-
-    <textarea id="outputList" placeholder="Your continuous piece numbers will appear here..."></textarea>
+    <button onclick="clearList()">Clear List</button>
 </div>
 
 <script>
-    function generateNumbers() {
-        const prefix = document.getElementById('prefix').value;
-        const startNum = parseInt(document.getElementById('startNum').value);
-        const endNum = parseInt(document.getElementById('endNum').value);
-        const outputField = document.getElementById('outputList');
+    const pcsInput = document.getElementById('pcsInput');
+    const totalCount = document.getElementById('totalCount');
+
+    // Automatically calculate whenever the user types, pastes, or deletes text
+    pcsInput.addEventListener('input', calculatePcs);
+
+    function calculatePcs() {
+        // Get the text from the text area
+        const text = pcsInput.value;
         
-        if (startNum > endNum) {
-            alert("Starting number cannot be greater than ending number.");
-            return;
+        // Split the text by either new lines or commas
+        const items = text.split(/[\n,]+/);
+        
+        // Count only the items that are not blank/empty
+        let count = 0;
+        for (let i = 0; i < items.length; i++) {
+            if (items[i].trim() !== '') {
+                count++;
+            }
         }
+        
+        // Update the big blue number on the screen
+        totalCount.innerText = count;
+    }
 
-        let result = [];
-        for (let i = startNum; i <= endNum; i++) {
-            result.push(prefix + i);
-        }
-
-        outputField.value = result.join('\n');
+    // Function to clear everything for the next batch
+    function clearList() {
+        pcsInput.value = '';
+        totalCount.innerText = '0';
+        pcsInput.focus();
     }
 </script>
 

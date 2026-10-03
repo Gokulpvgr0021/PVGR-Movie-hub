@@ -2,46 +2,62 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Supply Chain Car Tycoon</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Scrollable Car Tycoon</title>
     <style>
         body, html { 
-            margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden;
+            margin: 0; padding: 0; width: 100%; height: 100%; 
+            overflow: hidden; /* Prevents default browser scrolling */
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
             background-color: #1e1e24; color: #333;
+            /* Prevent text selection while dragging */
+            -webkit-user-select: none; user-select: none; 
         }
         .game-wrapper {
-            position: relative; width: 100vw; height: 100vh; background: #fff;
+            position: relative; width: 100vw; height: 100vh; background: #2c3e50;
         }
         canvas {
-            display: block; background-color: #e0e5e9;
+            display: block; 
+            background-color: #e0e5e9;
+            touch-action: none; /* Critical for custom touch dragging */
+            cursor: grab;
         }
+        canvas:active { cursor: grabbing; }
         
-        /* UI Layout */
+        /* Fixed UI Layer */
         .ui-layer {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; display: flex; flex-direction: column;
+            pointer-events: none; /* Lets you click through to the canvas to drag */
+            display: flex; flex-direction: column;
             justify-content: space-between; padding: 20px; box-sizing: border-box;
         }
         
-        /* Top Inventory Bar */
         .top-bar {
-            display: flex; gap: 20px; justify-content: center;
+            display: flex; gap: 20px; justify-content: center; position: relative;
         }
         .stat-box {
             background: rgba(255, 255, 255, 0.95); padding: 15px 25px;
-            border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
             font-size: 20px; font-weight: bold; border-bottom: 4px solid #34495e;
+            pointer-events: auto;
         }
         .stat-box.money { color: #27ae60; border-color: #27ae60; }
         .stat-box.parts { color: #e67e22; border-color: #e67e22; }
         .stat-box.stock { color: #2980b9; border-color: #2980b9; }
 
-        /* Bottom Controls */
+        /* Fullscreen Button */
+        .btn-fullscreen {
+            position: absolute; right: 0; top: 0;
+            background: #34495e; color: white; border: none;
+            padding: 15px; border-radius: 8px; cursor: pointer;
+            pointer-events: auto; box-shadow: 0 4px 0 #2c3e50;
+        }
+        .btn-fullscreen:active { transform: translateY(4px); box-shadow: none; }
+
         .control-panel {
             display: flex; gap: 20px; justify-content: center; pointer-events: auto;
             background: rgba(255, 255, 255, 0.95); padding: 20px;
-            border-radius: 12px; box-shadow: 0 -4px 15px rgba(0,0,0,0.1);
+            border-radius: 12px; box-shadow: 0 -4px 15px rgba(0,0,0,0.2);
             max-width: 800px; margin: 0 auto;
         }
         .control-group {
@@ -55,18 +71,17 @@
             background-color: #f1c40f; color: #2c3e50; border: none;
             padding: 12px; font-weight: bold; font-size: 15px;
             border-radius: 6px; cursor: pointer;
-            box-shadow: 0 4px 0 #d4ac0d; transition: all 0.1s;
+            box-shadow: 0 4px 0 #d4ac0d; transition: transform 0.1s;
         }
         button:active:not(:disabled) { transform: translateY(4px); box-shadow: none; }
         button:disabled { background-color: #bdc3c7; box-shadow: 0 4px 0 #95a5a6; color: #7f8c8d; cursor: not-allowed; }
-        
         .btn-buy { background-color: #e67e22; box-shadow: 0 4px 0 #d35400; color: white; }
         .btn-sell { background-color: #2ecc71; box-shadow: 0 4px 0 #27ae60; color: white; }
     </style>
 </head>
 <body>
 
-    <div class="game-wrapper">
+    <div class="game-wrapper" id="gameWrapper">
         <canvas id="gameCanvas"></canvas>
         
         <div class="ui-layer">
@@ -74,29 +89,20 @@
                 <div class="stat-box money">💰 $<span id="moneyText">100</span></div>
                 <div class="stat-box parts">⚙️ Parts: <span id="partsText">0</span></div>
                 <div class="stat-box stock">🚗 Stock: <span id="stockText">0</span></div>
+                <button class="btn-fullscreen" onclick="toggleFullScreen()">🔲 Fullscreen</button>
             </div>
             
             <div class="control-panel">
                 <div class="control-group">
                     <h3>Trade</h3>
-                    <button class="btn-buy" id="buyPartsBtn" onclick="buyParts()">
-                        Buy 5 Parts ($<span id="partCostText">50</span>)
-                    </button>
-                    <button class="btn-sell" id="sellCarsBtn" onclick="sellCars()">
-                        Sell All Cars ($<span id="carPriceText">30</span>/ea)
-                    </button>
+                    <button class="btn-buy" id="buyPartsBtn" onclick="buyParts()">Buy 5 Parts ($<span id="partCostText">50</span>)</button>
+                    <button class="btn-sell" id="sellCarsBtn" onclick="sellCars()">Sell All Cars ($<span id="carPriceText">30</span>/ea)</button>
                 </div>
                 
                 <div class="control-group">
                     <h3>Upgrades</h3>
-                    <button id="upgAssemblyBtn" onclick="upgradeAssembly()">
-                        Upgrade Assembly Speed<br>
-                        <span style="font-size: 12px; font-weight: normal;">Cost: $<span id="assemblyCostText">100</span></span>
-                    </button>
-                    <button id="upgMarketingBtn" onclick="upgradeMarketing()">
-                        Upgrade Marketing (Higher Price)<br>
-                        <span style="font-size: 12px; font-weight: normal;">Cost: $<span id="marketingCostText">150</span></span>
-                    </button>
+                    <button id="upgAssemblyBtn" onclick="upgradeAssembly()">Upgrade Speed (Cost: $<span id="assemblyCostText">100</span>)</button>
+                    <button id="upgMarketingBtn" onclick="upgradeMarketing()">Upgrade Marketing (Cost: $<span id="marketingCostText">150</span>)</button>
                 </div>
             </div>
         </div>
@@ -106,38 +112,87 @@
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
 
+        // Virtual World Size (Much larger than the screen)
+        const WORLD_WIDTH = 3000;
+        const WORLD_HEIGHT = 2000;
+
+        // Camera Object for panning
+        let camera = { x: WORLD_WIDTH/2 - window.innerWidth/2, y: WORLD_HEIGHT/2 - window.innerHeight/2 };
+        let isDragging = false;
+        let lastMouseX = 0;
+        let lastMouseY = 0;
+
         function resizeCanvas() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
+            clampCamera();
         }
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
 
-        // Game Economy State
-        let money = 100;
-        let parts = 0;
-        let carsInStock = 0;
-        
-        let partCost = 10;
-        let carSellPrice = 30;
-        
-        let productionSpeed = 1.5;
-        let assemblyUpgradeCost = 100;
-        let marketingUpgradeCost = 150;
+        // --- FULLSCREEN LOGIC ---
+        function toggleFullScreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log(`Error attempting to enable fullscreen: ${err.message}`);
+                });
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
 
-        // Entities
+        // --- CAMERA PANNING LOGIC ---
+        function clampCamera() {
+            // Keep the camera within the bounds of the virtual world
+            camera.x = Math.max(0, Math.min(camera.x, WORLD_WIDTH - canvas.width));
+            camera.y = Math.max(0, Math.min(camera.y, WORLD_HEIGHT - canvas.height));
+        }
+
+        function handlePointerDown(e) {
+            isDragging = true;
+            lastMouseX = e.touches ? e.touches[0].clientX : e.clientX;
+            lastMouseY = e.touches ? e.touches[0].clientY : e.clientY;
+        }
+
+        function handlePointerMove(e) {
+            if (!isDragging) return;
+            let currentX = e.touches ? e.touches[0].clientX : e.clientX;
+            let currentY = e.touches ? e.touches[0].clientY : e.clientY;
+            
+            let dx = currentX - lastMouseX;
+            let dy = currentY - lastMouseY;
+            
+            camera.x -= dx;
+            camera.y -= dy;
+            clampCamera();
+            
+            lastMouseX = currentX;
+            lastMouseY = currentY;
+        }
+
+        function handlePointerUp() {
+            isDragging = false;
+        }
+
+        // Mouse Events
+        canvas.addEventListener('mousedown', handlePointerDown);
+        window.addEventListener('mousemove', handlePointerMove);
+        window.addEventListener('mouseup', handlePointerUp);
+        
+        // Touch Events (Mobile)
+        canvas.addEventListener('touchstart', handlePointerDown, {passive: false});
+        window.addEventListener('touchmove', handlePointerMove, {passive: false});
+        window.addEventListener('touchend', handlePointerUp);
+
+        // --- GAME ECONOMY ---
+        let money = 100, parts = 0, carsInStock = 0;
+        let partCost = 10, carSellPrice = 30;
+        let productionSpeed = 1.5, assemblyUpgradeCost = 100, marketingUpgradeCost = 150;
+
         let carsOnBelt = [];
         let beltOffset = 0;
-
-        // UI Elements
-        const moneyText = document.getElementById('moneyText');
-        const partsText = document.getElementById('partsText');
-        const stockText = document.getElementById('stockText');
-        
-        const buyPartsBtn = document.getElementById('buyPartsBtn');
-        const sellCarsBtn = document.getElementById('sellCarsBtn');
-        const upgAssemblyBtn = document.getElementById('upgAssemblyBtn');
-        const upgMarketingBtn = document.getElementById('upgMarketingBtn');
 
         function formatMoney(amount) {
             if (amount >= 1000000) return (amount / 1000000).toFixed(2) + "M";
@@ -146,156 +201,109 @@
         }
 
         function updateUI() {
-            moneyText.innerText = formatMoney(money);
-            partsText.innerText = parts;
-            stockText.innerText = carsInStock;
-            
+            document.getElementById('moneyText').innerText = formatMoney(money);
+            document.getElementById('partsText').innerText = parts;
+            document.getElementById('stockText').innerText = carsInStock;
             document.getElementById('partCostText').innerText = formatMoney(partCost * 5);
             document.getElementById('carPriceText').innerText = formatMoney(carSellPrice);
             document.getElementById('assemblyCostText').innerText = formatMoney(assemblyUpgradeCost);
             document.getElementById('marketingCostText').innerText = formatMoney(marketingUpgradeCost);
 
-            buyPartsBtn.disabled = money < (partCost * 5);
-            sellCarsBtn.disabled = carsInStock === 0;
-            upgAssemblyBtn.disabled = money < assemblyUpgradeCost;
-            upgMarketingBtn.disabled = money < marketingUpgradeCost;
+            document.getElementById('buyPartsBtn').disabled = money < (partCost * 5);
+            document.getElementById('sellCarsBtn').disabled = carsInStock === 0;
+            document.getElementById('upgAssemblyBtn').disabled = money < assemblyUpgradeCost;
+            document.getElementById('upgMarketingBtn').disabled = money < marketingUpgradeCost;
         }
 
-        // Actions
-        function buyParts() {
-            let cost = partCost * 5;
-            if (money >= cost) {
-                money -= cost;
-                parts += 5;
-                updateUI();
-            }
-        }
-
-        function sellCars() {
-            if (carsInStock > 0) {
-                money += (carsInStock * carSellPrice);
-                carsInStock = 0;
-                updateUI();
-            }
-        }
-
-        function upgradeAssembly() {
-            if (money >= assemblyUpgradeCost) {
-                money -= assemblyUpgradeCost;
-                productionSpeed *= 1.25;
-                assemblyUpgradeCost = Math.floor(assemblyUpgradeCost * 1.6);
-                updateUI();
-            }
-        }
-
-        function upgradeMarketing() {
-            if (money >= marketingUpgradeCost) {
-                money -= marketingUpgradeCost;
-                carSellPrice = Math.floor(carSellPrice * 1.4);
-                marketingUpgradeCost = Math.floor(marketingUpgradeCost * 1.8);
-                updateUI();
-            }
-        }
+        function buyParts() { if (money >= partCost * 5) { money -= partCost * 5; parts += 5; updateUI(); } }
+        function sellCars() { if (carsInStock > 0) { money += (carsInStock * carSellPrice); carsInStock = 0; updateUI(); } }
+        function upgradeAssembly() { if (money >= assemblyUpgradeCost) { money -= assemblyUpgradeCost; productionSpeed *= 1.25; assemblyUpgradeCost = Math.floor(assemblyUpgradeCost * 1.6); updateUI(); } }
+        function upgradeMarketing() { if (money >= marketingUpgradeCost) { money -= marketingUpgradeCost; carSellPrice = Math.floor(carSellPrice * 1.4); marketingUpgradeCost = Math.floor(marketingUpgradeCost * 1.8); updateUI(); } }
 
         function spawnCar() {
-            carsOnBelt.push({ x: -100, color: `hsl(${Math.random() * 360}, 70%, 50%)` });
+            // Spawn car relative to world coordinates
+            carsOnBelt.push({ x: WORLD_WIDTH/2 - 600, color: `hsl(${Math.random() * 360}, 70%, 50%)` });
         }
 
-        // Main Animation Loop
+        // --- RENDER LOOP ---
         function gameLoop() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            const baseY = canvas.height / 2; 
-            const centerX = canvas.width / 2;
+            // Apply Camera Translation
+            ctx.save();
+            ctx.translate(-camera.x, -camera.y);
 
-            // Environment Background
+            // Draw World Grid (to make scrolling obvious)
+            ctx.strokeStyle = "#d0d5d9";
+            ctx.lineWidth = 2;
+            for (let x = 0; x < WORLD_WIDTH; x += 100) {
+                ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, WORLD_HEIGHT); ctx.stroke();
+            }
+            for (let y = 0; y < WORLD_HEIGHT; y += 100) {
+                ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(WORLD_WIDTH, y); ctx.stroke();
+            }
+
+            // Factory coordinates
+            const factoryX = WORLD_WIDTH / 2;
+            const factoryY = WORLD_HEIGHT / 2;
+
+            // Draw Factory Floor Area
             ctx.fillStyle = "#bdc3c7"; 
-            ctx.fillRect(0, 0, canvas.width, baseY - 50);
+            ctx.fillRect(factoryX - 800, factoryY - 200, 1600, 400);
 
             // Conveyor Belt
             ctx.fillStyle = "#34495e";
-            ctx.fillRect(0, baseY, canvas.width, 80);
+            ctx.fillRect(factoryX - 800, factoryY, 1600, 80);
             
             ctx.strokeStyle = "#2c3e50";
             ctx.lineWidth = 4;
-            
-            // Only move belt if there are cars on it or parts waiting
-            if (carsOnBelt.length > 0 || parts > 0) {
-                beltOffset += 1 * productionSpeed;
-            }
-            
+            if (carsOnBelt.length > 0 || parts > 0) { beltOffset += 1 * productionSpeed; }
             if (beltOffset > 40) beltOffset = 0;
             
-            for (let i = -40; i < canvas.width; i += 40) {
-                ctx.beginPath();
-                ctx.moveTo(i + beltOffset, baseY);
-                ctx.lineTo(i + beltOffset, baseY + 80);
-                ctx.stroke();
+            for (let i = factoryX - 800; i < factoryX + 800; i += 40) {
+                ctx.beginPath(); ctx.moveTo(i + beltOffset, factoryY); ctx.lineTo(i + beltOffset, factoryY + 80); ctx.stroke();
             }
 
             // Worker Station
-            ctx.fillStyle = "#e67e22"; 
-            ctx.fillRect(centerX - 50, baseY - 50, 100, 50);
-            
-            // Worker Character
-            ctx.fillStyle = "#f1c40f"; 
-            ctx.beginPath(); ctx.arc(centerX, baseY - 90, 20, Math.PI, 0); ctx.fill();
-            ctx.fillStyle = "#f39c12"; 
-            ctx.beginPath(); ctx.arc(centerX, baseY - 75, 15, 0, Math.PI * 2); ctx.fill();
-            ctx.fillStyle = "#2980b9"; 
-            ctx.fillRect(centerX - 20, baseY - 60, 40, 40);
+            ctx.fillStyle = "#e67e22"; ctx.fillRect(factoryX - 50, factoryY - 50, 100, 50);
+            ctx.fillStyle = "#f1c40f"; ctx.beginPath(); ctx.arc(factoryX, factoryY - 90, 20, Math.PI, 0); ctx.fill();
+            ctx.fillStyle = "#f39c12"; ctx.beginPath(); ctx.arc(factoryX, factoryY - 75, 15, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = "#2980b9"; ctx.fillRect(factoryX - 20, factoryY - 60, 40, 40);
 
-            // Worker Animation (Only swings if factory is active)
-            let armAngle = 0;
-            if (carsOnBelt.length > 0) {
-                armAngle = Math.sin(Date.now() / 150 * productionSpeed) * 0.6;
-            }
+            // Worker Arm Animation
+            let armAngle = (carsOnBelt.length > 0) ? Math.sin(Date.now() / 150 * productionSpeed) * 0.6 : 0;
             ctx.save();
-            ctx.translate(centerX - 10, baseY - 50);
+            ctx.translate(factoryX - 10, factoryY - 50);
             ctx.rotate(armAngle);
-            ctx.fillStyle = "#e67e22"; 
-            ctx.fillRect(0, 0, 10, 40);
+            ctx.fillStyle = "#e67e22"; ctx.fillRect(0, 0, 10, 40);
             ctx.restore();
 
-            // Factory Logic: Convert Parts to Cars
+            // Factory Logic
             let lastCar = carsOnBelt[carsOnBelt.length - 1];
-            if (parts > 0) {
-                // If belt is empty, or the last car has moved far enough forward, spawn a new one
-                if (!lastCar || lastCar.x > 180) {
-                    spawnCar();
-                    parts--;
-                    updateUI();
-                }
+            if (parts > 0 && (!lastCar || lastCar.x > factoryX - 400)) {
+                spawnCar(); parts--; updateUI();
             }
 
-            // Process and Draw Cars
+            // Process Cars
             for (let i = carsOnBelt.length - 1; i >= 0; i--) {
                 let car = carsOnBelt[i];
                 car.x += 1.5 * productionSpeed;
 
-                // Draw Car
                 ctx.fillStyle = car.color;
-                ctx.fillRect(car.x, baseY - 40, 80, 30);
-                ctx.fillRect(car.x + 15, baseY - 60, 50, 20);
-                
+                ctx.fillRect(car.x, factoryY - 40, 80, 30);
+                ctx.fillRect(car.x + 15, factoryY - 60, 50, 20);
                 ctx.fillStyle = "#87ceeb";
-                ctx.fillRect(car.x + 20, baseY - 55, 15, 15);
-                ctx.fillRect(car.x + 45, baseY - 55, 15, 15);
-
+                ctx.fillRect(car.x + 20, factoryY - 55, 15, 15);
+                ctx.fillRect(car.x + 45, factoryY - 55, 15, 15);
                 ctx.fillStyle = "#222";
-                ctx.beginPath();
-                ctx.arc(car.x + 20, baseY - 5, 10, 0, Math.PI * 2);
-                ctx.arc(car.x + 60, baseY - 5, 10, 0, Math.PI * 2);
-                ctx.fill();
+                ctx.beginPath(); ctx.arc(car.x + 20, factoryY - 5, 10, 0, Math.PI * 2); ctx.arc(car.x + 60, factoryY - 5, 10, 0, Math.PI * 2); ctx.fill();
 
-                // When car finishes the line, add it to stock instead of instant money
-                if (car.x > canvas.width) {
-                    carsInStock++;
-                    carsOnBelt.splice(i, 1);
-                    updateUI();
+                if (car.x > factoryX + 800) {
+                    carsInStock++; carsOnBelt.splice(i, 1); updateUI();
                 }
             }
 
+            ctx.restore(); // Restore camera translation so UI isn't affected
             requestAnimationFrame(gameLoop);
         }
 

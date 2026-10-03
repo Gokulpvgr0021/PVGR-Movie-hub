@@ -3,109 +3,246 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Car Industry Tycoon Prototype</title>
+    <title>Animated Car Factory Tycoon</title>
     <style>
         body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            text-align: center; 
             background-color: #2b2b36; 
             color: #333;
-            padding: 50px; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
         }
-        .game-container { 
-            background: #ffffff; 
-            padding: 30px; 
-            border-radius: 15px; 
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3); 
-            max-width: 400px; 
-            margin: auto; 
+        .game-wrapper {
+            position: relative;
+            background: #fff;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
-        h2 { margin-top: 0; color: #4a4a5a; }
-        .money-display {
-            font-size: 28px;
-            font-weight: bold;
-            color: #27ae60;
-            margin: 20px 0;
+        canvas {
+            display: block;
+            background-color: #f0f3f4; /* Factory floor color */
         }
-        button { 
-            background-color: #3498db; 
-            color: white; 
-            border: none; 
-            padding: 15px 20px; 
-            margin: 10px 0; 
-            cursor: pointer; 
-            border-radius: 8px; 
-            font-size: 16px;
+        .ui-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
-            transition: background 0.2s;
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: space-between;
+            pointer-events: none; /* Let clicks pass through to canvas if needed */
         }
-        button:hover:not(:disabled) { background-color: #2980b9; }
-        button:disabled { background-color: #bdc3c7; cursor: not-allowed; }
-        .stats { margin-bottom: 20px; font-size: 16px; color: #666; }
+        .stats {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h2 { margin: 0 0 10px 0; font-size: 18px; color: #2c3e50; }
+        .money { font-size: 24px; font-weight: bold; color: #27ae60; }
+        
+        .controls {
+            pointer-events: auto;
+        }
+        button {
+            background-color: #f1c40f;
+            color: #333;
+            border: none;
+            padding: 12px 20px;
+            font-weight: bold;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 0 #d4ac0d;
+            transition: transform 0.1s;
+        }
+        button:active:not(:disabled) {
+            transform: translateY(4px);
+            box-shadow: none;
+        }
+        button:disabled {
+            background-color: #bdc3c7;
+            box-shadow: 0 4px 0 #95a5a6;
+            cursor: not-allowed;
+            transform: none;
+        }
     </style>
 </head>
 <body>
-    <div class="game-container">
-        <h2>Assembly Line 1</h2>
-        <div class="money-display">
-            $<span id="money">0</span>
+
+    <div class="game-wrapper">
+        <canvas id="gameCanvas" width="800" height="400"></canvas>
+        
+        <div class="ui-layer">
+            <div class="stats">
+                <h2>Assembly Line 1</h2>
+                <div class="money">$<span id="moneyText">0</span></div>
+                <div style="color: #7f8c8d; margin-top: 5px; font-size: 14px;">
+                    Output: $<span id="incomeText">10</span> / car
+                </div>
+            </div>
+            
+            <div class="controls">
+                <button id="upgradeBtn" onclick="upgradeLine()">
+                    Upgrade Station<br>
+                    <span style="font-size: 12px; font-weight: normal;">Cost: $<span id="costText">50</span></span>
+                </button>
+            </div>
         </div>
-        <div class="stats">
-            <p>Production: $<span id="income">10</span> / sec</p>
-        </div>
-        <button id="upgradeBtn" onclick="upgradeLine()">
-            Upgrade Conveyor (Cost: $<span id="cost">50</span>)
-        </button>
     </div>
 
     <script>
-        // Game State Variables
-        let money = 0;
-        let income = 10;
-        let upgradeCost = 50;
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
 
-        // DOM Elements
-        const moneyEl = document.getElementById('money');
-        const incomeEl = document.getElementById('income');
-        const costEl = document.getElementById('cost');
+        // Game Economy
+        let money = 0;
+        let incomePerCar = 10;
+        let upgradeCost = 50;
+        let productionSpeed = 2; // Speed multiplier for animations
+
+        // UI Elements
+        const moneyText = document.getElementById('moneyText');
+        const incomeText = document.getElementById('incomeText');
+        const costText = document.getElementById('costText');
         const upgradeBtn = document.getElementById('upgradeBtn');
 
-        // Update the visual text on the screen
-        function updateUI() {
-            moneyEl.innerText = formatMoney(money);
-            incomeEl.innerText = formatMoney(income);
-            costEl.innerText = formatMoney(upgradeCost);
-            
-            // Disable the upgrade button if you can't afford it
-            upgradeBtn.disabled = money < upgradeCost;
+        // Game Entities
+        let cars = [];
+        let beltOffset = 0;
+        let workerArmAngle = 0;
+
+        // Add a new car to the start of the belt
+        function spawnCar() {
+            cars.push({ x: -100, color: `hsl(${Math.random() * 360}, 70%, 50%)` });
         }
 
-        // Format numbers to show millions like in the screenshot
-        function formatMoney(amount) {
-            if (amount >= 1000000) {
-                return (amount / 1000000).toFixed(3) + " millions";
-            }
-            return amount.toFixed(0);
-        }
+        // Initialize first car
+        spawnCar();
 
-        // Purchase an upgrade
         function upgradeLine() {
             if (money >= upgradeCost) {
                 money -= upgradeCost;
-                income *= 1.5;         // Boost income by 50%
-                upgradeCost *= 1.8;    // Increase the next upgrade cost by 80%
+                incomePerCar *= 1.5;
+                upgradeCost *= 1.8;
+                productionSpeed *= 1.1; // Make the belt and cars move faster
                 updateUI();
             }
         }
 
-        // Core Idle Loop: Add money every second
-        setInterval(() => {
-            money += income;
-            updateUI();
-        }, 1000);
+        function formatMoney(amount) {
+            if (amount >= 1000000) return (amount / 1000000).toFixed(3) + " M";
+            if (amount >= 1000) return (amount / 1000).toFixed(1) + " k";
+            return amount.toFixed(0);
+        }
 
-        // Initial UI render
+        function updateUI() {
+            moneyText.innerText = formatMoney(money);
+            incomeText.innerText = formatMoney(incomePerCar);
+            costText.innerText = formatMoney(upgradeCost);
+            upgradeBtn.disabled = money < upgradeCost;
+        }
+
+        // Animation Loop
+        function gameLoop() {
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // 1. Draw Environment
+            ctx.fillStyle = "#bdc3c7"; // Factory wall
+            ctx.fillRect(0, 0, canvas.width, 150);
+            
+            // 2. Draw Conveyor Belt
+            ctx.fillStyle = "#34495e";
+            ctx.fillRect(0, 250, canvas.width, 60);
+            
+            // Conveyor belt lines (moving effect)
+            ctx.strokeStyle = "#2c3e50";
+            ctx.lineWidth = 4;
+            beltOffset += 1 * productionSpeed;
+            if (beltOffset > 40) beltOffset = 0;
+            
+            for (let i = -40; i < canvas.width; i += 40) {
+                ctx.beginPath();
+                ctx.moveTo(i + beltOffset, 250);
+                ctx.lineTo(i + beltOffset, 310);
+                ctx.stroke();
+            }
+
+            // 3. Draw Worker Station
+            ctx.fillStyle = "#e67e22"; // Station desk
+            ctx.fillRect(350, 200, 100, 50);
+            
+            // Draw Worker Character
+            ctx.fillStyle = "#f1c40f"; // Hard hat
+            ctx.beginPath();
+            ctx.arc(400, 160, 20, Math.PI, 0);
+            ctx.fill();
+            
+            ctx.fillStyle = "#f39c12"; // Face
+            ctx.beginPath();
+            ctx.arc(400, 175, 15, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = "#2980b9"; // Uniform
+            ctx.fillRect(380, 190, 40, 40);
+
+            // Animated Worker Arm
+            workerArmAngle = Math.sin(Date.now() / 200 * productionSpeed) * 0.5;
+            ctx.save();
+            ctx.translate(390, 200);
+            ctx.rotate(workerArmAngle);
+            ctx.fillStyle = "#e67e22"; // Arm color
+            ctx.fillRect(0, 0, 10, 40);
+            ctx.restore();
+
+            // 4. Update and Draw Cars
+            for (let i = cars.length - 1; i >= 0; i--) {
+                let car = cars[i];
+                car.x += 1.5 * productionSpeed; // Move car right
+
+                // Draw Car Body
+                ctx.fillStyle = car.color;
+                ctx.fillRect(car.x, 210, 80, 30);
+                ctx.fillRect(car.x + 15, 190, 50, 20); // Roof
+                
+                // Windows
+                ctx.fillStyle = "#87ceeb";
+                ctx.fillRect(car.x + 20, 195, 15, 15);
+                ctx.fillRect(car.x + 45, 195, 15, 15);
+
+                // Wheels
+                ctx.fillStyle = "#222";
+                ctx.beginPath();
+                ctx.arc(car.x + 20, 245, 10, 0, Math.PI * 2);
+                ctx.arc(car.x + 60, 245, 10, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Process car leaving the screen (collecting money)
+                if (car.x > canvas.width) {
+                    money += incomePerCar;
+                    cars.splice(i, 1);
+                    spawnCar(); // Spawn a new car to keep the loop going
+                    updateUI();
+                }
+            }
+
+            // Add new car if the last one has moved far enough (ensures continuous line)
+            if (cars.length > 0 && cars[cars.length - 1].x > 150) {
+                spawnCar();
+            }
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        // Start the game
         updateUI();
+        gameLoop();
     </script>
 </body>
 </html>

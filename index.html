@@ -3,28 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Animated Car Factory Tycoon</title>
+    <title>Full Screen Car Factory Tycoon</title>
     <style>
-        body { 
+        /* Force the body to take up the full screen with no scrollbars */
+        body, html { 
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
             background-color: #2b2b36; 
             color: #333;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
         }
         .game-wrapper {
             position: relative;
+            width: 100vw;
+            height: 100vh;
             background: #fff;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
         canvas {
             display: block;
-            background-color: #f0f3f4; /* Factory floor color */
+            background-color: #f0f3f4;
         }
         .ui-layer {
             position: absolute;
@@ -35,10 +35,10 @@
             box-sizing: border-box;
             display: flex;
             justify-content: space-between;
-            pointer-events: none; /* Let clicks pass through to canvas if needed */
+            pointer-events: none;
         }
         .stats {
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.95);
             padding: 15px;
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
@@ -76,7 +76,7 @@
 <body>
 
     <div class="game-wrapper">
-        <canvas id="gameCanvas" width="800" height="400"></canvas>
+        <canvas id="gameCanvas"></canvas>
         
         <div class="ui-layer">
             <div class="stats">
@@ -100,11 +100,19 @@
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
 
+        // Dynamically resize canvas to fit the browser window
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas(); // Set initial size
+
         // Game Economy
         let money = 0;
         let incomePerCar = 10;
         let upgradeCost = 50;
-        let productionSpeed = 2; // Speed multiplier for animations
+        let productionSpeed = 2;
 
         // UI Elements
         const moneyText = document.getElementById('moneyText');
@@ -112,17 +120,13 @@
         const costText = document.getElementById('costText');
         const upgradeBtn = document.getElementById('upgradeBtn');
 
-        // Game Entities
         let cars = [];
         let beltOffset = 0;
         let workerArmAngle = 0;
 
-        // Add a new car to the start of the belt
         function spawnCar() {
             cars.push({ x: -100, color: `hsl(${Math.random() * 360}, 70%, 50%)` });
         }
-
-        // Initialize first car
         spawnCar();
 
         function upgradeLine() {
@@ -130,7 +134,7 @@
                 money -= upgradeCost;
                 incomePerCar *= 1.5;
                 upgradeCost *= 1.8;
-                productionSpeed *= 1.1; // Make the belt and cars move faster
+                productionSpeed *= 1.1;
                 updateUI();
             }
         }
@@ -148,20 +152,21 @@
             upgradeBtn.disabled = money < upgradeCost;
         }
 
-        // Animation Loop
         function gameLoop() {
-            // Clear canvas
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // 1. Draw Environment
-            ctx.fillStyle = "#bdc3c7"; // Factory wall
-            ctx.fillRect(0, 0, canvas.width, 150);
+            // Establish dynamic Y anchor based on screen height
+            const baseY = canvas.height / 2 + 50; 
+            const centerX = canvas.width / 2;
+
+            // 1. Draw Environment (Wall)
+            ctx.fillStyle = "#bdc3c7"; 
+            ctx.fillRect(0, 0, canvas.width, baseY - 100);
             
             // 2. Draw Conveyor Belt
             ctx.fillStyle = "#34495e";
-            ctx.fillRect(0, 250, canvas.width, 60);
+            ctx.fillRect(0, baseY, canvas.width, 80);
             
-            // Conveyor belt lines (moving effect)
             ctx.strokeStyle = "#2c3e50";
             ctx.lineWidth = 4;
             beltOffset += 1 * productionSpeed;
@@ -169,70 +174,69 @@
             
             for (let i = -40; i < canvas.width; i += 40) {
                 ctx.beginPath();
-                ctx.moveTo(i + beltOffset, 250);
-                ctx.lineTo(i + beltOffset, 310);
+                ctx.moveTo(i + beltOffset, baseY);
+                ctx.lineTo(i + beltOffset, baseY + 80);
                 ctx.stroke();
             }
 
-            // 3. Draw Worker Station
-            ctx.fillStyle = "#e67e22"; // Station desk
-            ctx.fillRect(350, 200, 100, 50);
+            // 3. Draw Worker Station (Centered dynamically)
+            ctx.fillStyle = "#e67e22"; // Desk
+            ctx.fillRect(centerX - 50, baseY - 50, 100, 50);
             
-            // Draw Worker Character
             ctx.fillStyle = "#f1c40f"; // Hard hat
             ctx.beginPath();
-            ctx.arc(400, 160, 20, Math.PI, 0);
+            ctx.arc(centerX, baseY - 90, 20, Math.PI, 0);
             ctx.fill();
             
             ctx.fillStyle = "#f39c12"; // Face
             ctx.beginPath();
-            ctx.arc(400, 175, 15, 0, Math.PI * 2);
+            ctx.arc(centerX, baseY - 75, 15, 0, Math.PI * 2);
             ctx.fill();
 
             ctx.fillStyle = "#2980b9"; // Uniform
-            ctx.fillRect(380, 190, 40, 40);
+            ctx.fillRect(centerX - 20, baseY - 60, 40, 40);
 
             // Animated Worker Arm
             workerArmAngle = Math.sin(Date.now() / 200 * productionSpeed) * 0.5;
             ctx.save();
-            ctx.translate(390, 200);
+            ctx.translate(centerX - 10, baseY - 50);
             ctx.rotate(workerArmAngle);
-            ctx.fillStyle = "#e67e22"; // Arm color
+            ctx.fillStyle = "#e67e22"; 
             ctx.fillRect(0, 0, 10, 40);
             ctx.restore();
 
             // 4. Update and Draw Cars
             for (let i = cars.length - 1; i >= 0; i--) {
                 let car = cars[i];
-                car.x += 1.5 * productionSpeed; // Move car right
+                car.x += 1.5 * productionSpeed;
 
-                // Draw Car Body
+                // Car Body
                 ctx.fillStyle = car.color;
-                ctx.fillRect(car.x, 210, 80, 30);
-                ctx.fillRect(car.x + 15, 190, 50, 20); // Roof
+                ctx.fillRect(car.x, baseY - 40, 80, 30);
+                ctx.fillRect(car.x + 15, baseY - 60, 50, 20); // Roof
                 
                 // Windows
                 ctx.fillStyle = "#87ceeb";
-                ctx.fillRect(car.x + 20, 195, 15, 15);
-                ctx.fillRect(car.x + 45, 195, 15, 15);
+                ctx.fillRect(car.x + 20, baseY - 55, 15, 15);
+                ctx.fillRect(car.x + 45, baseY - 55, 15, 15);
 
                 // Wheels
                 ctx.fillStyle = "#222";
                 ctx.beginPath();
-                ctx.arc(car.x + 20, 245, 10, 0, Math.PI * 2);
-                ctx.arc(car.x + 60, 245, 10, 0, Math.PI * 2);
+                ctx.arc(car.x + 20, baseY - 5, 10, 0, Math.PI * 2);
+                ctx.arc(car.x + 60, baseY - 5, 10, 0, Math.PI * 2);
                 ctx.fill();
 
-                // Process car leaving the screen (collecting money)
+                // Process car collecting money
                 if (car.x > canvas.width) {
                     money += incomePerCar;
                     cars.splice(i, 1);
-                    spawnCar(); // Spawn a new car to keep the loop going
+                    spawnCar(); 
                     updateUI();
                 }
             }
 
-            // Add new car if the last one has moved far enough (ensures continuous line)
+            // Keep the line moving smoothly
             if (cars.length > 0 && cars[cars.length - 1].x > 150) {
                 spawnCar();
             }
@@ -240,7 +244,6 @@
             requestAnimationFrame(gameLoop);
         }
 
-        // Start the game
         updateUI();
         gameLoop();
     </script>

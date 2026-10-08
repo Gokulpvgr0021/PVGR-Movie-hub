@@ -1,470 +1,638 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pro Auto Factory Tycoon</title>
-    <style>
-        :root {
-            --primary: #2c3e50;
-            --accent: #f39c12;
-            --success: #27ae60;
-            --danger: #e74c3c;
-            --bg: #1e1e24;
-        }
-        body, html { 
-            margin: 0; padding: 0; width: 100%; height: 100%; 
-            overflow: hidden; font-family: 'Segoe UI', system-ui, sans-serif; 
-            background-color: var(--bg); color: #333; 
-            display: flex; flex-direction: column;
-            -webkit-user-select: none; user-select: none; 
-        }
-        
-        .game-viewport {
-            flex: 1 1 auto; position: relative; width: 100%; overflow: hidden;
-            background: #222f3e; cursor: grab;
-        }
-        .game-viewport:active { cursor: grabbing; }
-        canvas { display: block; touch-action: none; }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>SKL Fabric GRN - Magnum Clothing</title>
 
-        .hud {
-            position: absolute; top: 10px; left: 10px; right: 10px;
-            display: flex; justify-content: space-between; pointer-events: none;
-            z-index: 10; gap: 10px;
-        }
-        .stat-badge {
-            background: rgba(255, 255, 255, 0.95); padding: 10px 15px;
-            border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            font-weight: bold; font-size: 16px; pointer-events: auto;
-        }
-        .money { color: var(--success); }
-        .stock { color: #2980b9; }
+  <!-- PWA Fullscreen & Mobile Standalone Tags -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="SKL Fabric">
+  <meta name="theme-color" content="#ffffff">
 
-        .dashboard {
-            flex: 0 0 45%; background: #f8f9fa; border-top: 4px solid var(--primary);
-            overflow-y: auto; padding: 15px; box-shadow: 0 -10px 20px rgba(0,0,0,0.2); z-index: 20;
-        }
+  <!-- PDF Generation Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 
-        .dashboard-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 15px; max-width: 1200px; margin: 0 auto;
-        }
+  <style>
+    :root {
+      --primary: #000000;
+      --accent: #2563eb;
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --border: #e2e8f0;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --success: #15803d;
+      --danger: #dc2626;
+      --success-bg: #dcfce7;
+    }
 
-        .panel-section {
-            background: white; border-radius: 10px; padding: 15px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        }
-        .panel-section h3 { margin: 0 0 15px 0; font-size: 14px; color: #7f8c8d; text-transform: uppercase; letter-spacing: 1px; }
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
 
-        .part-row {
-            display: flex; justify-content: space-between; align-items: center;
-            background: #f1f2f6; padding: 10px 15px; border-radius: 8px; margin-bottom: 8px;
-            font-weight: bold; font-size: 15px;
-        }
+    html, body {
+      margin: 0; padding: 0; width: 100%; height: 100%;
+      background: var(--bg); color: var(--text);
+      overflow-x: hidden; touch-action: manipulation;
+    }
 
-        .buy-controls {
-            display: flex; gap: 8px; align-items: center;
-        }
-        
-        input[type="number"] {
-            width: 55px; padding: 8px; border: 2px solid #bdc3c7; border-radius: 6px;
-            font-weight: bold; font-size: 14px; text-align: center; color: #2c3e50; outline: none;
-            transition: border-color 0.2s;
-        }
-        input[type="number"]:focus { border-color: var(--primary); }
+    .mobile-frame {
+      display: flex; flex-direction: column; height: 100vh; height: 100dvh; width: 100%;
+      padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
 
-        button {
-            border: none; padding: 10px 15px; font-weight: bold; font-size: 14px;
-            border-radius: 6px; cursor: pointer; transition: all 0.1s;
-            box-shadow: 0 4px 0 rgba(0,0,0,0.2); color: white;
-        }
-        button:active:not(:disabled) { transform: translateY(4px); box-shadow: none; }
-        button:disabled { background: #bdc3c7 !important; box-shadow: 0 4px 0 #95a5a6 !important; cursor: not-allowed; }
-        
-        .btn-buy { background: #e67e22; }
-        .btn-sell { background: var(--success); width: 100%; padding: 15px; font-size: 16px; margin-top: 10px;}
-        .btn-upg { background: #3498db; width: 100%; margin-bottom: 10px; }
+    /* Top Sticky Brand Bar */
+    .app-header {
+      background: #ffffff; padding: 12px 16px; display: flex; align-items: center;
+      justify-content: space-between; border-bottom: 1px solid var(--border); flex-shrink: 0;
+    }
 
-        @media (min-width: 768px) {
-            .dashboard { flex: 0 0 auto; padding: 20px; }
-            .game-viewport { flex: 1; }
-        }
-    </style>
+    .brand-wrap { display: flex; align-items: center; gap: 12px; }
+    .brand-logo { width: 38px; height: 38px; border-radius: 8px; flex-shrink: 0; object-fit: cover; }
+    .brand-text h1 { margin: 0; font-size: 15px; font-weight: 800; text-transform: uppercase; color: #000; }
+    .brand-text p { margin: 2px 0 0 0; font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
+
+    .header-btns { display: flex; gap: 6px; }
+    .icon-btn {
+      background: #f1f5f9; border: 1px solid var(--border); border-radius: 8px;
+      padding: 7px 10px; font-size: 13px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;
+    }
+
+    /* Scrollable App Viewport */
+    .app-scroll { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 16px 14px 90px 14px; }
+    .view-panel { display: none; }
+    .view-panel.active { display: block; }
+
+    /* Form Styles */
+    .form-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+      padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.03); position: relative;
+    }
+
+    .form-card-header {
+      font-size: 14px; font-weight: 800; text-transform: uppercase; 
+      margin-bottom: 15px; border-bottom: 1px solid var(--border); padding-bottom: 10px;
+    }
+
+    .field { display: flex; flex-direction: column; margin-bottom: 14px; }
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+    
+    label { font-size: 11px; font-weight: 800; text-transform: uppercase; color: #475569; margin-bottom: 5px; }
+
+    input, select, textarea {
+      font-size: 16px; padding: 12px 14px; border-radius: 8px;
+      border: 1.5px solid var(--border); background: #ffffff; color: var(--text); width: 100%; outline: none; transition: all 0.2s ease;
+    }
+    input[type="text"], textarea { text-transform: uppercase !important; }
+    input:focus, select:focus, textarea:focus { border-color: #000; box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05); }
+
+    .form-overlay {
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(255,255,255,0.6); z-index: 10; display: none; border-radius: 12px;
+    }
+
+    /* AI Photo Scanner Styles */
+    .upload-box {
+      border: 2px dashed #cbd5e1; border-radius: 8px; padding: 16px 12px; text-align: center;
+      background: #f8fafc; cursor: pointer; position: relative; overflow: hidden; transition: border-color 0.2s;
+    }
+    .upload-box:hover { border-color: #2563eb; background: #eff6ff; }
+    .preview-wrapper { position: relative; width: 100%; display: none; border-radius: 6px; overflow: hidden; margin-top: 8px; background: #000; }
+    .preview-thumb { width: 100%; max-height: 220px; object-fit: contain; display: block; opacity: 0.85; }
+    .scanner-fx { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; }
+
+    @keyframes scan { 0% { top: 0%; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { top: 98%; opacity: 0; } }
+    .laser-line {
+      position: absolute; left: 0; width: 100%; height: 3px; background-color: #10b981;
+      box-shadow: 0 0 15px 2px rgba(16, 185, 129, 0.7); animation: scan 2.2s ease-in-out infinite alternate;
+    }
+    .scanning-overlay {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background: linear-gradient(to bottom, rgba(16, 185, 129, 0.05), rgba(16, 185, 129, 0.25));
+    }
+
+    .ai-pill {
+      position: absolute; top: 12px; left: 50%; transform: translateX(-50%);
+      background: rgba(15, 23, 42, 0.95); color: #34d399; padding: 6px 14px;
+      border-radius: 20px; font-size: 11px; font-weight: 800; display: flex; align-items: center; gap: 8px; white-space: nowrap; border: 1px solid #334155;
+    }
+
+    .spinner {
+      border: 2px solid rgba(255, 255, 255, 0.2); width: 13px; height: 13px;
+      border-radius: 50%; border-left-color: #34d399; animation: spin 1s linear infinite;
+    }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+
+    .submit-btn {
+      width: 100%; background: #000000; color: #ffffff; padding: 14px; font-size: 15px; font-weight: 800;
+      border: none; border-radius: 8px; cursor: pointer; text-transform: uppercase; margin-top: 6px; transition: background 0.2s;
+    }
+    .submit-btn:active { background: #262626; }
+    .submit-btn.success { background: var(--success); }
+
+    /* Register Cards */
+    .log-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+      padding: 14px; margin-bottom: 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); display: flex; flex-direction: column; gap: 9px; text-transform: uppercase;
+    }
+    .log-card-header { display: flex; justify-content: space-between; border-bottom: 1px dashed var(--border); padding-bottom: 8px; }
+    .grn-title { font-size: 14px; font-weight: 800; color: #000; }
+    .log-time { font-size: 11px; color: var(--text-muted); font-weight: 600; }
+    .vendor-name { font-size: 15px; font-weight: 700; color: #0f172a; }
+    .card-photo-banner { width: 100%; height: 150px; object-fit: cover; border-radius: 8px; border: 1px solid #e2e8f0; }
+    .qty-comparison { display: grid; grid-template-columns: 1fr 1fr 1fr; background: #f8fafc; border-radius: 8px; padding: 8px 10px; text-align: center; margin-top: 2px; }
+    .qty-box span { font-size: 10px; color: var(--text-muted); font-weight: 700; }
+    .qty-box strong { display: block; font-size: 13px; color: #000; margin-top: 2px; }
+    .card-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 4px; }
+
+    /* Sticky Bottom Navigation */
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 0; width: 100%; background: #ffffff; border-top: 1px solid var(--border);
+      display: grid; grid-template-columns: repeat(3, 1fr); padding: 8px 12px; padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px)); box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 100;
+    }
+    .nav-tab { background: none; border: none; padding: 10px 0; font-size: 12px; font-weight: 700; color: var(--text-muted); border-radius: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .nav-tab.active { color: #000000; background: #f1f5f9; }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(150%);
+      background: #0f172a; color: white; padding: 12px 20px; border-radius: 8px; font-size: 13px; font-weight: 700;
+      display: flex; align-items: center; gap: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 1000;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+    .toast-icon { background: #10b981; border-radius: 50%; padding: 2px; display: flex; }
+  </style>
 </head>
 <body>
 
-    <div class="game-viewport" id="viewport">
-        <canvas id="gameCanvas"></canvas>
-        <div class="hud">
-            <div class="stat-badge money">💰 $<span id="moneyText">500</span></div>
-            <div class="stat-badge stock">🚗 Stock: <span id="stockText">0</span></div>
-        </div>
+<div class="mobile-frame">
+  <!-- Header -->
+  <header class="app-header">
+    <div class="brand-wrap">
+      <img src="31890.png" alt="Magnum Logo" class="brand-logo" onerror="this.style.display='none'">
+      <div class="brand-text">
+        <h1>SKL FABRIC TEAM</h1>
+        <p>AI GRN Register</p>
+      </div>
     </div>
+    <div class="header-btns">
+      <button class="icon-btn" onclick="exportToPDF()">📥 PDF</button>
+    </div>
+  </header>
+
+  <!-- Scroll View -->
+  <main class="app-scroll">
     
-    <div class="dashboard">
-        <div class="dashboard-grid">
-            <div class="panel-section">
-                <h3>Buy Raw Materials</h3>
-                <div class="part-row">
-                    <div>
-                        <span>Steel Frame</span><br>
-                        <span style="font-size: 12px; color: #7f8c8d; font-weight: normal;">Stock: <span id="chassisCount">0</span> | $50/ea</span>
-                    </div>
-                    <div class="buy-controls">
-                        <input type="number" id="inputChassis" min="1" value="1">
-                        <button class="btn-buy" onclick="buyPart('chassis')">Buy</button>
-                    </div>
+    <!-- View 1: New Inward Entry Form -->
+    <div class="view-panel active" id="entryView">
+      <div class="form-card">
+        <div class="form-overlay" id="formOverlay"></div>
+        <form id="entryForm">
+          
+          <!-- AI Photo Upload Box -->
+          <div class="field">
+            <label>Scan Invoice / DC (OpenAI GPT-4o)</label>
+            <div class="upload-box" onclick="document.getElementById('photoInput').click()">
+              <div id="uploadPrompt">
+                <span style="font-size: 26px; display:block; margin-bottom:4px;">📄</span>
+                <span style="font-size: 13px; font-weight:800; color: #1e293b;">TAP TO SNAP / UPLOAD CHALLAN</span>
+                <p style="margin:4px 0 0 0; font-size:11px; color:#64748b; font-weight:600;">AI will extract Mill, DC#, Style, PO, Qty & Remarks</p>
+              </div>
+              <input type="file" id="photoInput" accept="image/*" capture="environment" style="display: none;" onchange="handleImage(this)">
+              
+              <div class="preview-wrapper" id="previewWrapper">
+                <img id="formImgPreview" class="preview-thumb">
+                <div class="scanner-fx" id="scannerFx">
+                  <div class="laser-line"></div>
+                  <div class="scanning-overlay"></div>
+                  <div class="ai-pill"><div class="spinner"></div> Reading Invoice via OpenAI...</div>
                 </div>
-                <div class="part-row">
-                    <div>
-                        <span>V8 Engine</span><br>
-                        <span style="font-size: 12px; color: #7f8c8d; font-weight: normal;">Stock: <span id="engineCount">0</span> | $100/ea</span>
-                    </div>
-                    <div class="buy-controls">
-                        <input type="number" id="inputEngine" min="1" value="1">
-                        <button class="btn-buy" onclick="buyPart('engine')">Buy</button>
-                    </div>
-                </div>
-                <div class="part-row">
-                    <div>
-                        <span>Tires</span><br>
-                        <span style="font-size: 12px; color: #7f8c8d; font-weight: normal;">Stock: <span id="tireCount">0</span> | $10/ea (Need 4)</span>
-                    </div>
-                    <div class="buy-controls">
-                        <input type="number" id="inputTire" min="1" value="4">
-                        <button class="btn-buy" onclick="buyPart('tires')">Buy</button>
-                    </div>
-                </div>
+              </div>
             </div>
+            <button type="button" id="btnRetake" onclick="resetScanner(event)" style="display:none; margin-top:8px; background:none; border:1.5px solid #cbd5e1; padding:7px; border-radius:6px; font-size:11px; font-weight:700; color:#475569; width: 100%;">↺ RETAKE / CANCEL SCAN</button>
+          </div>
 
-            <div class="panel-section">
-                <h3>Logistics & Sales</h3>
-                <button class="btn-sell" id="sellCarsBtn" onclick="sellCars()">Ship All Cars ($<span id="carPriceText">300</span>/ea)</button>
-                <div style="text-align: center; margin-top: 15px; font-size: 13px; color: #7f8c8d;" id="lineStatus">
-                    Factory Status: Idle
-                </div>
+          <hr style="border:0; border-top:1px solid #e2e8f0; margin-bottom:14px;">
+
+          <div class="field">
+            <label>Inward Date & Time</label>
+            <input type="datetime-local" id="inTime" required>
+          </div>
+          <div class="field">
+            <label>Mill / Supplier Name ✨</label>
+            <input type="text" id="vendor" placeholder="E.G. VARDHMAN / ARVIND MILLS" required>
+          </div>
+          <div class="field-row">
+            <div class="field"><label>Style Number ✨</label><input type="text" id="styleNo" placeholder="E.G. MG-DENIM-09" required></div>
+            <div class="field"><label>PO Number ✨</label><input type="text" id="poNo" placeholder="PO-1044"></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label>DC / Invoice # ✨</label><input type="text" id="dcNo" placeholder="DC-8891" required></div>
+            <div class="field"><label>Fabric / Colour ✨</label><input type="text" id="color" placeholder="NAVY BLUE" required></div>
+          </div>
+          <div class="field">
+            <label>Fabric Construction Details ✨</label>
+            <input type="text" id="itemName" placeholder="100% COTTON 30S JERSEY 160 GSM" required>
+          </div>
+          <div class="field-row">
+            <div class="field"><label>Rolls / Pkgs ✨</label><input type="number" id="packages" placeholder="24" required></div>
+            <div class="field">
+              <label>Unit (UOM)</label>
+              <select id="uom"><option value="KGS">KGS</option><option value="METERS">METERS</option><option value="PIECES">PIECES</option></select>
             </div>
-            
-            <div class="panel-section">
-                <h3>Facility Upgrades</h3>
-                <button class="btn-upg" id="upgAssemblyBtn" onclick="upgradeAssembly()">Upgrade Automation ($<span id="assemblyCostText">150</span>)</button>
-                <button class="btn-upg" id="upgMarketingBtn" onclick="upgradeMarketing()" style="background: #9b59b6;">Upgrade Marketing ($<span id="marketingCostText">200</span>)</button>
-            </div>
-        </div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label>Challan Qty ✨</label><input type="number" step="any" id="challanQty" placeholder="Sent" required></div>
+            <div class="field"><label>Received Qty</label><input type="number" step="any" id="receivedQty" placeholder="Actual" required></div>
+          </div>
+          <div class="field"><label>Receiver Name</label><input type="text" id="receiver" placeholder="STAFF NAME" required></div>
+          <div class="field">
+            <label>Inspection Notes / Vehicle ✨</label>
+            <textarea id="remarks" rows="2" placeholder="TN-09-AB-1234, SHADE VERIFIED..."></textarea>
+          </div>
+
+          <button type="submit" class="submit-btn" id="btnSubmit">+ Save GRN Entry</button>
+        </form>
+      </div>
     </div>
 
-    <script>
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-        const viewport = document.getElementById('viewport');
+    <!-- View 2: Register -->
+    <div class="view-panel" id="registerView">
+      <div class="field" style="margin-bottom: 14px;"><input type="text" id="searchBox" placeholder="🔎 SEARCH STYLE, MILL, PO..." onkeyup="renderCards()"></div>
+      <div id="cardsList"></div>
+    </div>
 
-        const WORLD_WIDTH = 2500;
-        const WORLD_HEIGHT = 1500;
-        let camera = { x: WORLD_WIDTH/2 - window.innerWidth/2, y: WORLD_HEIGHT/2 - 300 };
-        let isDragging = false, lastMouseX = 0, lastMouseY = 0;
+    <!-- View 3: Continuous Pieces Generator -->
+    <div class="view-panel" id="generatorView">
+      <div class="form-card">
+        <div class="form-card-header">Roll Pcs Generator</div>
+        
+        <div class="field-row">
+          <div class="field">
+            <label for="prefix">Prefix (Opt)</label>
+            <input type="text" id="prefix" placeholder="Roll-">
+          </div>
+          <div class="field">
+            <label for="startNum">Start Num</label>
+            <input type="number" id="startNum" value="1" min="1">
+          </div>
+        </div>
+        
+        <div class="field">
+          <label for="totalRolls">Total Rolls</label>
+          <input type="number" id="totalRolls" placeholder="Enter qty" min="1">
+        </div>
 
-        function resizeCanvas() {
-            const dpr = window.devicePixelRatio || 1;
-            canvas.width = viewport.clientWidth * dpr;
-            canvas.height = viewport.clientHeight * dpr;
-            ctx.scale(dpr, dpr);
-            canvas.style.width = viewport.clientWidth + 'px';
-            canvas.style.height = viewport.clientHeight + 'px';
-            clampCamera();
-        }
-        window.addEventListener('resize', resizeCanvas);
+        <div class="field">
+          <textarea id="outputList" placeholder="Continuous pieces will generate here automatically..." readonly style="height: 250px; font-family: monospace; font-size: 14px; background: #f8fafc;"></textarea>
+        </div>
+        
+        <button id="copyBtn" class="submit-btn">Copy to Clipboard</button>
+      </div>
+    </div>
+  </main>
 
-        function clampCamera() {
-            camera.x = Math.max(0, Math.min(camera.x, WORLD_WIDTH - (canvas.width / (window.devicePixelRatio || 1))));
-            camera.y = Math.max(0, Math.min(camera.y, WORLD_HEIGHT - (canvas.height / (window.devicePixelRatio || 1))));
-        }
+  <!-- Sticky Bottom Tabs -->
+  <nav class="bottom-nav">
+    <button class="nav-tab active" id="tabEntry" onclick="switchTab('entry')"><span>✍️</span> Inward</button>
+    <button class="nav-tab" id="tabRegister" onclick="switchTab('register')"><span>📋</span> Log</button>
+    <button class="nav-tab" id="tabGenerator" onclick="switchTab('generator')"><span>🏷️</span> Gen Pcs</button>
+  </nav>
+</div>
 
-        function handlePointerDown(e) { 
-            // Only drag if we clicked on the canvas, not the UI
-            if(e.target !== canvas) return;
-            isDragging = true; 
-            lastMouseX = e.touches ? e.touches[0].clientX : e.clientX; 
-            lastMouseY = e.touches ? e.touches[0].clientY : e.clientY; 
-        }
-        function handlePointerMove(e) {
-            if (!isDragging) return;
-            let currentX = e.touches ? e.touches[0].clientX : e.clientX;
-            let currentY = e.touches ? e.touches[0].clientY : e.clientY;
-            camera.x -= (currentX - lastMouseX); camera.y -= (currentY - lastMouseY);
-            clampCamera(); lastMouseX = currentX; lastMouseY = currentY;
-        }
-        function handlePointerUp() { isDragging = false; }
+<!-- Success Toast -->
+<div class="toast" id="toast">
+  <div class="toast-icon">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+  </div>
+  Action Successful
+</div>
 
-        viewport.addEventListener('mousedown', handlePointerDown); window.addEventListener('mousemove', handlePointerMove); window.addEventListener('mouseup', handlePointerUp);
-        viewport.addEventListener('touchstart', handlePointerDown, {passive: false}); window.addEventListener('touchmove', handlePointerMove, {passive: false}); window.addEventListener('touchend', handlePointerUp);
+<script>
+  // ---------------------------------------------------------------------
+  // OPENAI API CONFIGURATION
+  // ---------------------------------------------------------------------
+  const OPENAI_API_KEY = "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"; 
+  
+  let currentCompressedImage = "";
+  let isScanning = false;
 
-        // --- GAME STATE ---
-        let state = {
-            money: 500, 
-            parts: { chassis: 0, engine: 0, tires: 0 },
-            carsInStock: 0, 
-            assemblySpeed: 1.0,
-            upgrades: { assembly: 150, marketing: 200 },
-            carSellPrice: 300
+  // Handle Image Upload & Client-side Canvas Compression
+  function handleImage(input) {
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+      const reader = new FileReader();
+      
+      reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          
+          const maxDim = 800;
+          let width = img.width, height = img.height;
+          
+          if (width > height && width > maxDim) { height *= maxDim / width; width = maxDim; } 
+          else if (height > maxDim) { width *= maxDim / height; height = maxDim; }
+          
+          canvas.width = width; canvas.height = height;
+          ctx.drawImage(img, 0, 0, width, height);
+          
+          // OpenAI prefers base64 JPEGs
+          currentCompressedImage = canvas.toDataURL('image/jpeg', 0.7);
+          
+          document.getElementById('uploadPrompt').style.display = 'none';
+          document.getElementById('previewWrapper').style.display = 'block';
+          document.getElementById('formImgPreview').src = currentCompressedImage;
+          
+          const base64Data = currentCompressedImage.split(',')[1];
+          startScanner();
+          analyzeInvoiceWithOpenAI(base64Data, 'image/jpeg');
         };
-        const PRICES = { chassis: 50, engine: 100, tires: 10 };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
 
-        const STATIONS = {
-            chassis: { x: WORLD_WIDTH/2 - 600, name: "Frame Dept" },
-            engine: { x: WORLD_WIDTH/2 - 100, name: "Engine Install" },
-            tires: { x: WORLD_WIDTH/2 + 400, name: "Wheel Assembly" },
-            end: { x: WORLD_WIDTH/2 + 900 }
-        };
+  function startScanner() {
+    isScanning = true;
+    document.getElementById('scannerFx').style.display = 'block';
+    document.getElementById('btnRetake').style.display = 'none';
+    document.getElementById('formOverlay').style.display = 'block';
+  }
 
-        let carsOnLine = [];
-        let beltOffset = 0;
+  function stopScanner() {
+    isScanning = false;
+    document.getElementById('scannerFx').style.display = 'none';
+    document.getElementById('btnRetake').style.display = 'inline-block';
+    document.getElementById('formOverlay').style.display = 'none';
+  }
 
-        function formatMoney(amount) {
-            if (amount >= 1000000) return (amount / 1000000).toFixed(2) + "M";
-            if (amount >= 1000) return (amount / 1000).toFixed(1) + "k";
-            return amount.toFixed(0);
+  function resetScanner(e) {
+    if (e) e.stopPropagation();
+    isScanning = false;
+    document.getElementById('photoInput').value = '';
+    currentCompressedImage = "";
+    document.getElementById('previewWrapper').style.display = 'none';
+    document.getElementById('uploadPrompt').style.display = 'block';
+    document.getElementById('btnRetake').style.display = 'none';
+    document.getElementById('formOverlay').style.display = 'none';
+  }
+
+  // ---------------------------------------------------------------------
+  // OPENAI GPT-4o VISION API CALL
+  // ---------------------------------------------------------------------
+  async function analyzeInvoiceWithOpenAI(base64Data, mimeType) {
+    const prompt = `You are a warehouse data extractor. Analyze this delivery challan image and extract the following data into a strict JSON format. If a field is not found, return an empty string. Return ONLY the raw JSON object.
+    {
+      "vendor": "Supplier or Mill name (e.g. Vardhman, Arvind)",
+      "invoice_no": "DC Number or Invoice Number",
+      "po": "PO or Purchase Order Number",
+      "style": "Style Number, Quality code, or Lot reference",
+      "color": "Fabric shade or color name",
+      "item": "Fabric construction description (composition, yarn count, GSM)",
+      "packages": 0,
+      "challanQty": 0.0,
+      "uom": "KGS, METERS, or PIECES",
+      "notes": "Vehicle numbers (e.g. TN-XX), driver remarks, or annotations"
+    }`;
+
+    const payload = {
+      model: "gpt-4o-mini", // Fast and capable for vision tasks
+      messages: [
+        {
+          role: "user",
+          content: [
+            { type: "text", text: prompt },
+            { type: "image_url", image_url: { url: `data:${mimeType};base64,${base64Data}` } }
+          ]
         }
+      ],
+      response_format: { type: "json_object" },
+      temperature: 0.1
+    };
 
-        function updateUI() {
-            document.getElementById('moneyText').innerText = formatMoney(state.money);
-            document.getElementById('stockText').innerText = state.carsInStock;
-            
-            document.getElementById('chassisCount').innerText = state.parts.chassis;
-            document.getElementById('engineCount').innerText = state.parts.engine;
-            document.getElementById('tireCount').innerText = state.parts.tires;
-            
-            document.getElementById('sellCarsBtn').disabled = state.carsInStock === 0;
-            document.getElementById('carPriceText').innerText = formatMoney(state.carSellPrice);
-            
-            document.getElementById('upgAssemblyBtn').disabled = state.money < state.upgrades.assembly;
-            document.getElementById('assemblyCostText').innerText = formatMoney(state.upgrades.assembly);
-            document.getElementById('upgMarketingBtn').disabled = state.money < state.upgrades.marketing;
-            document.getElementById('marketingCostText').innerText = formatMoney(state.upgrades.marketing);
+    try {
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${OPENAI_API_KEY}`
+        },
+        body: JSON.stringify(payload)
+      });
+      
+      if (!response.ok) {
+        const err = await response.json().catch(() => ({}));
+        throw new Error(err.error?.message || `HTTP ${response.status}. NOTE: OpenAI strictly enforces CORS. You must run this on a local server, not file:///`);
+      }
+
+      const result = await response.json();
+      const rawText = result.choices?.[0]?.message?.content;
+      
+      if (!rawText) throw new Error("No data returned by model.");
+
+      const data = JSON.parse(rawText);
+      
+      // Auto-populate fields
+      if (data.vendor) document.getElementById('vendor').value = data.vendor.toUpperCase();
+      if (data.invoice_no) document.getElementById('dcNo').value = data.invoice_no.toUpperCase();
+      if (data.po) document.getElementById('poNo').value = data.po.toUpperCase();
+      if (data.style) document.getElementById('styleNo').value = data.style.toUpperCase();
+      if (data.color) document.getElementById('color').value = data.color.toUpperCase();
+      if (data.item) document.getElementById('itemName').value = data.item.toUpperCase();
+      if (data.packages) document.getElementById('packages').value = data.packages;
+      if (data.challanQty) {
+        document.getElementById('challanQty').value = data.challanQty;
+        document.getElementById('receivedQty').value = data.challanQty; 
+      }
+      if (data.uom) {
+        const uomSelect = document.getElementById('uom');
+        const formattedUom = data.uom.toUpperCase();
+        for (let opt of uomSelect.options) {
+          if (opt.value === formattedUom) { uomSelect.value = formattedUom; break; }
         }
+      }
+      if (data.notes) document.getElementById('remarks').value = data.notes.toUpperCase();
+      
+      showToast("OpenAI Auto-Fill Complete ✨");
+    } catch (error) {
+      console.error("OpenAI Analysis failed:", error);
+      alert(`OpenAI Auto-Fill Error: \n\n${error.message}`);
+    } finally {
+      stopScanner();
+    }
+  }
 
-        // Updated Buy function to use input values
-        function buyPart(type) {
-            let inputId = type === 'chassis' ? 'inputChassis' : (type === 'engine' ? 'inputEngine' : 'inputTire');
-            let inputEl = document.getElementById(inputId);
-            let qty = parseInt(inputEl.value);
-            
-            if (isNaN(qty) || qty <= 0) return;
+  // Enforce uppercase globally
+  document.addEventListener('input', function(e) {
+    if (e.target && (e.target.tagName === 'INPUT' && e.target.type === 'text' || e.target.tagName === 'TEXTAREA') && e.target.id !== 'outputList') {
+      const start = e.target.selectionStart; const end = e.target.selectionEnd;
+      e.target.value = e.target.value.toUpperCase(); e.target.setSelectionRange(start, end);
+    }
+  });
 
-            let totalCost = qty * PRICES[type];
-            
-            if (state.money >= totalCost) {
-                state.money -= totalCost;
-                state.parts[type] += qty;
-                updateUI();
-            } else {
-                // Flash the input box red if you don't have enough money
-                inputEl.style.borderColor = "#e74c3c";
-                setTimeout(() => inputEl.style.borderColor = "#bdc3c7", 500);
-            }
+  // PWA Manifest definition
+  const manifest = {
+    name: "SKL Fabric GRN", short_name: "SKL GRN", start_url: window.location.href, display: "standalone",
+    background_color: "#ffffff", theme_color: "#ffffff",
+    icons: [{ src: "31890.png", sizes: "192x192 512x512", type: "image/png", purpose: "any maskable" }]
+  };
+  const manifestBlob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
+  const manifestLink = document.createElement('link'); manifestLink.rel = 'manifest'; manifestLink.href = URL.createObjectURL(manifestBlob);
+  document.head.appendChild(manifestLink);
+
+  // Tab Switcher
+  function switchTab(tab) {
+    document.querySelectorAll('.view-panel').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
+
+    if (tab === 'entry') {
+      document.getElementById('entryView').classList.add('active');
+      document.getElementById('tabEntry').classList.add('active');
+    } else if (tab === 'register') {
+      document.getElementById('registerView').classList.add('active');
+      document.getElementById('tabRegister').classList.add('active');
+      renderCards();
+    } else if (tab === 'generator') {
+      document.getElementById('generatorView').classList.add('active');
+      document.getElementById('tabGenerator').classList.add('active');
+    }
+  }
+
+  const STORAGE_KEY = 'MAGNUM_SKL_MOBILE_GRN_V7';
+  let logs = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+
+  function resetDate() {
+    const now = new Date(); now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+    document.getElementById('inTime').value = now.toISOString().slice(0, 16);
+  }
+  resetDate();
+
+  function persist() { localStorage.setItem(STORAGE_KEY, JSON.stringify(logs)); }
+
+  function showToast(message) {
+    const toast = document.getElementById('toast');
+    toast.lastChild.textContent = " " + message;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3000);
+  }
+
+  // Submit GRN Form
+  document.getElementById('entryForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const grnId = "MC-SKL-" + String(logs.length + 1).padStart(3, '0');
+    const entry = {
+      grn: grnId, time: document.getElementById('inTime').value.replace('T', ' '),
+      vendor: document.getElementById('vendor').value.trim(), styleNo: document.getElementById('styleNo').value.trim(),
+      color: document.getElementById('color').value.trim(), dcNo: document.getElementById('dcNo').value.trim(),
+      poNo: document.getElementById('poNo').value.trim() || 'PENDING', item: document.getElementById('itemName').value.trim(),
+      packages: document.getElementById('packages').value, challanQty: document.getElementById('challanQty').value,
+      receivedQty: document.getElementById('receivedQty').value, uom: document.getElementById('uom').value,
+      receiver: document.getElementById('receiver').value.trim(), remarks: document.getElementById('remarks').value.trim(), photo: currentCompressedImage
+    };
+    logs.unshift(entry); persist();
+    
+    showToast("Entry Logged Successfully");
+    this.reset(); resetScanner(); resetDate(); switchTab('register');
+  });
+
+  // Render Log Cards
+  function renderCards() {
+    const filter = document.getElementById('searchBox').value.toUpperCase();
+    const container = document.getElementById('cardsList'); container.innerHTML = '';
+    logs.forEach((item, index) => {
+      const match = `${item.grn} ${item.vendor} ${item.styleNo} ${item.poNo} ${item.dcNo}`.toUpperCase();
+      if (!match.includes(filter)) return;
+      const isShort = Number(item.receivedQty) - Number(item.challanQty) < 0;
+      container.innerHTML += `
+        <div class="log-card">
+          <div class="log-card-header"><span class="grn-title">${item.grn}</span><span class="log-time">${item.time}</span></div>
+          <div class="vendor-name">${item.vendor}</div>
+          ${item.photo ? `<img src="${item.photo}" class="card-photo-banner">` : ''}
+          <div style="font-size: 11px; margin-top:6px;"><strong>STYLE:</strong> ${item.styleNo} | <strong>PO:</strong> ${item.poNo} | <strong>DC:</strong> ${item.dcNo}</div>
+          <div class="qty-comparison">
+            <div class="qty-box"><span>CHALLAN</span><strong>${item.challanQty} ${item.uom}</strong></div>
+            <div class="qty-box"><span>RECEIVED</span><strong>${item.receivedQty} ${item.uom}</strong></div>
+            <div class="qty-box"><span>STATUS</span><strong style="color:${isShort ? '#dc2626' : '#15803d'}">${isShort ? 'SHORT' : 'OK'}</strong></div>
+          </div>
+          <div class="card-footer"><span style="font-size:11px; color:#64748b;">BY: ${item.receiver}</span><button onclick="deleteEntry(${index})" style="background:none; border:none; color:red; cursor:pointer;">✕</button></div>
+        </div>
+      `;
+    });
+  }
+
+  function deleteEntry(index) { if (confirm("Delete this GRN record?")) { logs.splice(index, 1); persist(); renderCards(); } }
+
+  // PDF Export
+  function exportToPDF() {
+    const { jsPDF } = window.jspdf; const doc = new jsPDF('landscape'); 
+    doc.setFontSize(16); doc.text("SKL Fabric GRN Report", 14, 15);
+    const tableRows = logs.map(item => [item.grn, item.time, item.vendor, item.styleNo, item.item, item.poNo, `${item.receivedQty} ${item.uom}`, ""]);
+    
+    doc.autoTable({
+      head: [["GRN Ref", "Date", "Vendor", "Style", "Item", "PO", "Qty Recd", "Photo"]],
+      body: tableRows, startY: 20, styles: { fontSize: 8 }, bodyStyles: { minCellHeight: 25 }, columnStyles: { 7: { cellWidth: 30 } },
+      didDrawCell: function (data) {
+        if (data.column.index === 7 && data.cell.section === 'body' && logs[data.row.index].photo) {
+          doc.addImage(logs[data.row.index].photo, 'JPEG', data.cell.x + 2, data.cell.y + 2, 21, 21);
         }
+      }
+    });
+    doc.save(`SKL_GRN_${new Date().toISOString().slice(0,10)}.pdf`);
+  }
 
-        function sellCars() { 
-            if (state.carsInStock > 0) { 
-                state.money += (state.carsInStock * state.carSellPrice); 
-                state.carsInStock = 0; updateUI(); 
-            } 
-        }
+  // --- CONTINUOUS PCS GENERATOR LOGIC ---
+  const prefixInput = document.getElementById('prefix');
+  const startNumInput = document.getElementById('startNum');
+  const totalRollsInput = document.getElementById('totalRolls');
+  const outputList = document.getElementById('outputList');
+  const copyBtn = document.getElementById('copyBtn');
 
-        function upgradeAssembly() { 
-            if (state.money >= state.upgrades.assembly) { 
-                state.money -= state.upgrades.assembly; 
-                state.assemblySpeed *= 1.3; 
-                state.upgrades.assembly = Math.floor(state.upgrades.assembly * 1.6); 
-                updateUI(); 
-            } 
-        }
+  prefixInput.addEventListener('input', generatePcs);
+  startNumInput.addEventListener('input', generatePcs);
+  totalRollsInput.addEventListener('input', generatePcs);
 
-        function upgradeMarketing() { 
-            if (state.money >= state.upgrades.marketing) { 
-                state.money -= state.upgrades.marketing; 
-                state.carSellPrice = Math.floor(state.carSellPrice * 1.5); 
-                state.upgrades.marketing = Math.floor(state.upgrades.marketing * 1.8); 
-                updateUI(); 
-            } 
-        }
+  function generatePcs() {
+      const prefix = prefixInput.value;
+      const startNum = parseInt(startNumInput.value) || 1;
+      const totalRolls = parseInt(totalRollsInput.value) || 0;
+      
+      if (totalRolls <= 0) {
+          outputList.value = '';
+          return;
+      }
 
-        function drawWorker(ctx, x, y, isWorking) {
-            ctx.save();
-            ctx.shadowColor = 'rgba(0,0,0,0.4)'; ctx.shadowBlur = 8; ctx.shadowOffsetY = 4;
-            
-            ctx.fillStyle = "#2980b9";
-            ctx.beginPath(); ctx.roundRect(x - 20, y - 20, 40, 40, 10); ctx.fill();
-            ctx.fillStyle = "#f1c40f";
-            ctx.beginPath(); ctx.arc(x, y - 10, 18, 0, Math.PI * 2); ctx.fill();
-            ctx.fillStyle = "#f39c12";
-            ctx.beginPath(); ctx.arc(x, y + 2, 12, 0, Math.PI * 2); ctx.fill();
-            
-            ctx.shadowColor = 'transparent';
-            let armAngle = isWorking ? Math.sin(Date.now() / 100 * state.assemblySpeed) * 0.8 : 0;
-            
-            ctx.translate(x, y - 5); ctx.rotate(armAngle);
-            ctx.fillStyle = "#2980b9";
-            ctx.beginPath(); ctx.roundRect(-5, -5, 10, 35, 5); ctx.fill();
-            ctx.restore();
-        }
+      let result = [];
+      for (let i = 0; i < totalRolls; i++) {
+          const currentPcsNumber = startNum + i;
+          result.push(prefix + currentPcsNumber);
+      }
+      
+      outputList.value = result.join('\n');
+  }
 
-        function drawCar(ctx, x, y, stage, color) {
-            ctx.save();
-            ctx.shadowColor = 'rgba(0,0,0,0.5)'; ctx.shadowBlur = 10; ctx.shadowOffsetY = 8;
-            
-            if (stage >= 0) {
-                let grad = ctx.createLinearGradient(x, y, x, y + 40);
-                grad.addColorStop(0, "#7f8c8d"); grad.addColorStop(1, "#2c3e50");
-                ctx.fillStyle = grad;
-                ctx.beginPath(); ctx.roundRect(x, y - 20, 100, 40, 5); ctx.fill();
-            }
-            if (stage >= 1) {
-                ctx.fillStyle = color;
-                ctx.beginPath(); ctx.roundRect(x + 10, y - 25, 80, 50, 8); ctx.fill();
-                ctx.fillStyle = "#bdc3c7";
-                ctx.beginPath(); ctx.roundRect(x + 25, y - 15, 20, 30, 3); ctx.fill();
-                ctx.beginPath(); ctx.roundRect(x + 55, y - 15, 20, 30, 3); ctx.fill();
-                ctx.fillStyle = "#333";
-                ctx.fillRect(x + 85, y - 10, 10, 20);
-            }
-            if (stage >= 2) {
-                ctx.fillStyle = "#111";
-                ctx.beginPath(); ctx.roundRect(x + 15, y - 35, 25, 15, 4); ctx.fill();
-                ctx.beginPath(); ctx.roundRect(x + 65, y - 35, 25, 15, 4); ctx.fill();
-                ctx.beginPath(); ctx.roundRect(x + 15, y + 20, 25, 15, 4); ctx.fill();
-                ctx.beginPath(); ctx.roundRect(x + 65, y + 20, 25, 15, 4); ctx.fill();
-            }
-            ctx.restore();
-        }
+  copyBtn.addEventListener('click', () => {
+      if (!outputList.value) return;
+      navigator.clipboard.writeText(outputList.value).then(() => {
+          const originalText = copyBtn.innerText;
+          copyBtn.innerText = '✓ COPIED!';
+          copyBtn.classList.add('success');
+          showToast("List Copied to Clipboard");
+          setTimeout(() => {
+              copyBtn.innerText = originalText;
+              copyBtn.classList.remove('success');
+          }, 2000);
+      });
+  });
+</script>
 
-        function gameLoop() {
-            resizeCanvas();
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.save();
-            
-            ctx.translate(-camera.x, -camera.y);
-
-            ctx.fillStyle = "#ecf0f1";
-            ctx.fillRect(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
-            ctx.strokeStyle = "#bdc3c7"; ctx.lineWidth = 2;
-            for (let i = 0; i < WORLD_WIDTH; i += 150) {
-                ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, WORLD_HEIGHT); ctx.stroke();
-            }
-            for (let i = 0; i < WORLD_HEIGHT; i += 150) {
-                ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(WORLD_WIDTH, i); ctx.stroke();
-            }
-
-            const beltY = WORLD_HEIGHT / 2;
-            
-            ctx.shadowColor = 'rgba(0,0,0,0.3)'; ctx.shadowBlur = 15;
-            ctx.fillStyle = "#2c3e50";
-            ctx.fillRect(STATIONS.chassis.x - 100, beltY - 50, STATIONS.end.x - STATIONS.chassis.x + 200, 100);
-            
-            ctx.shadowColor = 'transparent';
-            ctx.strokeStyle = "#34495e"; ctx.lineWidth = 6;
-            let beltMoving = carsOnLine.some(c => c.moving);
-            if (beltMoving) beltOffset += 1.5 * state.assemblySpeed;
-            if (beltOffset > 30) beltOffset = 0;
-            
-            for (let i = STATIONS.chassis.x - 100; i < STATIONS.end.x + 100; i += 30) {
-                ctx.beginPath(); ctx.moveTo(i + beltOffset, beltY - 45); ctx.lineTo(i + beltOffset, beltY + 45); ctx.stroke();
-            }
-
-            let station1Clear = !carsOnLine.some(c => c.x < STATIONS.chassis.x + 120);
-            if (station1Clear && state.parts.chassis >= 1) {
-                state.parts.chassis--;
-                carsOnLine.push({ 
-                    x: STATIONS.chassis.x - 100, 
-                    stage: 0, 
-                    targetX: STATIONS.engine.x, 
-                    moving: true, 
-                    workTimer: 0,
-                    color: `hsl(${Math.random() * 360}, 75%, 50%)`
-                });
-                updateUI();
-            }
-
-            let activeWorkers = { chassis: false, engine: false, tires: false };
-
-            for (let i = carsOnLine.length - 1; i >= 0; i--) {
-                let car = carsOnLine[i];
-
-                if (car.moving) {
-                    car.x += 2 * state.assemblySpeed;
-                    if (car.x >= car.targetX) {
-                        car.x = car.targetX;
-                        car.moving = false;
-                    }
-                } else {
-                    if (car.stage === 0 && car.x === STATIONS.engine.x) {
-                        if (state.parts.engine >= 1) {
-                            activeWorkers.engine = true;
-                            car.workTimer += 1 * state.assemblySpeed;
-                            if (car.workTimer > 60) {
-                                state.parts.engine--;
-                                car.stage = 1;
-                                car.workTimer = 0;
-                                car.targetX = STATIONS.tires.x;
-                                car.moving = true;
-                                updateUI();
-                            }
-                        }
-                    } 
-                    else if (car.stage === 1 && car.x === STATIONS.tires.x) {
-                        if (state.parts.tires >= 4) {
-                            activeWorkers.tires = true;
-                            car.workTimer += 1 * state.assemblySpeed;
-                            if (car.workTimer > 60) {
-                                state.parts.tires -= 4;
-                                car.stage = 2;
-                                car.targetX = STATIONS.end.x;
-                                car.moving = true;
-                                updateUI();
-                            }
-                        }
-                    }
-                }
-
-                drawCar(ctx, car.x, beltY, car.stage, car.color);
-
-                if (car.x >= STATIONS.end.x) {
-                    state.carsInStock++;
-                    carsOnLine.splice(i, 1);
-                    updateUI();
-                }
-            }
-
-            function drawStation(x, name, isWorking) {
-                ctx.fillStyle = "#95a5a6";
-                ctx.beginPath(); ctx.roundRect(x - 40, beltY - 120, 80, 50, 5); ctx.fill();
-                ctx.fillStyle = "#2c3e50"; ctx.font = "bold 14px sans-serif"; ctx.textAlign = "center";
-                ctx.fillText(name, x, beltY - 90);
-                drawWorker(ctx, x, beltY - 150, isWorking);
-            }
-
-            drawStation(STATIONS.chassis.x, "1. FRAME", station1Clear === false); 
-            drawStation(STATIONS.engine.x, "2. ENGINE", activeWorkers.engine);
-            drawStation(STATIONS.tires.x, "3. WHEELS", activeWorkers.tires);
-
-            let statusEl = document.getElementById('lineStatus');
-            if (activeWorkers.engine || activeWorkers.tires || (!station1Clear && state.parts.chassis > 0)) {
-                statusEl.innerText = "🟢 Assembly Line Active";
-                statusEl.style.color = "#27ae60";
-            } else if (carsOnLine.length > 0) {
-                statusEl.innerText = "🔴 Line Stalled - Missing Parts";
-                statusEl.style.color = "#e74c3c";
-            } else {
-                statusEl.innerText = "⚪ Factory Idle - Awaiting Frames";
-                statusEl.style.color = "#7f8c8d";
-            }
-
-            ctx.restore();
-            requestAnimationFrame(gameLoop);
-        }
-
-        updateUI();
-        resizeCanvas();
-        requestAnimationFrame(gameLoop);
-    </script>
 </body>
 </html>
